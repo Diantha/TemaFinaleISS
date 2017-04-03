@@ -1,0 +1,232 @@
+\documentclass[a4paper]{article}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Proposal for an application}
+\author{Lisa Cattalani and Andrea Pari \\
+Alma Mater Studiorum - University of Bologna, via Venezia 52 \\
+47023 Cesena, Italy \\
+\textit{lisa.cattalani@studio.unibo.it, andrea.pari6@studio.unibo.it}}
+
+\begin{document}
+\maketitle
+
+%===========================================================================
+\section{Introduction}
+
+%===========================================================================
+The current report describes the entire software development process adopted to analyze, design and implement a specific software system. The process has been divided into two phases: the first phase concerns the definition of a model of the software system, while the second phase concerns the implementation of the software system carried out after that the product owner has viewed the model.
+
+%===========================================================================
+\section{Vision}
+We want to show how to manage the development of a distributed, heterogeneous and embedded software system by focusing on the analysis and design of the system. The software system at issue will be designed and implemented as an application in the field of \textit{Internet of Things}.
+%===========================================================================
+%===========================================================================
+%===========================================================================
+%===========================================================================
+\section{Goals}
+The goal is to build a software system able to evolve from an initial prototype (defined as result of a problem analysis phase) to a final and testable product. This goal will be achieved by working in a team and by "mixing" in a proper (pragmatically useful) way an agile (SCRUM) software development with modeling.
+
+
+%===========================================================================
+\section{Requirements }
+A differential drive robot (called from now on robot) must reach an area (B) starting from a given point A. To reach the area B, the robot must cross an area equipped with N (N>=1) distance sensors (sonars). The signal emitted by each sonar is reflected by a wall put in front of it at a distance of approximately 90 cm.
+Moreover:
+\begin{itemize}
+	\item The section of the wall in front of each sonar is painted with a different illustration.
+	\item The robot is equipped with a distance sensor (sonar) and (optionally) with a Web Cam both positioned in its front. It owns also a Led
+	\item The robot should move from A to B by travelling along a straight line, at a distance of approximately 40-50 cm from the base-line of the sonars.
+\end{itemize}
+Design and build a (prototype of a) software system such that:
+\begin{itemize}
+	\item shows the sonar data on the GUI associated to a console running on a conventional PC. For example (see the project it.unibo.qactor.radar):
+	\item evaluates the expression: (sk + sk+1 + ... sN) / (N-k+1)
+	where k is the number of the first sensor not reached by the robot and sk is the value of the distance currently measured by that sensor. If the value of the expression is less than a prefixed value DMIN( e.g. DMIN=70), play an alarm sound.
+	\item when the robot reaches the area in front of a sonar, it
+	\begin{itemize}
+		\item first stops
+		\item then rotates to its left of approximately 90 degrees
+		\item starts blinking a led put on the robot
+		\item takes a photo of the wall (in a simulated way only, if no WebCam is available) and sends the photo to console by using the MQTT protocol
+		\item rotates to its right of approximately 90 degrees to compensate the previous rotation
+		\item stops the blinking of the led and continues its movement towards the area B
+	\end{itemize}
+	\item when the robot leaves the area in front to the last sonar, it continues until it arrives at the area B
+	\item stops the robot movement as soon as possible:
+	\begin{itemize}
+		\item when an obstacle is detected by the sonar in front of the robot
+		\item when an alarm sound is played
+		\item the user sends to the robot a proper command (e.g. STOP)
+	\end{itemize}
+	\item makes it possible to restart the system (by manually repositioning the robot at point A) without restarting the software
+\end{itemize}
+
+
+%===========================================================================
+%===========================================================================
+
+%===========================================================================
+\section{Requirements analysis }
+Di seguito vengono riportati quei termini presenti nel testo che descrive i requisiti per cui si ritiene necessario specificare il significato al fine di comprendere il dominio applicativo del sistema ed evitare eventuali ambiguità, incomprensioni od omissioni. (I termini sono posti in ordine di comparsa nel testo).
+
+\begin{tabular}{ | m{2cm} | m{10cm}| m{2cm} | }
+		\hline
+	Termine&Significato&Sinonimi\\ 
+	\hline
+	Differential drive robot& The differential drive robot is a two-wheeled drive robot system with independent actuators for each wheel. The name refers to the fact that the motion vector of the robot is sum of the independent wheel motions&Robot\\ 
+	\hline
+	Distance sensors&Dispositivo che permette di individuare la presenza di un oggetto davanti ad esso. Il sensore manda delle onde, attraverso il tempo di risposta delle onde riesce a percepire la distanza dall’oggetto.&Sonar, sensor\\
+	\hline
+	Prototype&Un prototipo è una versione di un sistema software utilizzato per dimostrare concetti, per provare opzioni di progettazione e, in generale, per scoprire di più sui problemi e sulle possibili soluzioni.&\\
+	\hline
+	GUI&Interfaccia grafica dell’utente associata alla console. Attraverso tale interfaccia l’utente può visualizzare i dati trasmessi dal sonar.(del robot o dei raspberry sul muro?) & \\
+	\hline
+	Console&è il mezzo con cui l’utente e il robot interagiscono tra loro. Riceve dal robot le foto inviate tramite protocollo mqtt &\\
+	\hline
+	Alarm sound&Il suono emesso dalla console quando il valore calcolato dall’espressione è inferiore a una soglia prestabilita.&\\
+	\hline
+	MQTT protocol&Protocollo di comunicazione attraverso il quale il robot  invia le foto alla console.&\\
+	\hline
+	Obstacle&Qualsiasi tipo di oggetto individuato dal sonar del robot che gli impedisce di raggiungere l’area B.&\\
+	\hline
+	User&Final adopter of the system which is able to give commands to robot.&\\
+	\hline
+	Commands&Ordini dati dall’utente al robot attraverso la console. Sono possibili due comandi: STOP (da console) per fermare il movimento del robot, RESTART (manualmente) per riposizionare il robot nel punto A.&\\
+	\hline
+	Restart the system&Processo attraverso il quale il robot viene riposizionato nel punto A senza dover fare il restart  del software.&\\
+	
+\end{tabular}
+
+%===========================================================================
+%===========================================================================
+%===========================================================================
+%===========================================================================
+
+%===========================================================================
+
+
+\subsection {  \textit {Modello dei casi d’uso}}
+Una user story rappresenta un bisogno dell’utente finale espresso in linguaggio naturale e comprensibile da chiunque. Essa permette di descrivere con sufficiente precisione il contenuto di una funzionalità da sviluppare. La frase contiene generalmente tre elementi descrittivi della funzionalità: CHI, COSA, PERCHE’.
+
+Per modellare i casi d’uso si utilizzerà il seguente formato:
+“As a <ROLE>, I want <GOAL> so that <BENEFIT>”
+\begin{itemize}
+	\item as a \textbf{user}, I want that the robot moves from point A to area B
+	\item as a \textbf{user} I would the robot to stop when being in front of a sonar and turn of about 90° so that it can take a photo and send it to the PC, and after keep moving forward.
+	\item as a \textbf{user} I want that an alarm sound is played if the distance calculated by the expression is under a certain threshold.
+	\item as a \textbf{user}, I want to show the sonar data on the GUI
+	\item as a \textbf{user}, I want to use the console to send commands to the robot
+	\item as a \textbf{user}, I want to see on the console the photos sent by the robot
+	\item as a \textbf{user}, I want to restart the system (by manually repositioning the robot at point A) without restarting the software.
+\end{itemize}
+
+\section{User Interaction}
+Per rappresentare l’interazione tra agenti esterni e il sistema utilizzeremo diagrammi uml.
+L’unico attore è l’utente che interagisce con il sistema attraverso una serie d’azioni/comandi che rappresentano un caso d’uso nel diagramma. Il sistema è composto principalmente dalla console e dal robot. 
+
+NB: caso d’uso solo quello che può far direttamente l’utente, quindi mettere il robot, inviargli i comandi e guardare sul radar la posizione del robot. 
+Scenari: Console , il robot,
+\\
+\begin{tabular}{ | m{5cm} | m{5cm}| }
+	Name&Place Robot\\ 
+\hline	
+	Descrizione&Piazzare il robot\\
+\hline	
+	Attori&Utente\\
+\hline	
+	Precondizioni&La scelta del punto determinerà la traiettoria che poi avrà il robot.\\
+\hline	
+Scenario principale&L’utente metterà il robot in un punto A. A partire da quel punto il robot potrà iniziare a muoversi.\\
+\hline	
+Scenari alternativi&---\\
+\hline	
+Postcondizioni&Il robot deve riavviarsi ogni volta che viene posizionato.\\
+\end{tabular}
+\\
+\\
+\\
+\\
+
+\begin{tabular}{ | m{5cm} | m{5cm}| }
+	Name&Send Command\\ 
+	\hline	
+	Descrizione&Invio di un comando al sistema da parte dell’utente\\
+	\hline	
+	Attori&Utente\\
+	\hline	
+	Precondizioni&La console è attiva e funzionante sul computer e il sistema è pronto a ricevere comandi.\\
+	\hline	
+	Scenario principale&1. L’utente invia un comando al robot tramite il pannello dei comandi presente sul PC. I comandi inviati sono START per azionare il robot e STOP per fermarlo.
+	2. Il server invia il comando al robot.
+	3. Il robot valuta il comando e lo esegue.\\
+	\hline	
+	Scenari alternativi&---\\
+	\hline	
+	Postcondizioni&Il robot si aziona se riceve il comando START, si ferma se riceve il comando STOP.\\
+\end{tabular}
+
+
+\begin{tabular}{ | m{5cm} | m{5cm}| }
+	Name&View Sonar\\ 
+	\hline	
+	Descrizione&Visualizzare la posizione del robot sul sonar\\
+	\hline	
+	Attori&Utente\\
+	\hline	
+	Precondizioni&La console dovrà funzionare sul pc.\\
+	\hline	
+	Scenario principale&L’utente potrà vedere il robot nella GUI e si potranno seguire i movimenti.\\
+	\hline	
+	Scenari alternativi&---\\
+	\hline	
+	Postcondizioni&Il robot si aziona se riceve il comando START, si ferma se riceve il comando STOP.\\
+\end{tabular}
+\section{Problem analysis }
+
+%===========================================================================
+%===========================================================================
+%===========================================================================
+%===========================================================================
+%===========================================================================
+\section{Problem analysis }
+I thought that my two entities have to speack each other, so I need a third entity, a generic Control. A part of this, the fact that the DevicePhoto have to stop after take a photo and found a marker, I considered that as a asyncAction, infact if the marker is not found, the DevicePhoto continued after PT times to takes a photo. 
+
+%===========================================================================
+%===========================================================================
+%===========================================================================
+%===========================================================================
+%===========================================================================
+%===========================================================================
+
+%===========================================================================
+\section{Project }
+I thought that my two entities have to speack each other, so I need a third entity, a generic Control. A part of this, the fact that the DevicePhoto have to stop after take a photo and found a marker, I considered that as a asyncAction, infact if the marker is not found, the DevicePhoto continued after PT times to takes a photo. 
+
+%===========================================================================
+%===========================================================================
+\section{Implementation }
+I thought that my two entities have to speack each other, so I need a third entity, a generic Control. A part of this, the fact that the DevicePhoto have to stop after take a photo and found a marker, I considered that as a asyncAction, infact if the marker is not found, the DevicePhoto continued after PT times to takes a photo. 
+
+%===========================================================================
+%===========================================================================
+
+\section{Deployment }
+I thought that my two entities have to speack each other, so I need a third entity, a generic Control. A part of this, the fact that the DevicePhoto have to stop after take a photo and found a marker, I considered that as a asyncAction, infact if the marker is not found, the DevicePhoto continued after PT times to takes a photo. 
+
+%===========================================================================
+%===========================================================================
+\end{document}
+ 
