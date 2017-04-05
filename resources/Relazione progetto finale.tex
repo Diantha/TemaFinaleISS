@@ -80,34 +80,35 @@ Design and build a (prototype of a) software system such that:
 
 %===========================================================================
 \section{Requirements analysis }
-Di seguito vengono riportati quei termini presenti nel testo che descrive i requisiti per cui si ritiene necessario specificare il significato al fine di comprendere il dominio applicativo del sistema ed evitare eventuali ambiguità, incomprensioni od omissioni. (I termini sono posti in ordine di comparsa nel testo).
+Shown below are the terms that are present in the text and describes the requirement for what we suppose to be necessary specify the meaning to understand the application domain of the system and avoid eventually ambiguity, misunderstanding, or omissions. (the terms are order compared in the text).
+Di seguito vengono riportati quei termini presenti nel testo che descrivono i requisiti per cui si ritiene necessario specificare il significato al fine di comprendere il dominio applicativo del sistema ed evitare eventuali ambiguità, incomprensioni od omissioni. (I termini sono posti in ordine di comparsa nel testo).
 
 \begin{tabular}{ | m{2cm} | m{10cm}| m{2cm} | }
 		\hline
-	Termine&Significato&Sinonimi\\ 
+	Terms&Meaning&Synonyms\\ 
 	\hline
 	Differential drive robot& The differential drive robot is a two-wheeled drive robot system with independent actuators for each wheel. The name refers to the fact that the motion vector of the robot is sum of the independent wheel motions&Robot\\ 
 	\hline
-	Distance sensors&Dispositivo che permette di individuare la presenza di un oggetto davanti ad esso. Il sensore manda delle onde, attraverso il tempo di risposta delle onde riesce a percepire la distanza dall’oggetto.&Sonar, sensor\\
+	Distance sensors&Device that allow to locate the presence of an object in front of it.The sensor sends waves, behind the time of the response of the waves it understands the distance to the object.&Sonar, sensor\\
 	\hline
-	Prototype&Un prototipo è una versione di un sistema software utilizzato per dimostrare concetti, per provare opzioni di progettazione e, in generale, per scoprire di più sui problemi e sulle possibili soluzioni.&\\
+	Prototype&A prototipe is a version of a system software used to demostrate concepts, to try project option and, to find out more about problems and possible solution.&\\
 	\hline
-	GUI&Interfaccia grafica dell’utente associata alla console. Attraverso tale interfaccia l’utente può visualizzare i dati trasmessi dal sonar.(del robot o dei raspberry sul muro?) & \\
+	GUI&Graphics User Interface associated to the console.Thanks to this interface the user must visualize the data trasmitted by the sonar.(del robot o dei raspberry sul muro?) & \\
 	\hline
-	Console&è il mezzo con cui l’utente e il robot interagiscono tra loro. Riceve dal robot le foto inviate tramite protocollo mqtt &\\
+	Console&Is the means by which the user and the robot interact each other. The console receiv the pictures from the robot send by the mqtt protocol.&\\
 	\hline
-	Alarm sound&Il suono emesso dalla console quando il valore calcolato dall’espressione è inferiore a una soglia prestabilita.&\\
+	Alarm sound&Is the sound emitted by the console when the calculated value of the expression is less than the predetermined threshold.&\\
 	\hline
-	MQTT protocol&Protocollo di comunicazione attraverso il quale il robot  invia le foto alla console.&\\
+	MQTT protocol&Comunication protocol through which the robot sends pictures to the console.&\\
 	\hline
-	Obstacle&Qualsiasi tipo di oggetto individuato dal sonar del robot che gli impedisce di raggiungere l’area B.&\\
+	Obstacle&Any kind of object locate by the sonar of the robot that prevent to reach the area B.&\\
 	\hline
 	User&Final adopter of the system which is able to give commands to robot.&\\
 	\hline
-	Commands&Ordini dati dall’utente al robot attraverso la console. Sono possibili due comandi: STOP (da console) per fermare il movimento del robot, RESTART (manualmente) per riposizionare il robot nel punto A.&\\
+	Commands&Commands give from the user to the robot by the console.There are two possible commands: STOP(from the console) to stop the movement of the robot, RESTART (manually) to reposition the robot at point A.&\\
 	\hline
-	Restart the system&Processo attraverso il quale il robot viene riposizionato nel punto A senza dover fare il restart  del software.&\\
-	
+	Restart the system&Process by which the robot is repositioning in the point A without restart the software.&\\
+	\hline 
 \end{tabular}
 
 %===========================================================================
@@ -119,7 +120,7 @@ Di seguito vengono riportati quei termini presenti nel testo che descrive i requ
 
 
 \subsection {  \textit {Modello dei casi d’uso}}
-Una user story rappresenta un bisogno dell’utente finale espresso in linguaggio naturale e comprensibile da chiunque. Essa permette di descrivere con sufficiente precisione il contenuto di una funzionalità da sviluppare. La frase contiene generalmente tre elementi descrittivi della funzionalità: CHI, COSA, PERCHE’.
+An user story represents a necessity of the final user express with the natural language and understandable by anyone.This allow to describe with sufficient precision the content of a development funtionality. The phrase generally contains three description elements of the functionality:WHOM, WANT,WHY.
 
 Per modellare i casi d’uso si utilizzerà il seguente formato:
 “As a <ROLE>, I want <GOAL> so that <BENEFIT>”
@@ -141,6 +142,7 @@ NB: caso d’uso solo quello che può far direttamente l’utente, quindi metter
 Scenari: Console , il robot,
 \\
 \begin{tabular}{ | m{5cm} | m{5cm}| }
+\hline
 	Name&Place Robot\\ 
 \hline	
 	Descrizione&Piazzare il robot\\
@@ -154,6 +156,7 @@ Scenario principale&L’utente metterà il robot in un punto A. A partire da que
 Scenari alternativi&---\\
 \hline	
 Postcondizioni&Il robot deve riavviarsi ogni volta che viene posizionato.\\
+\hline
 \end{tabular}
 \\
 \\
@@ -161,6 +164,7 @@ Postcondizioni&Il robot deve riavviarsi ogni volta che viene posizionato.\\
 \\
 
 \begin{tabular}{ | m{5cm} | m{5cm}| }
+	\hline
 	Name&Send Command\\ 
 	\hline	
 	Descrizione&Invio di un comando al sistema da parte dell’utente\\
@@ -176,10 +180,12 @@ Postcondizioni&Il robot deve riavviarsi ogni volta che viene posizionato.\\
 	Scenari alternativi&---\\
 	\hline	
 	Postcondizioni&Il robot si aziona se riceve il comando START, si ferma se riceve il comando STOP.\\
+	\hline
 \end{tabular}
 
 
 \begin{tabular}{ | m{5cm} | m{5cm}| }
+	\hline
 	Name&View Sonar\\ 
 	\hline	
 	Descrizione&Visualizzare la posizione del robot sul sonar\\
@@ -193,6 +199,7 @@ Postcondizioni&Il robot deve riavviarsi ogni volta che viene posizionato.\\
 	Scenari alternativi&---\\
 	\hline	
 	Postcondizioni&Il robot si aziona se riceve il comando START, si ferma se riceve il comando STOP.\\
+	\hline
 \end{tabular}
 \section{Problem analysis }
 
