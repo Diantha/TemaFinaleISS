@@ -21,9 +21,13 @@ Alma Mater Studiorum - University of Bologna, via Venezia 52 \\
 47023 Cesena, Italy \\
 \textit{lisa.cattalani@studio.unibo.it, andrea.pari6@studio.unibo.it}}
 
+
+
 \begin{document}
 \maketitle
-
+\newpage 
+\tableofcontents
+\newpage
 %===========================================================================
 \section{Introduction}
 
@@ -84,7 +88,7 @@ Shown below are the terms that are present in the text and describes the require
 Di seguito vengono riportati quei termini presenti nel testo che descrivono i requisiti per cui si ritiene necessario specificare il significato al fine di comprendere il dominio applicativo del sistema ed evitare eventuali ambiguità, incomprensioni od omissioni. (I termini sono posti in ordine di comparsa nel testo).
 
 \begin{tabular}{ | m{2cm} | m{10cm}| m{2cm} | }
-		\hline
+    \hline
 	Terms&Meaning&Synonyms\\ 
 	\hline
 	Differential drive robot& The differential drive robot is a two-wheeled drive robot system with independent actuators for each wheel. The name refers to the fact that the motion vector of the robot is sum of the independent wheel motions&Robot\\ 
@@ -119,7 +123,7 @@ Di seguito vengono riportati quei termini presenti nel testo che descrivono i re
 %===========================================================================
 
 
-\subsection {  \textit {Modello dei casi d’uso}}
+\subsection {User Stories}
 An user story represents a necessity of the final user express with the natural language and understandable by anyone.This allow to describe with sufficient precision the content of a development funtionality. The phrase generally contains three description elements of the functionality:WHOM, WANT,WHY.
 
 Per modellare i casi d’uso si utilizzerà il seguente formato:
@@ -134,7 +138,7 @@ Per modellare i casi d’uso si utilizzerà il seguente formato:
 	\item as a \textbf{user}, I want to restart the system (by manually repositioning the robot at point A) without restarting the software.
 \end{itemize}
 
-\section{User Interaction}
+\subsection {User Interaction}
 Per rappresentare l’interazione tra agenti esterni e il sistema utilizzeremo diagrammi uml.
 L’unico attore è l’utente che interagisce con il sistema attraverso una serie d’azioni/comandi che rappresentano un caso d’uso nel diagramma. Il sistema è composto principalmente dalla console e dal robot. 
 
@@ -201,6 +205,10 @@ Postcondizioni&Il robot deve riavviarsi ogni volta che viene posizionato.\\
 	Postcondizioni&Il robot si aziona se riceve il comando START, si ferma se riceve il comando STOP.\\
 	\hline
 \end{tabular}
+\subsection {(Domain) Model }
+
+\subsection {Test Planning}
+---TO DO
 \section{Problem analysis }
 
 %===========================================================================
@@ -208,30 +216,22 @@ Postcondizioni&Il robot deve riavviarsi ogni volta che viene posizionato.\\
 %===========================================================================
 %===========================================================================
 %===========================================================================
-\section{Problem analysis }
-I thought that my two entities have to speack each other, so I need a third entity, a generic Control. A part of this, the fact that the DevicePhoto have to stop after take a photo and found a marker, I considered that as a asyncAction, infact if the marker is not found, the DevicePhoto continued after PT times to takes a photo. 
+\subsection{Logic architecture}
+---TO DO
 
+\subsection{Risk analysis}
+---TO DO
 %===========================================================================
-%===========================================================================
-%===========================================================================
-%===========================================================================
-%===========================================================================
-%===========================================================================
+\section{Work Plan}
+---TO DO
 
-%===========================================================================
-\section{Project }
-I thought that my two entities have to speack each other, so I need a third entity, a generic Control. A part of this, the fact that the DevicePhoto have to stop after take a photo and found a marker, I considered that as a asyncAction, infact if the marker is not found, the DevicePhoto continued after PT times to takes a photo. 
+\section{Implementation}
+---TO DO
+\section{Testing}
+---TO DO
+\section{Deployment}
+---TO DO
 
-%===========================================================================
-%===========================================================================
-\section{Implementation }
-I thought that my two entities have to speack each other, so I need a third entity, a generic Control. A part of this, the fact that the DevicePhoto have to stop after take a photo and found a marker, I considered that as a asyncAction, infact if the marker is not found, the DevicePhoto continued after PT times to takes a photo. 
-
-%===========================================================================
-%===========================================================================
-
-\section{Deployment }
-I thought that my two entities have to speack each other, so I need a third entity, a generic Control. A part of this, the fact that the DevicePhoto have to stop after take a photo and found a marker, I considered that as a asyncAction, infact if the marker is not found, the DevicePhoto continued after PT times to takes a photo. 
 
 %===========================================================================
 %===========================================================================

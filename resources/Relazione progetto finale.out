@@ -3,10 +3,14 @@
 \BOOKMARK [1][-]{section.3}{Goals}{}% 3
 \BOOKMARK [1][-]{section.4}{Requirements }{}% 4
 \BOOKMARK [1][-]{section.5}{Requirements analysis }{}% 5
-\BOOKMARK [2][-]{subsection.5.1}{ Modello dei casi d\220uso}{section.5}% 6
-\BOOKMARK [1][-]{section.6}{User Interaction}{}% 7
-\BOOKMARK [1][-]{section.7}{Problem analysis }{}% 8
-\BOOKMARK [1][-]{section.8}{Problem analysis }{}% 9
-\BOOKMARK [1][-]{section.9}{Project }{}% 10
-\BOOKMARK [1][-]{section.10}{Implementation }{}% 11
-\BOOKMARK [1][-]{section.11}{Deployment }{}% 12
+\BOOKMARK [2][-]{subsection.5.1}{User Stories}{section.5}% 6
+\BOOKMARK [2][-]{subsection.5.2}{User Interaction}{section.5}% 7
+\BOOKMARK [2][-]{subsection.5.3}{\(Domain\) Model }{section.5}% 8
+\BOOKMARK [2][-]{subsection.5.4}{Test Planning}{section.5}% 9
+\BOOKMARK [1][-]{section.6}{Problem analysis }{}% 10
+\BOOKMARK [2][-]{subsection.6.1}{Logic architecture}{section.6}% 11
+\BOOKMARK [2][-]{subsection.6.2}{Risk analysis}{section.6}% 12
+\BOOKMARK [1][-]{section.7}{Work Plan}{}% 13
+\BOOKMARK [1][-]{section.8}{Implementation}{}% 14
+\BOOKMARK [1][-]{section.9}{Testing}{}% 15
+\BOOKMARK [1][-]{section.10}{Deployment}{}% 16
