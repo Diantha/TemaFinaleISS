@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2017.2.27)  21 APR 2017 17:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9.6100 64-bit) (preloaded format=pdflatex 2017.2.27)  21 APR 2017 19:42
 entering extended mode
 **"./Relazione progetto finale.tex"
 ("Relazione progetto finale.tex"
@@ -733,12 +733,11 @@ LaTeX Info: Redefining \nameref on input line 40.
 
  [1
 
-{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}]
-
-Package hyperref Warning: old toc file detected, not used; run LaTeX again.
-
+{C:/ProgramData/MiKTeX/2.9/pdftex/config/pdftex.map}] ("Relazione progetto fina
+le.toc")
 \tf@toc=\write5
 \openout5 = `"Relazione progetto finale.toc"'.
+
 
 [2]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 79.
@@ -819,9 +818,9 @@ nged.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 302.
  ) 
 Here is how much of TeX's memory you used:
- 18420 strings out of 493333
- 333121 string characters out of 3139191
- 418658 words of memory out of 3000000
+ 18422 strings out of 493333
+ 333179 string characters out of 3139191
+ 418762 words of memory out of 3000000
  21581 multiletter control sequences out of 15000+200000
  15733 words of font info for 39 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -829,9 +828,9 @@ Here is how much of TeX's memory you used:
  <C:\Users\Andrea\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600
 \ecbi1000.pk> <C:\Users\Andrea\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappe
 n\ec\dpi600\ecbx1200.pk> <C:\Users\Andrea\AppData\Local\MiKTeX\2.9\fonts\pk\ljf
-our\jknappen\ec\dpi600\ecbx1000.pk> <C:\Users\Andrea\AppData\Local\MiKTeX\2.9\f
-onts\pk\ljfour\jknappen\ec\dpi600\ecrm0700.pk> <C:\Users\Andrea\AppData\Local\M
-iKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecti1000.pk> <C:\Users\Andrea\AppD
+our\jknappen\ec\dpi600\ecrm0700.pk> <C:\Users\Andrea\AppData\Local\MiKTeX\2.9\f
+onts\pk\ljfour\jknappen\ec\dpi600\ecti1000.pk> <C:\Users\Andrea\AppData\Local\M
+iKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1000.pk> <C:\Users\Andrea\AppD
 ata\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecbx1440.pk> <C:\Users\
 Andrea\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\ecrm1000.pk>
  <C:\Users\Andrea\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\ec\dpi600\e
@@ -839,9 +838,9 @@ cti1200.pk> <C:\Users\Andrea\AppData\Local\MiKTeX\2.9\fonts\pk\ljfour\jknappen\
 ec\dpi600\ecrm1200.pk> <C:\Users\Andrea\AppData\Local\MiKTeX\2.9\fonts\pk\ljfou
 r\jknappen\ec\dpi600\ecrm1728.pk><C:/Program Files/MiKTeX 2.9/fonts/type1/publi
 c/amsfonts/cm/cmsy10.pfb>
-Output written on "Relazione progetto finale.pdf" (9 pages, 133707 bytes).
+Output written on "Relazione progetto finale.pdf" (9 pages, 144844 bytes).
 PDF statistics:
- 455 PDF objects out of 1000 (max. 8388607)
+ 494 PDF objects out of 1000 (max. 8388607)
  34 named destinations out of 1000 (max. 500000)
  141 words of extra memory for PDF output out of 10000 (max. 10000000)
 
