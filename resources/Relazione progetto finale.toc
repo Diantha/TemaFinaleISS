@@ -4,14 +4,14 @@
 \contentsline {section}{\numberline {3}Goals}{3}{section.3}
 \contentsline {section}{\numberline {4}Requirements }{3}{section.4}
 \contentsline {section}{\numberline {5}Requirements analysis }{4}{section.5}
-\contentsline {subsection}{\numberline {5.1}User Stories}{4}{subsection.5.1}
-\contentsline {subsection}{\numberline {5.2}User Interaction}{5}{subsection.5.2}
-\contentsline {subsection}{\numberline {5.3}(Domain) Model }{6}{subsection.5.3}
-\contentsline {subsection}{\numberline {5.4}Test Planning}{6}{subsection.5.4}
-\contentsline {section}{\numberline {6}Problem analysis }{6}{section.6}
-\contentsline {subsection}{\numberline {6.1}Logic architecture}{6}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Risk analysis}{6}{subsection.6.2}
-\contentsline {section}{\numberline {7}Work Plan}{6}{section.7}
-\contentsline {section}{\numberline {8}Implementation}{6}{section.8}
-\contentsline {section}{\numberline {9}Testing}{6}{section.9}
-\contentsline {section}{\numberline {10}Deployment}{6}{section.10}
+\contentsline {subsection}{\numberline {5.1}User Stories}{6}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}User Interaction}{6}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}(Domain) Model }{8}{subsection.5.3}
+\contentsline {subsection}{\numberline {5.4}Test Planning}{8}{subsection.5.4}
+\contentsline {section}{\numberline {6}Problem analysis }{8}{section.6}
+\contentsline {subsection}{\numberline {6.1}Logic architecture}{8}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Risk analysis}{8}{subsection.6.2}
+\contentsline {section}{\numberline {7}Work Plan}{8}{section.7}
+\contentsline {section}{\numberline {8}Implementation}{8}{section.8}
+\contentsline {section}{\numberline {9}Testing}{8}{section.9}
+\contentsline {section}{\numberline {10}Deployment}{9}{section.10}

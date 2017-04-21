@@ -6,7 +6,7 @@
 \usepackage[T1]{fontenc}
 
 %% Sets page size and margins
-\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage[a4paper,top=3cm,bottom=2cm,left=2cm,right=2cm,marginparwidth=1.75cm]{geometry}
 
 %% Useful packages
 \usepackage{amsmath}
@@ -14,6 +14,19 @@
 \usepackage{array}
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{titlesec}
+
+\usepackage{amsmath}
+
+\titlespacing*{\section}
+{0pt}{6.5ex plus 1ex minus .2ex}{3.3ex plus .2ex}
+\titlespacing*{\subsection}
+{0pt}{5ex plus 1ex minus .2ex}{2.5ex plus .2ex}
+
+
+%===========================================================================
+%% Front
+%===========================================================================
 
 \title{Proposal for an application}
 \author{Lisa Cattalani and Andrea Pari \\
@@ -21,6 +34,7 @@ Alma Mater Studiorum - University of Bologna, via Venezia 52 \\
 47023 Cesena, Italy \\
 \textit{lisa.cattalani@studio.unibo.it, andrea.pari6@studio.unibo.it}}
 
+%===========================================================================
 
 
 \begin{document}
@@ -28,117 +42,167 @@ Alma Mater Studiorum - University of Bologna, via Venezia 52 \\
 \newpage 
 \tableofcontents
 \newpage
-%===========================================================================
-\section{Introduction}
+
+
 
 %===========================================================================
+\section{Introduction}
+%===========================================================================
+
 The current report describes the entire software development process adopted to analyze, design and implement a specific software system. The process has been divided into two phases: the first phase concerns the definition of a model of the software system, while the second phase concerns the implementation of the software system carried out after that the product owner has viewed the model.
+
+
 
 %===========================================================================
 \section{Vision}
+%===========================================================================
+
 We want to show how to manage the development of a distributed, heterogeneous and embedded software system by focusing on the analysis and design of the system. The software system at issue will be designed and implemented as an application in the field of \textit{Internet of Things}.
-%===========================================================================
-%===========================================================================
-%===========================================================================
+
+
+
 %===========================================================================
 \section{Goals}
+%===========================================================================
+
 The goal is to build a software system able to evolve from an initial prototype (defined as result of a problem analysis phase) to a final and testable product. This goal will be achieved by working in a team and by "mixing" in a proper (pragmatically useful) way an agile (SCRUM) software development with modeling.
+
 
 
 %===========================================================================
 \section{Requirements }
-A differential drive robot (called from now on robot) must reach an area (B) starting from a given point A. To reach the area B, the robot must cross an area equipped with N (N>=1) distance sensors (sonars). The signal emitted by each sonar is reflected by a wall put in front of it at a distance of approximately 90 cm.
+%===========================================================================
+
+A differential drive robot (called from now only robot) must reach an area (B) starting from a given point A. To reach the area B, the robot must cross an area equipped with N (N $\geq$ 1) distance sensors (sonars). The signal emitted by each sonar is reflected by a wall put in front of it at a distance of approximately 90 cm.
 Moreover:
 \begin{itemize}
 	\item The section of the wall in front of each sonar is painted with a different illustration.
-	\item The robot is equipped with a distance sensor (sonar) and (optionally) with a Web Cam both positioned in its front. It owns also a Led
+	\item The robot is equipped with a distance sensor (sonar) and (optionally) with a Web Cam both positioned in its front. It owns also a Led.
 	\item The robot should move from A to B by travelling along a straight line, at a distance of approximately 40-50 cm from the base-line of the sonars.
 \end{itemize}
 Design and build a (prototype of a) software system such that:
 \begin{itemize}
-	\item shows the sonar data on the GUI associated to a console running on a conventional PC. For example (see the project it.unibo.qactor.radar):
-	\item evaluates the expression: (sk + sk+1 + ... sN) / (N-k+1)
-	where k is the number of the first sensor not reached by the robot and sk is the value of the distance currently measured by that sensor. If the value of the expression is less than a prefixed value DMIN( e.g. DMIN=70), play an alarm sound.
-	\item when the robot reaches the area in front of a sonar, it
+	\item Shows the sonar data on the GUI associated to a console running on a conventional PC.
+	\item Evaluates the expression
+	
+	(s\textsubscript{k} + s\textsubscript{k} + 1 + ... s\textsubscript{N}) / (N - k + 1)
+	
+	where k is the number of the first sensor not reached by the robot and s\textsubscript{k} is the value of the distance currently measured by that sensor. If the value of the expression is less than a prefixed value DMIN (e.g. DMIN = 70), play an alarm sound.
+	\item When the robot reaches the area in front of a sonar, it:
 	\begin{itemize}
-		\item first stops
-		\item then rotates to its left of approximately 90 degrees
-		\item starts blinking a led put on the robot
-		\item takes a photo of the wall (in a simulated way only, if no WebCam is available) and sends the photo to console by using the MQTT protocol
-		\item rotates to its right of approximately 90 degrees to compensate the previous rotation
-		\item stops the blinking of the led and continues its movement towards the area B
+		\item first stops;
+		\item then rotates to its left of approximately 90 degrees;
+		\item starts blinking a led put on the robot;
+		\item takes a photo of the wall (in a simulated way only, if no WebCam is available) and sends the photo to console by using the MQTT protocol;
+		\item rotates to its right of approximately 90 degrees to compensate the previous rotation;
+		\item stops the blinking of the led and continues its movement towards the area B;
 	\end{itemize}
-	\item when the robot leaves the area in front to the last sonar, it continues until it arrives at the area B
-	\item stops the robot movement as soon as possible:
+	\item When the robot leaves the area in front to the last sonar, it continues until it arrives at the area B.
+	\item Stops the robot movement as soon as possible:
 	\begin{itemize}
-		\item when an obstacle is detected by the sonar in front of the robot
-		\item when an alarm sound is played
-		\item the user sends to the robot a proper command (e.g. STOP)
+		\item when an obstacle is detected by the sonar in front of the robot;
+		\item when an alarm sound is played;
+		\item the user sends to the robot a proper command (e.g. STOP).
 	\end{itemize}
-	\item makes it possible to restart the system (by manually repositioning the robot at point A) without restarting the software
+	\item Makes it possible to restart the system (by manually repositioning the robot at point A) without restarting the software.
 \end{itemize}
 
 
-%===========================================================================
-%===========================================================================
 
 %===========================================================================
 \section{Requirements analysis }
-Shown below are the terms that are present in the text and describes the requirement for what we suppose to be necessary specify the meaning to understand the application domain of the system and avoid eventually ambiguity, misunderstanding, or omissions. (the terms are order compared in the text).
-Di seguito vengono riportati quei termini presenti nel testo che descrivono i requisiti per cui si ritiene necessario specificare il significato al fine di comprendere il dominio applicativo del sistema ed evitare eventuali ambiguità, incomprensioni od omissioni. (I termini sono posti in ordine di comparsa nel testo).
+%===========================================================================
 
-\begin{tabular}{ | m{2cm} | m{10cm}| m{2cm} | }
+The first step for a correct requirement analysis is to read carefully the requirements text and to create a glossary of terms. The creation of a glossary is crucial in order to understand the applicative domain of the system and to avoid any ambiguity or misunderstanding during the requirements analysis. \newline\newline
+The terms are reported in the following table in the order in which they appear into the requirements text. For each terms is shown the related meaning and eventual synonims that appear into the text. \hfill \break
+
+\def\arraystretch{1.8}
+\begin{tabular}{ | m{3cm} | m{9cm} | m{3cm} | }
+
     \hline
-	Terms&Meaning&Synonyms\\ 
+    
+	\textbf{Term} & \textbf{Definition} & \textbf{Synonyms}\\ 
+	
 	\hline
-	Differential drive robot& The differential drive robot is a two-wheeled drive robot system with independent actuators for each wheel. The name refers to the fact that the motion vector of the robot is sum of the independent wheel motions&Robot\\ 
+	
+	\textit{Differential drive robot} & A differential drive robot is a two-wheeled drive robot system with independent actuators for each wheel. The name refers to the fact that the motion vector of the robot is the sum of the independent wheel motions. & Robot\\
+	
 	\hline
-	Distance sensors&Device that allow to locate the presence of an object in front of it.The sensor sends waves, behind the time of the response of the waves it understands the distance to the object.&Sonar, sensor\\
+	
+	\textit{Distance sensor} & A distance sensor is a device that is able to locate the presence of an object (also called obstacle) in front of it. The sensor estimates the distance from the object by sending waves toward it and by calculating the response time. & Sonar\newline Sensor\\
+	
 	\hline
-	Prototype&A prototipe is a version of a system software used to demostrate concepts, to try project option and, to find out more about problems and possible solution.&\\
+	
+	\textit{Prototype} & A prototype is an incomplete version of a software system used to demonstrate concepts, to try some project options and to find out problems and possible solutions. A prototype can present all or a few characteristics of the final system. & Model\\
+	
 	\hline
-	GUI&Graphics User Interface associated to the console.Thanks to this interface the user must visualize the data trasmitted by the sonar.(del robot o dei raspberry sul muro?) & \\
+	
+	\textit{GUI} & This term refers to the \textit{Graphical User Interface} associated to the console. Through this interface, the user can view the data sent to the console by the distance sensor of the robot. & Interface\newline User interface\\
+	
 	\hline
-	Console&Is the means by which the user and the robot interact each other. The console receiv the pictures from the robot send by the mqtt protocol.&\\
+	
+	\textit{Console} & In the current context, the console represents the means by which the user and the robot interact with each other. Through the console, the user sends commands to the robot and receives the photos taken by it. & Command panel\\
+	
 	\hline
-	Alarm sound&Is the sound emitted by the console when the calculated value of the expression is less than the predetermined threshold.&\\
+	
+	\textit{Alarm sound} & The sound emitted by the console when the value calculated through the expression of the distance is under a certain threshold. In particular, the sound is emitted when a sensor on the wall has detected an object in front of itself (then along the path of the robot). & Alarm\\
+	
 	\hline
-	MQTT protocol&Comunication protocol through which the robot sends pictures to the console.&\\
+	
+	\textit{MQTT protocol} & MQTT is the communication protocol through which the robot sends the taken photos to the console. &\\
+	
 	\hline
-	Obstacle&Any kind of object locate by the sonar of the robot that prevent to reach the area B.&\\
+	
+	\textit{Obstacle} & This term denotes any type of object detected by the sonar of the robot that prevents the robot itself to reach the area B. & \\
+	
 	\hline
-	User&Final adopter of the system which is able to give commands to robot.&\\
+	
+	\textit{User} & The user is the one who will use the software system, giving commands to the robot through the console and receiving the photos taken by it. & End user\\
+	
 	\hline
-	Commands&Commands give from the user to the robot by the console.There are two possible commands: STOP(from the console) to stop the movement of the robot, RESTART (manually) to reposition the robot at point A.&\\
+	
+	\textit{Command} & A command is an order given from the user to the robot through the console. Two commands are allowed: STOP (through the console) to stop the movement of the robot, RESTART (manually) to reposition the robot at a given point A. &\\
+	
 	\hline
-	Restart the system&Process by which the robot is repositioning in the point A without restart the software.&\\
+	
+	\textit{Restart the system} & The process through which the robot is repositioned in a given point A without restarting the software. & Restart\newline Reboot \newline Reboot the system\\
+	
 	\hline 
+
 \end{tabular}
 
-%===========================================================================
-%===========================================================================
-%===========================================================================
-%===========================================================================
 
 %===========================================================================
-
-
 \subsection {User Stories}
-An user story represents a necessity of the final user express with the natural language and understandable by anyone.This allow to describe with sufficient precision the content of a development funtionality. The phrase generally contains three description elements of the functionality:WHOM, WANT,WHY.
+%===========================================================================
 
-Per modellare i casi d’uso si utilizzerà il seguente formato:
-“As a <ROLE>, I want <GOAL> so that <BENEFIT>”
-\begin{itemize}
-	\item as a \textbf{user}, I want that the robot moves from point A to area B
-	\item as a \textbf{user} I would the robot to stop when being in front of a sonar and turn of about 90° so that it can take a photo and send it to the PC, and after keep moving forward.
-	\item as a \textbf{user} I want that an alarm sound is played if the distance calculated by the expression is under a certain threshold.
-	\item as a \textbf{user}, I want to show the sonar data on the GUI
-	\item as a \textbf{user}, I want to use the console to send commands to the robot
-	\item as a \textbf{user}, I want to see on the console the photos sent by the robot
-	\item as a \textbf{user}, I want to restart the system (by manually repositioning the robot at point A) without restarting the software.
-\end{itemize}
+A \textbf{user story}  is an informal description of one or more features of a software system, and it's expressed in natural language in order to be understandable by anyone. A user story is then described from the end user's point of view, and not from the system's point of view. \newline\newline
+The goal of the user stories is to describe with sufficient precision the end user's real needs, then what the user wants from the system, without to express technical details about the analysis, the design and the implementation of the software system. \newline\newline
+The user stories will be defined using the following format:
 
+\begin{center}
+\textit{"As a \textbf{user}, I want <GOAL> so that <BENEFIT>"}
+\end{center}
+
+where \textit{<BENEFIT>} denotes the acceptance criteria that must be respected in the story to ensure a proper implementation of the related features. \newline\newline
+The stories collected by analyzing the requirements text are the following.
+
+\begin{enumerate}
+	\item As a \textbf{user}, \textbf{I want that} the robot moves from a given point A to area B by travelling along a straight line.
+	\item As a \textbf{user}, \textbf{I want that} the robot stops when it reaches the area in front of a sonar and rotates towards it \textbf{so that} it can take a photo of the wall and send it to the console.
+	\item As a \textbf{user}, \textbf{I want that} the robot rotates to its original position after it took a photo \textbf{so that} it can continue to move towards the area B.
+	\item As a \textbf{user}, \textbf{I want that} an alarm sound is played whether the value calculated through the expression of the distance is under a certain threshold (i.e. a sensor on the wall has detected an obstacle in front of itself).
+	\item As a \textbf{user}, \textbf{I want} to use the console in order to send commands to the robot \textbf{so that} I can stop its movements.
+	\item As a \textbf{user}, \textbf{I want} to view the sonar data on the GUI.
+	\item As a \textbf{user}, \textbf{I want} to see the photos taken and sent by the robot to the console.
+	\item As a \textbf{user}, \textbf{I want} to restart the system by manually repositioning the robot at a given point A (i.e. without restarting the software).
+\end{enumerate}
+
+
+%===========================================================================
 \subsection {User Interaction}
+%===========================================================================
+
 Per rappresentare l’interazione tra agenti esterni e il sistema utilizzeremo diagrammi uml.
 L’unico attore è l’utente che interagisce con il sistema attraverso una serie d’azioni/comandi che rappresentano un caso d’uso nel diagramma. Il sistema è composto principalmente dalla console e dal robot. 
 
