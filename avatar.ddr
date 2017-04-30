@@ -22,7 +22,7 @@ EventHandler evh for local_inputcmd, alarm , sensordata -print ;
 //	Plan init normal
 //		println("JUST A PLACE HOLDER : never here")   
 //}              
-Robot mymock QActor avatar context ctxAvatar   -g cyan  {                         
+Robot mymock QActor avatar context ctxAvatar   -g yellow  {                         
    	Plan init normal                
   		println("A robot performs the command move sent by the user via http GUI"  )  ; 
   		/*
