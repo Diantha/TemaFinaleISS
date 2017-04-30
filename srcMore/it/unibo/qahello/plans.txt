@@ -1,0 +1,4 @@
+plan(1,init, sentence(true,move(print,"Ciao"),'','' ))
+plan(2,init, sentence(true,move( switchplan(prova) ),'','' ))
+plan(1,prova, sentence(true,move(print,"Ciao 2 "),'','' ))
+plan(2,prova, sentence(true,move(resumeplan),'','' ))

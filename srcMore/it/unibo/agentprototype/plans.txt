@@ -1,0 +1,5 @@
+plan(1,init, sentence( actorobj( NAME),move(print,waits( NAME)),'','' ))
+plan(2,init, sentence(true,receiveMsg(''),'','' ))
+plan(3,init, sentence( actorobj( NAME),msgswitch(info, info( X) , replyToCaller(info,info( reply( NAME,thanks( X))))),'','' ))
+plan(4,init, sentence(true,printCurrentMessage(''),'','' ))
+plan(5,init, sentence(true,move(repeatplan) ,'','' ))
