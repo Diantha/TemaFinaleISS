@@ -83,7 +83,7 @@ protected void addCmdPanels(){
 		mysupport = (IMsgQueue) QActorUtils.getQActor( name );
  		initSensorSystem();
 		boolean res = init();
-		println(getName() + " doJob " + res );
+		//println(getName() + " doJob " + res );
 	} 
 	/* 
 	* ------------------------------------------------------------

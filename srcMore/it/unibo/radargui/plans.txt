@@ -1,0 +1,8 @@
+plan(1,init, sentence(true,move(print,"RADAR init the GUI ... "),'','' ))
+plan(2,init, sentence(true,not here ActionMove,'','' ))
+plan(3,init, sentence(true,move( switchplan(doWorkMsgs) ),'','' ))
+plan(1,doWorkMsgs, sentence(true,move(print,"RADAR receive"),'','' ))
+plan(2,doWorkMsgs, sentence(true,receiveMsg(''),'','' ))
+plan(3,doWorkMsgs, sentence(true,msgswitch(polar, p( DIST,THETA) , not here ActionMove),'','' ))
+plan(4,doWorkMsgs, sentence(true,move(repeatplan) ,'','' ))
+plan(5,doWorkMsgs, sentence(true,move(resumeplan),'','' ))
