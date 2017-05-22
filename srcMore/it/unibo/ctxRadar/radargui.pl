@@ -9,6 +9,6 @@ qactor( qacmdexecutor , ctxradar, "it.unibo.qacmdexecutor.MsgHandle_Qacmdexecuto
 qactor( qacmdexecutor_ctrl , ctxradar, "it.unibo.qacmdexecutor.Qacmdexecutor"   ). %%control-driven 
 %%% -------------------------------------------
 eventhandler(evh,ctxradar,"it.unibo.ctxRadar.Evh","sonar").  
-eventhandler(evh2,ctxradar,"it.unibo.ctxRadar.Evh2","alarm,obstacle,endplay").  
+eventhandler(evh2,ctxradar,"it.unibo.ctxRadar.Evh2","alarm,local_inputcmd,inputcmd,endplay").  
 %%% -------------------------------------------
 

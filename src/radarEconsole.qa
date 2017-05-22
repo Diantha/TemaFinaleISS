@@ -26,7 +26,9 @@ EventHandler evh for sonar -print  {  //event => dispatch
 	//forwardEvent controltfce16 -m polar
 };  
 
-EventHandler evh2 for alarm , obstacle , endplay -print ;
+EventHandler evh2 for alarm , local_inputcmd , inputcmd, endplay -print {
+	forwardEvent qacmdexecutor -m polar
+} ;
 
 QActor radargui context ctxRadar  {	  	/*( R2 )*/  
 	Plan init normal        
@@ -54,19 +56,10 @@ QActor qacmdexecutor context ctxRadar  -g yellow  {
 	 
  	Plan handleInput
  		println("CIAO SONO DENTRO L'HANDLE INPUT"); 
-  		sense time(600000)  local_inputcmd , inputcmd -> elabInputCmd ,   elabInputCmd ;  
-	 	repeatPlan       	
-	Plan elabInputCmd resumeLastPlan       
-  		printCurrentEvent;  
-    	onEvent  local_inputcmd : usercmd(CMD) -> demo CMD   ; //the action (CMD) itself is reactive  
- 		onEvent  inputcmd       : usercmd(CMD) -> demo CMD     //the action (CMD) itself is reactive 
+	 	repeatPlan      
  	Plan handleAlarm resumeLastPlan     
  		println("handleAlarm done" ) ;     
- 		sound time(2000) file("./audio/music_dramatic20.wav")  react event local_inputcmd -> handleInput
- 	Plan handleObstacle resumeLastPlan         
-		println("handleObstacle done" ) 
-  	Plan prologFailure resumeLastPlan    
-		println("failure in solving a Prolog goal" )   
+ 		sound time(200000) file("./audio/music_dramatic20.wav")  react event local_inputcmd -> handleInput  
  
  } 
 

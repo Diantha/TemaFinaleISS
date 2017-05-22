@@ -118,72 +118,12 @@ public abstract class AbstractQacmdexecutor extends QActor implements IActivity{
 	    nPlanIter++;
 	    		temporaryStr = " \"CIAO SONO DENTRO L'HANDLE INPUT\" ";
 	    		println( temporaryStr );  
-	    		//senseEvent
-	    		timeoutval = 600000;
-	    		aar = planUtils.senseEvents( timeoutval,"local_inputcmd,inputcmd","elabInputCmd,elabInputCmd",
-	    		"" , "",ActionExecMode.synch );
-	    		if( ! aar.getGoon() || aar.getTimeRemained() <= 0 ){
-	    			//println("			WARNING: sense timeout");
-	    			addRule("tout(senseevent,"+getName()+")");
-	    			//break;
-	    		}
 	    		if( planUtils.repeatPlan(0).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
 	    }catch(Exception e){
 	       //println( getName() + " plan=handleInput WARNING:" + e.getMessage() );
-	       QActorContext.terminateQActorSystem(this); 
-	       return false;  
-	    }
-	    }
-	    public boolean elabInputCmd() throws Exception{	//public to allow reflection
-	    try{
-	    	curPlanInExec =  "elabInputCmd";
-	    	boolean returnValue = suspendWork;
-	    while(true){
-	    nPlanIter++;
-	    		printCurrentEvent(false);
-	    		//onEvent
-	    		if( currentEvent.getEventId().equals("local_inputcmd") ){
-	    		 		String parg="CMD";
-	    		 		parg =  updateVars( Term.createTerm("usercmd(X)"), Term.createTerm("usercmd(CMD)"), 
-	    		 			    		  					Term.createTerm(currentEvent.getMsg()), parg);
-	    		 			if( parg != null ) {
-	    		 			    aar = QActorUtils.solveGoal(this,myCtx,pengine,parg,"",outEnvView,86400000);
-	    		 				//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    		 				if( aar.getInterrupted() ){
-	    		 					curPlanInExec   = "elabInputCmd";
-	    		 					if( ! aar.getGoon() ) break;
-	    		 				} 			
-	    		 				if( aar.getResult().equals("failure")){
-	    		 					if( ! aar.getGoon() ) break;
-	    		 				}else if( ! aar.getGoon() ) break;
-	    		 			}
-	    		 }
-	    		//onEvent
-	    		if( currentEvent.getEventId().equals("inputcmd") ){
-	    		 		String parg="CMD";
-	    		 		parg =  updateVars( Term.createTerm("usercmd(X)"), Term.createTerm("usercmd(CMD)"), 
-	    		 			    		  					Term.createTerm(currentEvent.getMsg()), parg);
-	    		 			if( parg != null ) {
-	    		 			    aar = QActorUtils.solveGoal(this,myCtx,pengine,parg,"",outEnvView,86400000);
-	    		 				//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    		 				if( aar.getInterrupted() ){
-	    		 					curPlanInExec   = "elabInputCmd";
-	    		 					if( ! aar.getGoon() ) break;
-	    		 				} 			
-	    		 				if( aar.getResult().equals("failure")){
-	    		 					if( ! aar.getGoon() ) break;
-	    		 				}else if( ! aar.getGoon() ) break;
-	    		 			}
-	    		 }
-	    		returnValue = continueWork;  
-	    break;
-	    }//while
-	    return returnValue;
-	    }catch(Exception e){
-	       //println( getName() + " plan=elabInputCmd WARNING:" + e.getMessage() );
 	       QActorContext.terminateQActorSystem(this); 
 	       return false;  
 	    }
@@ -198,7 +138,7 @@ public abstract class AbstractQacmdexecutor extends QActor implements IActivity{
 	    		println( temporaryStr );  
 	    		//playsound
 	    		terminationEvId =  QActorUtils.getNewName(IActorAction.endBuiltinEvent);
-	    			 	aar = playSound("./audio/music_dramatic20.wav", ActionExecMode.synch, terminationEvId, 2000,"local_inputcmd" , "handleInput" ); 
+	    			 	aar = playSound("./audio/music_dramatic20.wav", ActionExecMode.synch, terminationEvId, 200000,"local_inputcmd" , "handleInput" ); 
 	    				//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
 	    				if( aar.getInterrupted() ){
 	    					curPlanInExec   = "handleAlarm";
@@ -210,42 +150,6 @@ public abstract class AbstractQacmdexecutor extends QActor implements IActivity{
 	    return returnValue;
 	    }catch(Exception e){
 	       //println( getName() + " plan=handleAlarm WARNING:" + e.getMessage() );
-	       QActorContext.terminateQActorSystem(this); 
-	       return false;  
-	    }
-	    }
-	    public boolean handleObstacle() throws Exception{	//public to allow reflection
-	    try{
-	    	curPlanInExec =  "handleObstacle";
-	    	boolean returnValue = suspendWork;
-	    while(true){
-	    nPlanIter++;
-	    		temporaryStr = " \"handleObstacle done\" ";
-	    		println( temporaryStr );  
-	    		returnValue = continueWork;  
-	    break;
-	    }//while
-	    return returnValue;
-	    }catch(Exception e){
-	       //println( getName() + " plan=handleObstacle WARNING:" + e.getMessage() );
-	       QActorContext.terminateQActorSystem(this); 
-	       return false;  
-	    }
-	    }
-	    public boolean prologFailure() throws Exception{	//public to allow reflection
-	    try{
-	    	curPlanInExec =  "prologFailure";
-	    	boolean returnValue = suspendWork;
-	    while(true){
-	    nPlanIter++;
-	    		temporaryStr = " \"failure in solving a Prolog goal\" ";
-	    		println( temporaryStr );  
-	    		returnValue = continueWork;  
-	    break;
-	    }//while
-	    return returnValue;
-	    }catch(Exception e){
-	       //println( getName() + " plan=prologFailure WARNING:" + e.getMessage() );
 	       QActorContext.terminateQActorSystem(this); 
 	       return false;  
 	    }

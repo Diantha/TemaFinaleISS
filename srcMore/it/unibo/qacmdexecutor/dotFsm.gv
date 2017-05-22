@@ -11,7 +11,7 @@ digraph finite_state_machine {
   	rankdir=LR;
   	size="8,5"
   	node [shape = point]; iniziale;
-  	node [shape = doublecircle]; elabInputCmd; 
+  	node [shape = doublecircle]; 
   	node [shape = circle];
   	iniziale -> main [label = ""];
   	

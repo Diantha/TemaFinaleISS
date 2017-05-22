@@ -21,6 +21,16 @@ protected IEventItem event;
 //showMsg( "---------------------------------------------------------------------" );	
 showMsg( event.getPrologRep()  );				 
 //showMsg( "---------------------------------------------------------------------" );	
+		{
+		Term msgt       = Term.createTerm(event.getMsg());
+		Term msgPattern = Term.createTerm("p(Distance,Angle)");
+				boolean b = this.pengine.unify(msgt, msgPattern);
+				if( b ) {
+			  		sendMsg("polar","qacmdexecutor", QActorContext.dispatch, msgt.toString() ); 
+				}else{
+					println("non unifiable");
+				}
+		}
 	}//handleCurrentEvent
 	
 	@Override
