@@ -24,5 +24,6 @@
 	<classpathentry kind="lib" path="libs/http/nanoHTTPD.jar"/>
 	<classpathentry kind="lib" path="libs/unibo/labbaseRobotSam.jar"/>
 	<classpathentry kind="lib" path="libs/unibo/uniboQactorRobot.jar"/>
+	<classpathentry kind="lib" path="libs/trident.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

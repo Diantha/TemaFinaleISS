@@ -78,17 +78,20 @@ public abstract class AbstractQacmdexecutor extends QActor implements IActivity{
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = "\"==================================================\"";
+	    		temporaryStr = " \"==================================================\" ";
 	    		println( temporaryStr );  
-	    		temporaryStr = "\"An actor that executes user commmands \"";
+	    		temporaryStr = " \"An actor that executes user commmands \" ";
 	    		println( temporaryStr );  
-	    		temporaryStr = "\"==================================================\"";
+	    		temporaryStr = " \"==================================================\" ";
 	    		println( temporaryStr );  
-	    		parg = "consult(\"./talkTheory.pl\")";
+	    		parg = "consult( \"./talkTheory.pl\" )";
 	    		//tout=1 day (24 h)
-	    		//aar = solveGoalReactive(parg,86400000,"","");
-	    		//genCheckAar(m.name)»		
-	    		QActorUtils.solveGoal(parg,pengine );
+	    		aar = solveGoalReactive(parg,86400000,"","");
+	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    		if( aar.getInterrupted() ){
+	    			curPlanInExec   = "main";
+	    			if( ! aar.getGoon() ) break;
+	    		} 			
 	    		//playsound
 	    		terminationEvId =  QActorUtils.getNewName(IActorAction.endBuiltinEvent);
 	    			 	aar = playSound("./audio/music_interlude20.wav", ActionExecMode.synch, terminationEvId, 20000,"alarm" , "handleAlarm" ); 
@@ -113,7 +116,7 @@ public abstract class AbstractQacmdexecutor extends QActor implements IActivity{
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = "\"CIAO SONO DENTRO L'HANDLE INPUT\"";
+	    		temporaryStr = " \"CIAO SONO DENTRO L'HANDLE INPUT\" ";
 	    		println( temporaryStr );  
 	    		if( planUtils.repeatPlan(0).getGoon() ) continue;
 	    break;
@@ -131,7 +134,7 @@ public abstract class AbstractQacmdexecutor extends QActor implements IActivity{
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = "\"handleAlarm done\"";
+	    		temporaryStr = " \"handleAlarm done\" ";
 	    		println( temporaryStr );  
 	    		//playsound
 	    		terminationEvId =  QActorUtils.getNewName(IActorAction.endBuiltinEvent);
