@@ -8,7 +8,6 @@ qactor( radargui_ctrl , ctxradar, "it.unibo.radargui.Radargui"   ). %%control-dr
 qactor( qacmdexecutor , ctxradar, "it.unibo.qacmdexecutor.MsgHandle_Qacmdexecutor"   ). %%store msgs 
 qactor( qacmdexecutor_ctrl , ctxradar, "it.unibo.qacmdexecutor.Qacmdexecutor"   ). %%control-driven 
 %%% -------------------------------------------
-eventhandler(evh,ctxradar,"it.unibo.ctxRadar.Evh","sonar").  
-eventhandler(evh2,ctxradar,"it.unibo.ctxRadar.Evh2","alarm,local_inputcmd,inputcmd,endplay").  
+eventhandler(evh2,ctxradar,"it.unibo.ctxRadar.Evh2","sonar,alarm,local_inputcmd,inputcmd,endplay").  
 %%% -------------------------------------------
 

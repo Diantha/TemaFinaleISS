@@ -60,15 +60,12 @@ public abstract class AbstractRadargui extends QActor {
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = " \"RADAR init the GUI ... \" ";
+	    		temporaryStr = "\"RADAR init the GUI ... \"";
 	    		println( temporaryStr );  
 	    		parg = "actorOp(activateGui)";
-	    		aar = solveGoalReactive(parg,3600000,"","");
-	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    		if( aar.getInterrupted() ){
-	    			curPlanInExec   = "init";
-	    			if( ! aar.getGoon() ) break;
-	    		} 			
+	    		//aar = solveGoalReactive(parg,3600000,"","");
+	    		//genCheckAar(m.name)»
+	    		QActorUtils.solveGoal(parg,pengine );
 	    		if( ! planUtils.switchToPlan("doWorkMsgs").getGoon() ) break;
 	    break;
 	    }//while
@@ -85,7 +82,7 @@ public abstract class AbstractRadargui extends QActor {
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = " \"RADAR receive\" ";
+	    		temporaryStr = "\"RADAR receive\"";
 	    		println( temporaryStr );  
 	    		//ReceiveMsg
 	    		 		 aar = planUtils.receiveAMsg(mysupport,3000, "" , "" ); 	//could block
@@ -101,15 +98,16 @@ public abstract class AbstractRadargui extends QActor {
 	    		//onMsg
 	    		if( currentMessage.msgId().equals("polar") ){
 	    			String parg = "actorOp(sendDataToGui(DIST,THETA))";
+	    			/* ActorOp */
 	    			parg =  updateVars( Term.createTerm("p(Distance,Angle)"), Term.createTerm("p(DIST,THETA)"), 
 	    				    		  					Term.createTerm(currentMessage.msgContent()), parg);
 	    			if( parg != null ){
-	    					aar = solveGoalReactive(parg,3600000,"","");
-	    					//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    					if( aar.getInterrupted() ){
-	    						curPlanInExec   = "doWorkMsgs";
-	    						if( ! aar.getGoon() ) break;
-	    					} 			
+	    				aar = solveGoalReactive(parg,3600000,"","");
+	    				//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    				if( aar.getInterrupted() ){
+	    					curPlanInExec   = "doWorkMsgs";
+	    					if( ! aar.getGoon() ) break;
+	    				} 			
 	    			}
 	    		}if( planUtils.repeatPlan(0).getGoon() ) continue;
 	    break;
