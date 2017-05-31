@@ -21,14 +21,17 @@ Dispatch polar    : p( Distance, Angle  )
 Context  ctxRadar    ip [ host="192.168.251.1"  port=8033 ] -g cyan -httpserver //192.168.251.1
 Context  ctxSensorEmitter  ip [ host=/*"localhost"*/"192.168.1.103"  port=8133 ]
 
-EventHandler evh for sonar -print  {  //event => dispatch
+/*EventHandler evh for sonar -print  {  //event => dispatch
 	forwardEvent radargui -m polar  
 	//forwardEvent controltfce16 -m polar
-};  
+};  */
 
 //EventHandler evh2 for alarm , local_inputcmd , inputcmd, endplay -print {
 //	forwardEvent qacmdexecutor -m polar
 //} ;
+EventHandler evh2 for sonar, alarm , local_inputcmd , inputcmd, endplay -print {
+	forwardEvent qacmdexecutor -m polar
+} ;
 
 QActor radargui context ctxRadar {	  	/*( R2 )*/  
 	Plan init normal        

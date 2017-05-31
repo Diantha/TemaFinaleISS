@@ -7,9 +7,9 @@ import it.unibo.is.interfaces.IOutputEnvView;
 import it.unibo.qactors.QActorContext;
 import it.unibo.qactors.QActorUtils;
 
-public abstract class AbstractEvh extends EventHandlerComponent { 
+public abstract class AbstractEvh2 extends EventHandlerComponent { 
 protected IEventItem event;
-	public AbstractEvh(String name, QActorContext myCtx, IOutputEnvView outEnvView, String[] eventIds ) throws Exception {
+	public AbstractEvh2(String name, QActorContext myCtx, IOutputEnvView outEnvView, String[] eventIds ) throws Exception {
 		super(name, myCtx, eventIds, outEnvView);
   	}
 	@Override
@@ -26,7 +26,7 @@ showMsg( event.getPrologRep()  );
 		Term msgPattern = Term.createTerm("p(Distance,Angle)");
 				boolean b = this.pengine.unify(msgt, msgPattern);
 				if( b ) {
-			  		sendMsg("polar","radargui", QActorContext.dispatch, msgt.toString() ); 
+			  		sendMsg("polar","qacmdexecutor", QActorContext.dispatch, msgt.toString() ); 
 				}else{
 					println("non unifiable");
 				}
