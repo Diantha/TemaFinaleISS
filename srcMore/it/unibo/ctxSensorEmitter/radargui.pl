@@ -1,5 +1,5 @@
 %====================================================================================
-% Context ctxRadar  SYSTEM-configuration: file it.unibo.ctxRadar.radargui.pl 
+% Context ctxSensorEmitter  SYSTEM-configuration: file it.unibo.ctxSensorEmitter.radargui.pl 
 %====================================================================================
 context(ctxradar, "192.168.251.1",  "TCP", "8033" ).  		 
 context(ctxsensoremitter, "192.168.1.103",  "TCP", "8133" ).  		 
@@ -11,5 +11,6 @@ qactor( qacmdexecutor_ctrl , ctxradar, "it.unibo.qacmdexecutor.Qacmdexecutor"   
 qactor( sensorsonar , ctxsensoremitter, "it.unibo.sensorsonar.MsgHandle_Sensorsonar"   ). %%store msgs 
 qactor( sensorsonar_ctrl , ctxsensoremitter, "it.unibo.sensorsonar.Sensorsonar"   ). %%control-driven 
 %%% -------------------------------------------
+eventhandler(evh,ctxsensoremitter,"it.unibo.ctxSensorEmitter.Evh","sonar").  
 %%% -------------------------------------------
 
