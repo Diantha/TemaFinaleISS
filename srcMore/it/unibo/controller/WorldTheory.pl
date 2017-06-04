@@ -1,11 +1,11 @@
 %==============================================
-% WorldTheory.pl for actor radargui
+% WorldTheory.pl for actor controller
 %==============================================
 /*
 For a QActor as a singleton statically degined in the model
 */
-myname(qaturadargui).	%%old version (deprecated)
-actorobj(qaturadargui).	%% see registerActorInProlog18 in QActor
+myname(qatucontroller).	%%old version (deprecated)
+actorobj(qatucontroller).	%% see registerActorInProlog18 in QActor
 
 /*
 For a QActor instance of name=Name dynamically created
@@ -72,7 +72,7 @@ evalGuard( G ) :-
 
 output( M ):-stdout <- println( M ).
 %-------------------------------------------------
-%  TuProlo FEATURES of the QActor radargui
+%  TuProlo FEATURES of the QActor controller
 %-------------------------------------------------
 dialog( FileName ) :-  
 	java_object('javax.swing.JFileChooser', [], Dialog),
@@ -80,7 +80,7 @@ dialog( FileName ) :-
 	Dialog <- getSelectedFile returns File,
 	File <- getName returns FileName. 		 
 
-%% :- stdout <- println(  "hello from world theory of radargui" ). 
+%% :- stdout <- println(  "hello from world theory of controller" ). 
 
 %-------------------------------------------------
 %  UTILITIES for TuProlog computations
@@ -117,7 +117,7 @@ inc(I,K,N):-
 actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 
 %-------------------------------------------------
-%  User static rules about radargui
+%  User static rules about controller
 %------------------------------------------------- 
 /*
 ------------------------------------------------------------------------
