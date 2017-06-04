@@ -73,19 +73,29 @@ The goal is to build a software system able to evolve from an initial prototype 
 \section{Requirements }
 %===========================================================================
 
-A differential drive robot (called from now only robot) must reach an area (B) starting from a given point A. To reach the area B, the robot must cross an area equipped with N (N $\geq$ 1) distance sensors (sonars). The signal emitted by each sonar is reflected by a wall put in front of it at a distance of approximately 90 cm.
+%===========================================================================
+\subsection {The context}
+%===========================================================================
+
+A differential drive robot (called from now on robot) must reach an area (B) starting from a given point A. To reach the area B, the robot must cross an area equipped with N (N $\geq$ 1) distance sensors (sonars). The signal emitted by each sonar is reflected by a wall put in front of it at a distance of approximately 90 cm.
 Moreover:
 \begin{itemize}
 	\item The section of the wall in front of each sonar is painted with a different illustration.
 	\item The robot is equipped with a distance sensor (sonar) and (optionally) with a Web Cam both positioned in its front. It owns also a Led.
 	\item The robot should move from A to B by travelling along a straight line, at a distance of approximately 40-50 cm from the base-line of the sonars.
 \end{itemize}
+
+
+%===========================================================================
+\subsection {The work to do}
+%===========================================================================
+
 Design and build a (prototype of a) software system such that:
 \begin{itemize}
 	\item Shows the sonar data on the GUI associated to a console running on a conventional PC.
 	\item Evaluates the expression
 	
-	(s\textsubscript{k} + s\textsubscript{k} + 1 + ... s\textsubscript{N}) / (N - k + 1)
+	(s\textsubscript{k} + s\textsubscript{k+1} + ... s\textsubscript{N}) / (N - k + 1)
 	
 	where k is the number of the first sensor not reached by the robot and s\textsubscript{k} is the value of the distance currently measured by that sensor. If the value of the expression is less than a prefixed value DMIN (e.g. DMIN = 70), play an alarm sound.
 	\item When the robot reaches the area in front of a sonar, it:
@@ -113,12 +123,15 @@ Design and build a (prototype of a) software system such that:
 \section{Requirements analysis }
 %===========================================================================
 
-%===========================================================================
-\subsection {Glossary}
-%===========================================================================
-
-The first step for a correct requirement analysis is to read carefully the requirements text and to create a glossary of terms. The creation of a glossary is crucial in order to understand the applicative domain of the system and to avoid any ambiguity or misunderstanding during the requirements analysis. \newline\newline
-The terms are reported in the following table in the order in which they appear into the requirements text. For each terms is shown the related meaning and eventual synonims that appear into the text. \hfill \break
+The first step to analyze correctly the set of requirements is to read the requirements text in order to understand the applicative domain.\newline\newline
+After a careful reading, we have considered appropriate to do a short interview with the product owner in order to clear up any doubt come to light during the requirements text reading. The interview is reported below.\newline\newline
+\textbf{Q: How the robot starts its movement when placed on the given point A?}\newline
+A: The user must send a START command from the console.\newline\newline
+\textbf{Q: Which must be the robot behaviour when it reaches the area B?}\newline
+A: It must stops his movement, perhaps because an obstacle is in front of it.\newline\newline
+\textbf{Q: Which sonars are responsible to detect the obstacles along the path of the robot?}\newline
+A: The sonars along the path of the robot can detect any type of object in front of them (the robot in particular). The sonar on the robot can detect obstacles in front of it, too.\newline\newline
+Then, we have proceeded to create a glossary of terms in order to avoid any ambiguity or misunderstanding during the next analysis phases. The terms have been reported in \textbf{[Tab. 1]}. For each term, the related definition and eventual synonims are shown. \hfill \break
 
 \def\arraystretch{1.8}
 \begin{tabular}{ | m{3cm} | m{9cm} | m{3cm} | }
@@ -129,158 +142,376 @@ The terms are reported in the following table in the order in which they appear 
 	
 	\hline
 	
-	\textit{Differential drive robot} & A differential drive robot is a two-wheeled drive robot system with independent actuators for each wheel. The name refers to the fact that the motion vector of the robot is the sum of the independent wheel motions. & Robot\\
-	
-	\hline
-	
-	\textit{Distance sensor} & A distance sensor is a device that is able to locate the presence of an object (also called obstacle) in front of it. The sensor estimates the distance from the object by sending waves toward it and by calculating the response time. & Sonar\newline Sensor\\
-	
-	\hline
-	
 	\textit{Prototype} & A prototype is an incomplete version of a software system used to demonstrate concepts, to try some project options and to find out problems and possible solutions. A prototype can present all or a few characteristics of the final system. & Model\\
 	
 	\hline
 	
-	\textit{GUI} & This term refers to the \textit{Graphical User Interface} associated to the console. Through this interface, the user can view the data sent to the console by the distance sensor of the robot. & Interface\newline User interface\\
+	\textit{Differential drive robot} & A differential drive robot is a two-wheeled drive robot system with independent actuators for each wheel. The name refers to the fact that the motion vector of the robot is the sum of the independent wheel motions. & Robot\\
 	
 	\hline
 	
-	\textit{Console} & In the current context, the console represents the means by which the user and the robot interact with each other. Through the console, the user sends commands to the robot and receives the photos taken by it. & Command panel\\
+	\textit{Distance sensor} & A distance sensor is a device able to detect the presence of an object (i.e. an obstacle) in front of itself. & Sonar\newline Sensor\\
+		
+	\hline
+	
+	\textit{Console} & In the current domain, the console represents the means by which the user and the robot interact with each other. Through the console, the user sends commands to the robot and receives the data of the photos taken by it. & Command panel\\
 	
 	\hline
 	
-	\textit{Alarm sound} & The sound emitted by the console when the value calculated through the expression of the distance is under a certain threshold. In particular, the sound is emitted when a sensor on the wall has detected an object in front of itself (then along the path of the robot). & Alarm\\
+	\textit{GUI} & This term refers to the \textit{Graphical User Interface} associated to the console. Through this interface, the user can view the data sent to the console by the sonar of the robot. & Interface\newline User interface\\
 	
 	\hline
 	
-	\textit{MQTT protocol} & MQTT is the communication protocol through which the robot sends the taken photos to the console. &\\
+	\textit{Alarm sound} & The sound emitted by the console when the value calculated through the expression of the distance to the next sonar is under the prefixed threshold. & Alarm\\
 	
 	\hline
 	
-	\textit{Obstacle} & This term denotes any type of object detected by the sonar of the robot that prevents the robot itself to reach the area B. & \\
+	\textit{MQTT protocol} & \textit{MQTT (MQ Telemetry Transport)} is a communication protocol based on the publish/subscribe pattern. MQTT represents the means by which the robot sends to the console the data of the photos. &\\
 	
 	\hline
 	
-	\textit{User} & The user is the one who will use the software system, giving commands to the robot through the console and receiving the photos taken by it. & End user\\
+	\textit{Obstacle} & Any type of object located along the path of the robot that can potentially prevent it to reach the area B. & \\
 	
 	\hline
 	
-	\textit{Command} & A command is an order given from the user to the robot through the console. Two commands are allowed: STOP (through the console) to stop the movement of the robot, RESTART (manually) to reposition the robot at a given point A. &\\
+	\textit{User} & The user is the one who will use the software system, giving commands to the robot through the console and receiving the data of the photos taken by it. & End user\\
 	
 	\hline
 	
-	\textit{Restart the system} & The process through which the robot is repositioned in a given point A without restarting the software. & Restart\newline Reboot \newline Reboot the system\\
+	\textit{Command} & A command is an order given by the user to the robot using the console on the PC. &\\
+	
+	\hline
+	
+	\textit{Restart the system} & The process through which the robot is manually repositioned on the given starting point A without the need to restart the software. & Restart\newline Reboot \newline Reboot the system\\
 	
 	\hline 
 
 \end{tabular}
+
+\begin{center}
+\textit{[ Tab. 1 - Glossary ]}
+\end{center}
 
 
 %===========================================================================
 \subsection {User Stories}
 %===========================================================================
 
-A \textbf{user story}  is an informal description of one or more features of a software system, and it's expressed in natural language in order to be understandable by anyone. A user story is then described from the end user's point of view, and not from the system's point of view. \newline\newline
-The goal of the user stories is to describe with sufficient precision the end user's real needs, then what the user wants from the system, without to express technical details about the analysis, the design and the implementation of the software system. \newline\newline
-The user stories will be defined using the following format:
+A \textbf{user story} is an informal description of one or more features required by a software system in order to satisfy a need of the stakeholders. They are expressed in natural language, in order to be understandable by anyone.\newline\newline
+A user story is then described from the end user's point of view, and not from the system's point of view. This means that the description is made without expressing any technical details about the analysis, the design and the implementation of the software system.\newline\newline
+Each user story will be defined using the following format:
+ \hfill \break
 
-\begin{center}
-\textit{"As a \textbf{user}, I want <GOAL> so that <BENEFIT>"}
-\end{center}
+\def\arraystretch{1.8}
+\begin{table}[h]
+\centering
+\begin{tabular}{ | m{8.5cm} | }
 
-where \textit{<BENEFIT>} denotes the acceptance criteria that must be respected in the story to ensure a proper implementation of the related features. \newline\newline
-The stories collected by analyzing the requirements text are the following.
+    \hline
+	
+	\textit{"As a \textbf{user}, I want <GOAL> [so that <BENEFIT>]"}\\
+	
+	\hline 
+
+\end{tabular}
+\end{table}
+
+The stories collected are shown below.
 
 \begin{enumerate}
-	\item As a \textbf{user}, \textbf{I want that} the robot moves from a given point A to area B by travelling along a straight line.
-	\item As a \textbf{user}, \textbf{I want that} the robot stops when it reaches the area in front of a sonar and rotates towards it \textbf{so that} it can take a photo of the wall and send it to the console.
-	\item As a \textbf{user}, \textbf{I want that} the robot rotates to its original position after it took a photo \textbf{so that} it can continue to move towards the area B.
-	\item As a \textbf{user}, \textbf{I want that} an alarm sound is played whether the value calculated through the expression of the distance is under a certain threshold (i.e. a sensor on the wall has detected an obstacle in front of itself).
-	\item As a \textbf{user}, \textbf{I want} to use the console in order to send commands to the robot \textbf{so that} I can stop its movements.
-	\item As a \textbf{user}, \textbf{I want} to view the sonar data on the GUI.
-	\item As a \textbf{user}, \textbf{I want} to see the photos taken and sent by the robot to the console.
-	\item As a \textbf{user}, \textbf{I want} to restart the system by manually repositioning the robot at a given point A (i.e. without restarting the software).
+
+	\item As a \textbf{user}, \textbf{I want} to use a console running on a PC \textbf{so that} I can interact with the robot and send it specific commands to start and stop its movements.
+	\item As a \textbf{user}, \textbf{I want} that both the sonar on the robot and the sonars along the path can detect objects {so that} collisions with them can be avoided.
+	\item As a \textbf{user}, \textbf{I want} that an alarm sound was played when the value calculated by the expression of the distance is under a prefixed threshold {so that} I can be alerted.
+	\item As a \textbf{user}, \textbf{I want} that the robot stops its movement whenever it reaches the area in front of each sonar along the path. Moreover, {I want} that the robot rotates to its left \textbf{so that} it can take a photo of the illustration painted on the wall and send it to the console.
+	\item As a \textbf{user}, \textbf{I want} a Graphical User Interface associated with the console {so that} I can see the data sent by the robot, including the photos.
+	\item As a \textbf{user}, \textbf{I want} that the robot stops its movements when it reaches the area B.
+	\item As a \textbf{user}, \textbf{I want} to restart the system by manually repositioning the robot at the given point A (i.e. without restarting the software).
+	
 \end{enumerate}
 
+
 %===========================================================================
-\subsection {Functional and non functional requirements}
+\subsection {Sum up of functional requirements}
 %===========================================================================
+
+Now that the applicative domain has become more clear and definite, we proceed to list in broad terms the requirements that the final system will must possess in order to satisfy the needs of the product owner. The three groups identify the main macro-components of the system.
+
+\begin{enumerate}
+
+	\item \textbf{Robot}
+		\begin{enumerate}
+			\item Movements
+				\begin{enumerate}
+					\item Move forward
+					\item Rotate on its left
+					\item Stop
+				\end{enumerate}
+			\item Detect obstacles
+			\item Blink a led
+			\item Photos
+				\begin{enumerate}
+					\item Take photos
+					\item Send photos to the console
+				\end{enumerate}
+		\end{enumerate}
+	\item \textbf{Console and GUI}
+		\begin{enumerate}
+			\item Send commands to the robot
+			\item Evaluate distance expression
+			\item Play an alarm sound
+			\item Show sonar data
+		\end{enumerate}
+	\item \textbf{Sonars along the path}
+		\begin{enumerate}
+			\item Detect obstacles
+			\item Send distance data to the console
+		\end{enumerate}
+	
+\end{enumerate}
 
 
 %===========================================================================
-\subsection {User Interaction}
+\subsection {User interaction and scenarios}
 %===========================================================================
 
-Per rappresentare l’interazione tra agenti esterni e il sistema utilizzeremo diagrammi uml.
-L’unico attore è l’utente che interagisce con il sistema attraverso una serie d’azioni/comandi che rappresentano un caso d’uso nel diagramma. Il sistema è composto principalmente dalla console e dal robot. 
+In order to illustrate in a comprehensive and unambiguous manner the functional interaction between the (external) users and the system, we will use the formalism given by the UML meta-model. In \textbf{[Fig. 1]} an use case diagram is shown in order to describe the interaction between an user and the system through a set of "actions", which represent the use case of the system.\newline\newline
+Note that only what an user can directly do with the system is shown.
+\newline
 
-NB: caso d’uso solo quello che può far direttamente l’utente, quindi mettere il robot, inviargli i comandi e guardare sul radar la posizione del robot. 
-Scenari: Console , il robot,
-\\
-\begin{tabular}{ | m{5cm} | m{5cm}| }
-\hline
-	Name&Place Robot\\ 
-\hline	
-	Descrizione&Piazzare il robot\\
-\hline	
-	Attori&Utente\\
-\hline	
-	Precondizioni&La scelta del punto determinerà la traiettoria che poi avrà il robot.\\
-\hline	
-Scenario principale&L’utente metterà il robot in un punto A. A partire da quel punto il robot potrà iniziare a muoversi.\\
-\hline	
-Scenari alternativi&---\\
-\hline	
-Postcondizioni&Il robot deve riavviarsi ogni volta che viene posizionato.\\
-\hline
+\begin{center}
+	[QUI IL DIAGRAMMA]
+\end{center}
+
+\begin{center}
+	\textit{[ Fig. 1 - Use case diagram ]}
+\end{center}
+
+\hfill \break
+
+Now we will describe the scenarios according to the described use cases. \hfill \break
+
+\def\arraystretch{1.8}
+\begin{tabular}{ | m{4cm} | m{11cm}| }
+	
+	\hline
+	
+	\textbf{ID / Name}&\textbf{\#1 - Robot (re-)positioning}\\ 
+	
+	\hline
+	
+	\textbf{Description}&Positioning the robot on the given point A.\\
+
+	\hline
+	
+	\textbf{Actor}&User\\
+	
+	\hline	
+
+	\textbf{Pre-conditions}&The user must have the robot available.\\
+
+	\hline
+
+	\textbf{Main scenario}&The user places the robot on the given point A in such a way that:
+	\begin{enumerate}
+		\item the robot can move straight towards the area B;
+		\item the distance of the robot from the base-line sonars along the path was of approximately 40-50 cm.
+	\end{enumerate}
+	Then, the robot can move.\\
+	
+	\hline	
+	
+	\textbf{Alternative scenarios}&---\\
+	
+	\hline
+	
+	\textbf{Post-conditions}&The robot must reboot itself every time it is placed on the point A.\\
+
+	\hline
+
 \end{tabular}
-\\
-\\
-\\
-\\
 
-\begin{tabular}{ | m{5cm} | m{5cm}| }
+\begin{center}
+	\textit{[ Tab. 2 - Scenario 1 ]}
+\end{center}
+
+\hfill \break
+
+\def\arraystretch{1.8}
+\begin{tabular}{ | m{4cm} | m{11cm}| }
+	
 	\hline
-	Name&Send Command\\ 
-	\hline	
-	Descrizione&Invio di un comando al sistema da parte dell’utente\\
-	\hline	
-	Attori&Utente\\
-	\hline	
-	Precondizioni&La console è attiva e funzionante sul computer e il sistema è pronto a ricevere comandi.\\
-	\hline	
-	Scenario principale&1. L’utente invia un comando al robot tramite il pannello dei comandi presente sul PC. I comandi inviati sono START per azionare il robot e STOP per fermarlo.
-	2. Il server invia il comando al robot.
-	3. Il robot valuta il comando e lo esegue.\\
-	\hline	
-	Scenari alternativi&---\\
-	\hline	
-	Postcondizioni&Il robot si aziona se riceve il comando START, si ferma se riceve il comando STOP.\\
+	
+	\textbf{ID / Name}&\textbf{\#2 - Sending commands}\\ 
+	
 	\hline
+	
+	\textbf{Description}&Sending commands to the robot through a console running on a conventional PC.\\
+
+	\hline
+	
+	\textbf{Actor}&User\\
+	
+	\hline	
+
+	\textbf{Pre-conditions}&
+	\begin{enumerate}
+		\item The console is running on the PC.
+		\item The system is ready to accept commands from the console.
+	\end{enumerate}\\
+
+	\hline
+
+	\textbf{Main scenario}&The user interacts with the robot in the following way:
+	\begin{enumerate}
+		\item the user sends a command to the robot through the console on the PC;
+		\item the system receives the command, evaluates it and executes it.
+	\end{enumerate}\\
+	
+	\hline	
+	
+	\textbf{Alternative scenarios}&---\\
+	
+	\hline
+	
+	\textbf{Post-conditions}&The robot must:
+	\begin{enumerate}
+		\item move forward if the system receives a START command;
+		\item stop itself immediately if the system receives a STOP command.
+	\end{enumerate}\\
+	
+	\hline
+	
 \end{tabular}
 
+\begin{center}
+	\textit{[ Tab. 3 - Scenario 2 ]}
+\end{center}
 
-\begin{tabular}{ | m{5cm} | m{5cm}| }
+\hfill \break
+
+\def\arraystretch{1.8}
+\begin{tabular}{ | m{4cm} | m{11cm}| }
+	
 	\hline
-	Name&View Sonar\\ 
-	\hline	
-	Descrizione&Visualizzare la posizione del robot sul sonar\\
-	\hline	
-	Attori&Utente\\
-	\hline	
-	Precondizioni&La console dovrà funzionare sul pc.\\
-	\hline	
-	Scenario principale&L’utente potrà vedere il robot nella GUI e si potranno seguire i movimenti.\\
-	\hline	
-	Scenari alternativi&---\\
-	\hline	
-	Postcondizioni&Il robot si aziona se riceve il comando START, si ferma se riceve il comando STOP.\\
+	
+	\textbf{ID / Name}&\textbf{\#3 - Displaying data}\\ 
+	
 	\hline
+	
+	\textbf{Description}&Viewing the data on the GUI associated to the console.\\
+
+	\hline
+	
+	\textbf{Actor}&User\\
+	
+	\hline	
+
+	\textbf{Pre-conditions}&The console is running on the PC.\\
+
+	\hline
+
+	\textbf{Main scenario}&The user sees and checks on the GUI the data sent by the robot, including the photos taken by it.\\
+	
+	\hline	
+	
+	\textbf{Alternative scenarios}&---\\
+	
+	\hline
+	
+	\textbf{Post-conditions}&---\\
+	
+	\hline
+	
 \end{tabular}
-\subsection {(Domain) Model }
 
-\subsection {Test Plan}
----TO DO
+\begin{center}
+	\textit{[ Tab. 4 - Scenario 3 ]}
+\end{center}
+
+\hfill \break
+
+
+%===========================================================================
+\subsection {(Domain) Model}
+%===========================================================================
+
+We will now describe the (domain) model of the system according to the requirements expressed by the product owner. So, for each entity of the system, the model will describe them on the three dimensions of structure, interaction and behaviour.\newline\newline
+{\large\textbf{Robot}}\newline\newline
+\underline{Structure.} The robot is a non-atomic reactive entity. It is composed by the following parts.
+\begin{enumerate}
+	\item \textit{Wheels:} circular tire that is intended to rotate on an axle bearing.
+	\item \textit{Eletric motors:} electrical machines able to move and rotate the wheels. There is a motor for each wheel.
+	\item \textit{Sensor:} electronic component able to detect events or changes in its environment and send the information to other electronics. In particular, the sensor must be able to detect objects.
+	\item \textit{H-bridge:} electronic circuit that allows the motors to run forward.
+	\item \textit{Led:} passive output device that emits a blinking light when activated.
+	\item \textit{Raspberry Pi:} computational hardware unit able to control and handle motors, sensors, led and generally any I/O operation with other computational entities.
+	\item \textit{Frame/Platform:} plan in which all the components described above are placed and installed.
+	\item \textit{Powerbank:} portable device that can supply power from its built-in batteries.
+	\item \textit{WiFi USB:} device that allows Raspberry to connect to the network and communicate remotely with other computational entities.
+	\item \textit{Various hardware accessories:} wires and other minor hardware components.
+\end{enumerate}
+\underline{Interaction.} The robot interacts only with the console, sending it the photos taken by it.\newline\newline
+\underline{Behaviour.} The general behaviour of the robot can be summed up as follows:
+	\begin{enumerate}
+		\item to move along a linear path starting from a given point A and moving towards an area B (standard behaviour);
+		\item to react to particular events that can change its standard behaviour;
+		\item to receive specific commands able to start and stop its movements.
+	\end{enumerate}
+So, generally speaking, its behaviour follows both an event-driven model and a message-based model.
+\newline\newline\newline
+{\large\textbf{Console and GUI}}\newline\newline
+\underline{Structure.} The console is a reactive computational entity running on a PC connected to the system through the network. He is associated with a GUI.\newline\newline
+\underline{Interaction.} The console interacts with the robot and with the N sonars placed along the path of the robot. In particular, the console receives the data of the photos taken by the robot and gets the data emitted by the sonar in order to calculate the value of the distance expression. Moreover, the console interacts with the robot by sending it commands to start and stop its movements.\newline\newline
+\underline{Behaviour.} The console simply display through the GUI associated with it the data acquired and sent by the robot. Moreover, it plays an alarm sound if the value of the expression calculated by it is less than the prefixed threshold. So, its behaviour is reactive with respect to the data sent by the sonar and active in the way it evaluates them.
+\newline\newline\newline
+{\large\textbf{Sonar subsystem}}\newline\newline
+\underline{Structure.} With the term \textit{sonar subsystem} we refer to the set of sonars placed along the path crossed by the robot. The sonar subsystem is obviously a composed entity consisting of N sonars. Each sonar is an independent input entity connected to a Raspberry.\newline\newline
+\underline{Interaction.} Each sonar in the sonar subsystem interacts with the console by sending to it the value of the distance from an eventual object placed in the sonar area.
+\newline\newline
+\underline{Behaviour.} The sonar subsystem has an active behaviour. Its job is to sense the environment around it in order to detect eventual object in its area, to get the distance from it and to send the data to the console.
+
+
+%===========================================================================
+\subsection {Test plan}
+%===========================================================================
+
+We conclude the phase of requirement analysis by reporting a first plan of tests that will be performed in a simulated way (even with dummy data) once the system has been implemented. We will perform first the unit testing for each entity, then the integration testing in order to check that the system behaves as expected.\newline\newline
+{\large\textbf{Unit testing}}\newline
+\textit{The unit testing verifies that each entity of the system works correctly when isolated from the rest of the units.}
+\begin{enumerate}
+	\item Robot
+		\begin{enumerate}
+			\item The robot moves and rotates without problems (this can be done manually)
+			\item The sonar on the robot is able to detect correctly obstacles
+			\item The led on the robot blinks correctly
+			\item The robot takes photos
+		\end{enumerate}
+	\item Console and GUI
+		\begin{enumerate}
+			\item The distance expression is evaluated correctly
+			\item The alarm sound is played
+			\item The GUI is able to show the data
+		\end{enumerate}
+	\item Sonar subsystem
+		\begin{enumerate}
+			\item Each sonar is able to detect correctly an object in its area
+		\end{enumerate}
+\end{enumerate}\hfill\break
+{\large\textbf{Integration testing}}\newline
+\textit{The integration testing verifies that units created and tested independently can coexist and interact among themselves.}
+\begin{enumerate}
+			\item The console sends a START command to the robot, the robot starts to move.
+			\item The console sends a STOP command to the robot, the robot stops itself.
+			\item A sonar in the sonar subsystem detects an object, sends the distance value to the console and the consoles evaluates the distance expression correctly.
+			\item The console plays a sound alarm if the value calculated by the distance expression is less than the prefixed threshold.
+			\item A sonar in the sonar subsystem detects the robot, the robot turns on its left, the led starts to blink, the robot takes a photo and sends it to the console.
+			\item After taking the photo, the robot turns on its right to compensate the previous move, the led stops to blink and the robot starts to move again towards the area B.
+			\item The robot stops itself when it reaches the area B.
+		\end{enumerate}
+
+
+%===========================================================================
 \section{Problem analysis }
 
 %===========================================================================
