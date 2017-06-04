@@ -84,23 +84,15 @@ public abstract class AbstractQacmdexecutor extends QActor implements IActivity{
 	    		println( temporaryStr );  
 	    		temporaryStr = " \"==================================================\" ";
 	    		println( temporaryStr );  
-	    		parg = "consult( \"./talkTheory.pl\" )";
-	    		//tout=1 day (24 h)
-	    		aar = solveGoalReactive(parg,86400000,"","");
-	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    		if( aar.getInterrupted() ){
-	    			curPlanInExec   = "main";
-	    			if( ! aar.getGoon() ) break;
-	    		} 			
 	    		//playsound
 	    		terminationEvId =  QActorUtils.getNewName(IActorAction.endBuiltinEvent);
-	    			 	aar = playSound("./audio/music_interlude20.wav", ActionExecMode.synch, terminationEvId, 20000,"alarm" , "handleAlarm" ); 
+	    			 	aar = playSound("./audio/music_interlude20.wav", ActionExecMode.synch, terminationEvId, 10000,"usercmd" , "checkCmd" ); 
 	    				//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
 	    				if( aar.getInterrupted() ){
 	    					curPlanInExec   = "main";
 	    					if( ! aar.getGoon() ) break;
 	    				} 			
-	    		if( ! planUtils.switchToPlan("handleInput").getGoon() ) break;
+	    		if( ! planUtils.switchToPlan("work").getGoon() ) break;
 	    break;
 	    }//while
 	    return returnValue;
@@ -110,46 +102,49 @@ public abstract class AbstractQacmdexecutor extends QActor implements IActivity{
 	       return false;  
 	    }
 	    }
-	    public boolean handleInput() throws Exception{	//public to allow reflection
+	    public boolean work() throws Exception{	//public to allow reflection
 	    try{
-	    	curPlanInExec =  "handleInput";
+	    	curPlanInExec =  "work";
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = " \"CIAO SONO DENTRO L'HANDLE INPUT\" ";
+	    		temporaryStr = " \"CIAO SONO DENTRO work\" ";
 	    		println( temporaryStr );  
+	    		//ReceiveMsg
+	    		 		 aar = planUtils.receiveAMsg(mysupport,30000000, "usercmd" , "checkCmd" ); 	//could block
+	    				if( aar.getInterrupted() ){
+	    					curPlanInExec   = "playTheGame";
+	    					if( ! aar.getGoon() ) break;
+	    				} 			
+	    				//if( ! aar.getGoon() ){
+	    					//System.out.println("			WARNING: receiveMsg in " + getName() + " TOUT " + aar.getTimeRemained() + "/" +  30000000);
+	    					//addRule("tout(receive,"+getName()+")");
+	    				//} 		 
+	    				//println(getName() + " received " + aar.getResult() );
+	    		printCurrentMessage(false);
 	    		if( planUtils.repeatPlan(0).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
 	    }catch(Exception e){
-	       //println( getName() + " plan=handleInput WARNING:" + e.getMessage() );
+	       //println( getName() + " plan=work WARNING:" + e.getMessage() );
 	       QActorContext.terminateQActorSystem(this); 
 	       return false;  
 	    }
 	    }
-	    public boolean handleAlarm() throws Exception{	//public to allow reflection
+	    public boolean checkCmd() throws Exception{	//public to allow reflection
 	    try{
-	    	curPlanInExec =  "handleAlarm";
+	    	curPlanInExec =  "checkCmd";
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = " \"handleAlarm done\" ";
+	    		temporaryStr = " \"Ciao sono dentro checkCommand\" ";
 	    		println( temporaryStr );  
-	    		//playsound
-	    		terminationEvId =  QActorUtils.getNewName(IActorAction.endBuiltinEvent);
-	    			 	aar = playSound("./audio/music_dramatic20.wav", ActionExecMode.synch, terminationEvId, 200000,"local_inputcmd" , "handleInput" ); 
-	    				//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    				if( aar.getInterrupted() ){
-	    					curPlanInExec   = "handleAlarm";
-	    					if( ! aar.getGoon() ) break;
-	    				} 			
-	    		returnValue = continueWork;  
 	    break;
 	    }//while
 	    return returnValue;
 	    }catch(Exception e){
-	       //println( getName() + " plan=handleAlarm WARNING:" + e.getMessage() );
+	       //println( getName() + " plan=checkCmd WARNING:" + e.getMessage() );
 	       QActorContext.terminateQActorSystem(this); 
 	       return false;  
 	    }

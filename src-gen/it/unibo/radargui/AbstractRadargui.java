@@ -14,10 +14,14 @@ import it.unibo.qactors.action.IActorAction;
 import it.unibo.qactors.action.IActorAction.ActionExecMode;
 import it.unibo.qactors.action.IMsgQueue;
 import it.unibo.qactors.akka.QActor;
+import it.unibo.baseEnv.basicFrame.EnvFrame;
+import alice.tuprolog.SolveInfo;
+import it.unibo.is.interfaces.IActivity;
+import it.unibo.is.interfaces.IIntent;
 
 
 //REGENERATE AKKA: QActor instead QActorPlanned
-public abstract class AbstractRadargui extends QActor { 
+public abstract class AbstractRadargui extends QActor implements IActivity{ 
 	protected AsynchActionResult aar = null;
 	protected boolean actionResult = true;
 	protected alice.tuprolog.SolveInfo sol;
@@ -29,7 +33,11 @@ public abstract class AbstractRadargui extends QActor {
 	protected IActorAction  action;
 	
 			protected static IOutputEnvView setTheEnv(IOutputEnvView outEnvView ){
-				return outEnvView;
+				EnvFrame env = new EnvFrame( "Env_radargui", java.awt.Color.green  , java.awt.Color.black );
+				env.init();
+				env.setSize(800,400);
+				IOutputEnvView newOutEnvView = ((EnvFrame) env).getOutputEnvView();
+				return newOutEnvView;
 			}
 	
 	
@@ -37,10 +45,20 @@ public abstract class AbstractRadargui extends QActor {
 			super(actorId, myCtx,  
 			"./srcMore/it/unibo/radargui/WorldTheory.pl",
 			setTheEnv( outEnvView )  , "init");		
+			addInputPanel(80);
+			addCmdPanels();	
 			this.planFilePath = "./srcMore/it/unibo/radargui/plans.txt";
 			//Plan interpretation is done in Prolog
 			//if(planFilePath != null) planUtils.buildPlanTable(planFilePath);
 	 	}
+	protected void addInputPanel(int size){
+		((EnvFrame) env).addInputPanel(size);			
+	}
+	protected void addCmdPanels(){
+		((EnvFrame) env).addCmdPanel("input", new String[]{"INPUT"}, this);
+		((EnvFrame) env).addCmdPanel("alarm", new String[]{"FIRE"}, this);
+		((EnvFrame) env).addCmdPanel("help",  new String[]{"HELP"}, this);				
+	}
 		@Override
 		protected void doJob() throws Exception {
 			String name  = getName().replace("_ctrl", "");
@@ -88,20 +106,21 @@ public abstract class AbstractRadargui extends QActor {
 	    		temporaryStr = " \"RADAR receive\" ";
 	    		println( temporaryStr );  
 	    		//ReceiveMsg
-	    		 		 aar = planUtils.receiveAMsg(mysupport,3000, "" , "" ); 	//could block
+	    		 		 aar = planUtils.receiveAMsg(mysupport,30000000, "" , "" ); 	//could block
 	    				if( aar.getInterrupted() ){
 	    					curPlanInExec   = "playTheGame";
 	    					if( ! aar.getGoon() ) break;
 	    				} 			
 	    				//if( ! aar.getGoon() ){
-	    					//System.out.println("			WARNING: receiveMsg in " + getName() + " TOUT " + aar.getTimeRemained() + "/" +  3000);
+	    					//System.out.println("			WARNING: receiveMsg in " + getName() + " TOUT " + aar.getTimeRemained() + "/" +  30000000);
 	    					//addRule("tout(receive,"+getName()+")");
 	    				//} 		 
 	    				//println(getName() + " received " + aar.getResult() );
+	    		printCurrentMessage(false);
 	    		//onMsg
 	    		if( currentMessage.msgId().equals("polar") ){
 	    			String parg = "actorOp(sendDataToGui(DIST,THETA))";
-	    			parg =  updateVars( Term.createTerm("p(Distance,Angle)"), Term.createTerm("p(DIST,THETA)"), 
+	    			parg =  updateVars( Term.createTerm("p(Distance,Angle)"), Term.createTerm("p(DIST,SID)"), 
 	    				    		  					Term.createTerm(currentMessage.msgContent()), parg);
 	    			if( parg != null ){
 	    					aar = solveGoalReactive(parg,3600000,"","");
@@ -142,5 +161,58 @@ public abstract class AbstractRadargui extends QActor {
 	//	    	println( " %%%% getMsgFromInputQueue continues with " + msg );
 		    	this.currentMessage = msg;
 		    }
+		/* 
+		* ------------------------------------------------------------
+		* IACTIVITY (aactor with GUI)
+		* ------------------------------------------------------------
+		*/
+		private String[] actions = new String[]{
+		    	"println( STRING | TERM )", 
+		    	"play('./audio/music_interlude20.wav'),20000,'alarm,obstacle', 'handleAlarm,handleObstacle'",
+		"emit(EVID,EVCONTENT)  ",
+		"move(MOVE,DURATION,ANGLE)  with MOVE=mf|mb|ml|mr|ms",
+		"forward( DEST, MSGID, MSGCONTENTTERM)"
+		    };
+		    protected void doHelp(){
+				println("  GOAL ");
+				println("[ GUARD ], ACTION  ");
+				println("[ GUARD ], ACTION, DURATION ");
+				println("[ GUARD ], ACTION, DURATION, ENDEVENT");
+				println("[ GUARD ], ACTION, DURATION, EVENTS, PLANS");
+				println("Actions:");
+				for( int i=0; i<actions.length; i++){
+					println(" " + actions[i] );
+				}
+		    }
+		@Override
+		public void execAction(String cmd) {
+			if( cmd.equals("HELP") ){
+				doHelp();
+				return;
+			}
+			if( cmd.equals("FIRE") ){
+				emit("alarm", "alarm(fire)");
+				return;
+			}
+			String input = env.readln();
+			//input = "\""+input+"\"";
+			input = it.unibo.qactors.web.GuiUiKb.buildCorrectPrologString(input);
+			//println("input=" + input);
+			try {
+				Term.createTerm(input);
+	 			String eventMsg=it.unibo.qactors.web.QActorHttpServer.inputToEventMsg(input);
+				//println("QActor eventMsg " + eventMsg);
+				emit("local_"+it.unibo.qactors.web.GuiUiKb.inputCmd, eventMsg);
+	  		} catch (Exception e) {
+		 		println("QActor input error " + e.getMessage());
+			}
+		}
+	 	
+		@Override
+		public void execAction() {}
+		@Override
+		public void execAction(IIntent input) {}
+		@Override
+		public String execActionWithAnswer(String cmd) {return null;}
 	  }
 	

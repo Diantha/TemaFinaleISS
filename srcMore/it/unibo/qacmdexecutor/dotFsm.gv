@@ -16,7 +16,7 @@ digraph finite_state_machine {
   	iniziale -> main [label = ""];
   	
   	
-  	main -> handleInput [ label = ""];
+  	main -> work [ label = ""];
   	
-  	handleInput -> handleInput [ label = ""];
+  	work -> work [ label = ""];
 }

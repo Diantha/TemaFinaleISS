@@ -11,6 +11,5 @@ qactor( qacmdexecutor_ctrl , ctxradar, "it.unibo.qacmdexecutor.Qacmdexecutor"   
 qactor( sensorsonar , ctxsensoremitter, "it.unibo.sensorsonar.MsgHandle_Sensorsonar"   ). %%store msgs 
 qactor( sensorsonar_ctrl , ctxsensoremitter, "it.unibo.sensorsonar.Sensorsonar"   ). %%control-driven 
 %%% -------------------------------------------
-eventhandler(evh2,ctxsensoremitter,"it.unibo.ctxSensorEmitter.Evh2","sonar,alarm,local_inputcmd,inputcmd,endplay").  
 %%% -------------------------------------------
 

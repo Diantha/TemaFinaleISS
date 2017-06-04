@@ -27,7 +27,7 @@ public class Radargui extends AbstractRadargui {
 	  	}//sendMsgDataToGui
 
 		public void sendDataToGui( int distance, int angle ){
-//			println(this.getName() + "  sendEDataToGui int "   );
+			println(this.getName() + "  sendEDataToGui int "   );
 			radarControl.update( ""+distance,""+angle );
 		} 
 		public void sendEDataToGui( String data ){

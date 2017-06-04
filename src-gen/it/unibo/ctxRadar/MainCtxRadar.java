@@ -8,10 +8,6 @@ public class MainCtxRadar  {
 //MAIN
 public static QActorContext initTheContext() throws Exception{
 	IOutputEnvView outEnvView = SituatedSysKb.standardOutEnvView;
-	it.unibo.is.interfaces.IBasicEnvAwt env=new it.unibo.baseEnv.basicFrame.EnvFrame( 
-		"Env_ctxRadar",java.awt.Color.cyan , java.awt.Color.black );
-	env.init();
-	outEnvView = env.getOutputEnvView();
 	String webDir = "./srcMore/it/unibo/ctxRadar";
 	return QActorContext.initQActorSystem(
 		"ctxradar", "./srcMore/it/unibo/ctxRadar/radargui.pl", 
