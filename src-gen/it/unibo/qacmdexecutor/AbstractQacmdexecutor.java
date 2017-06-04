@@ -78,13 +78,12 @@ public abstract class AbstractQacmdexecutor extends QActor implements IActivity{
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = " \"==================================================\" ";
+	    		temporaryStr = "\"==================================================\"";
 	    		println( temporaryStr );  
-	    		temporaryStr = " \"An actor that executes user commmands \" ";
+	    		temporaryStr = "\"An actor that executes user commmands \"";
 	    		println( temporaryStr );  
-	    		temporaryStr = " \"==================================================\" ";
+	    		temporaryStr = "\"==================================================\"";
 	    		println( temporaryStr );  
-	    		//playsound
 	    		terminationEvId =  QActorUtils.getNewName(IActorAction.endBuiltinEvent);
 	    			 	aar = playSound("./audio/music_interlude20.wav", ActionExecMode.synch, terminationEvId, 10000,"usercmd" , "checkCmd" ); 
 	    				//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());

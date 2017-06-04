@@ -1,14 +1,14 @@
 RobotSystem robot       
 
-Event obstacle    : obstacle(X) /* From the user GUI and from the sensors on the wall */
+Event obstacle    : obstacle(X) /* From the user GUI and from the sensor on the robot */
 Event alarm       : alarm       /* Emitted when distance from sensor is less than DMIN  */
 Event usercmd     : usercmd(X)  /* From the user GUI (es. STOP command) */
-           
+
 Context ctxRobot ip [ host="localhost"  port=8070 ] -httpserver
 
 EventHandler evh for usercmd, obstacle -print ;  
                
-Robot nano0 QActor avatar context ctxAvatar  {  /* nano0 = nome file config */
+Robot nano0 QActor robot context ctxRobot {  /* nano0 = nome file config */
 
    	Plan init normal
 		switchToPlan config ;
@@ -26,7 +26,7 @@ Robot nano0 QActor avatar context ctxAvatar  {  /* nano0 = nome file config */
 		println( "Moving forward..." ) ;
 		robotForward speed(40) time (20000) react event usercmd     -> checkCommand
 												  or event alarm    -> takePhoto  /* Il robot è nel raggio d'azione di un sensore */
-												  or event obstacle -> stopTheRobot
+												  or event obstacle -> stopTheRobot ;
 		
 		repeatPlan
 	
