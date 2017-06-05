@@ -99,7 +99,7 @@ Robot nano0 QActor robot context ctxRobot {  /* "nano0" will be the name of the 
 
 
 /* SONAR */
-QActor robotsonar QActor context ctxRobot {
+QActor robotsonar context ctxRobot {
 
 	/* First plan */
    	Plan main normal
