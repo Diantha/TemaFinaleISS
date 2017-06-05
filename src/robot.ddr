@@ -17,13 +17,13 @@ Context ctxConsole ip [ host="192.168.251.1"  port=8033 ]  -httpserver
 EventHandler evh for obstacle, alarm -print ;
      
 /* ROBOT */
-Robot robot0 QActor robot context ctxRobot {  /* "robot0" will be the name of the configuration file */
+Robot nano0 QActor robot context ctxRobot {  /* "nano0" will be the name of the configuration file */
 
 	/* First plan */
    	Plan main normal
  		println( "Ready to start!") ;
-		switchToPlan connectToMqttServer ;
-		switchToPlan waiting ;
+		switchToPlan connectToMqtt ;
+		switchToPlan waiting
 	
 	/* Connects to MQTT server */
 	Plan connectToMqtt resumeLastPlan  
