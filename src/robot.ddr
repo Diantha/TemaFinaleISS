@@ -94,7 +94,7 @@ Robot nano0 QActor robot context ctxRobot {  /* "nano0" will be the name of the 
 		
 	/* Alerts that a timeout expired */
 	Plan timeoutExpired
-		println( tout(X,Y) ) ;
+		println( tout(X,Y) )
 }
 
 
