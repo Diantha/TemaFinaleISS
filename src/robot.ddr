@@ -103,7 +103,7 @@ QActor robotsonar context ctxRobot {
 
 	/* First plan */
    	Plan main normal
-   		switchToPlan init ;
+   		switchToPlan init
  		
  	/* Activates the sonar */
  	Plan init
