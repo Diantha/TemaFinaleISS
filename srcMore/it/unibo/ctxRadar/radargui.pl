@@ -8,8 +8,6 @@ qactor( radargui , ctxradar, "it.unibo.radargui.MsgHandle_Radargui"   ). %%store
 qactor( radargui_ctrl , ctxradar, "it.unibo.radargui.Radargui"   ). %%control-driven 
 qactor( controller , ctxradar, "it.unibo.controller.MsgHandle_Controller"   ). %%store msgs 
 qactor( controller_ctrl , ctxradar, "it.unibo.controller.Controller"   ). %%control-driven 
-qactor( sensorsonar , ctxsensoremitter, "it.unibo.sensorsonar.MsgHandle_Sensorsonar"   ). %%store msgs 
-qactor( sensorsonar_ctrl , ctxsensoremitter, "it.unibo.sensorsonar.Sensorsonar"   ). %%control-driven 
 %%% -------------------------------------------
 %%% -------------------------------------------
 

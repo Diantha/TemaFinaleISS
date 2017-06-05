@@ -1,0 +1,83 @@
+1. Libro di Natali
+   -> Costruire software
+      - La dimensione algoritmica
+      - La dimensione sistemistica
+   -> Dai linguaggi di programmazione ai modelli
+      - Linguaggi e paradigmi computazionali
+        - Macchine per elaborare informazione
+          - Macchine astratte
+        - Il linguaggio UML
+          - I livelli di UML2
+          - Meta Object Facility
+      - Il ruolo dell'architettura
+        - Dimensioni
+          - Struttura
+          - Interazione
+          - Comportamento
+      - I (design) pattern
+   -> Un percorso di riferimento
+      - Visione
+      - Requisiti
+        - Standard documentali IEEE per i requisiti
+        - Analisi dei requisiti
+          - Casi d'uso
+            - Relazioni tra use cases
+            - Scenari
+        - Requisiti non funzionali
+      - Analisi
+        - Analisi del problema
+          - Architettura Logica
+            - Schemi architetturali
+          - Layers
+        - Analisi dei rischi
+      - Piano di collaudo
+      - Piano di lavoro
+      - Progetto
+        - Progettazione
+        - Sviluppo bottom-up
+          - Piattaforme e framework
+          - Application framework
+        - Sviluppo top-down
+          - Progetti a crescita incrementale
+      - Implementazione
+      - Collaudo
+      - Deployment
+      - Maintenance
+   -> Model driven software development
+      - UML2
+        - UML2 e MDA
+        - Il Core package
+        - Riuso in MOF
+        - EMOF e CMOF
+        - Eclipse Ecore
+
+2. Attori e QActors
+   -> Modello ad attori ( https://en.wikipedia.org/wiki/Actor_model )
+   -> Introduction to QActors and QRobots (PDF prof.)
+   -> Introduction to QActors ( https://137.204.107.21/syskb/it.unibo.iss2015intro/docs/Lab/Lab2016/BasicActorSupport.html )
+   -> Using the qa (domain specific) language ( https://137.204.107.21/syskb/it.unibo.iss2015intro/docs/Projects/QActorDSL/qaIntroAndExamples.html )
+
+3. Xtext
+   -> Xtext (documento prof.)
+   -> Working with Xtext ( https://137.204.107.21/syskb/it.unibo.iss2015intro/docs/Lab/Lab2016/xtextIntroAndExamples.html )
+
+4. Articoli esterni
+   - SCRUM: The Scrum Guide (PDF)
+   - Pattern Observer ( https://dellabate.wordpress.com/2012/03/03/gof-patterns-observer/ )
+   - Meaningful Modeling: What's the Semantics of "Semantics"? (PDF)
+
+5. Approfondimenti su Wikipedia
+   - V-Model ( https://en.wikipedia.org/wiki/V-Model_(software_development) )
+   - Junit ( https://en.wikipedia.org/wiki/JUnit )
+   - Model-driven software development (tg https://en.wikipedia.org/wiki/Model-driven_software_development )
+   - Operational Semantic ( https://en.wikipedia.org/wiki/Operational_semantics )
+   - Gradle ( https://en.wikipedia.org/wiki/Gradle )
+
+6. Laboratorio sul ButtonLedSystem (BLS)
+   - The ButtonLed system as a classical object-based system ( https://137.204.107.21/syskb/it.unibo.iss2015intro/docs/Lab/Lab2016/BLSOOPFromComponents.html )
+   - The ButtonLed system: from the problem to the components ( https://137.204.107.21/syskb/it.unibo.iss2015intro/docs/Lab/Lab2016/BLSOOPFromLogicArch.html )
+   - The ButtonLedBlink problem ( https://137.204.107.21/syskb/it.unibo.iss2015intro/docs/Lab/Lab2016/BLSBlink.html )
+   - ButtonLedSystem based on GUI ( https://137.204.107.21/syskb/it.unibo.iss2015intro/docs/Lab/Lab2016/BLSGui.html )
+   - ButtonLedSystem including RaspberryPi ( https://137.204.107.21/syskb/it.unibo.iss2015intro/docs/Lab/Lab2016/BLSRaspberry.html )
+   - ButtonLed Distributed Prototypes ( https://137.204.107.21/syskb/it.unibo.iss2015intro/docs/Appls/ButtonLedDitributed/distributedPrototypes.html )
+   - The ButtonLed blinking with actors ( https://137.204.107.21/syskb/it.unibo.iss2015intro/docs/Lab/Lab2016/BLSBlinkActors.html )

@@ -1,5 +1,5 @@
 %====================================================================================
-% Context ctxSensorEmitter  SYSTEM-configuration: file it.unibo.ctxSensorEmitter.radargui.pl 
+% Context ctxConsole  SYSTEM-configuration: file it.unibo.ctxConsole.console.pl 
 %====================================================================================
 context(ctxconsole, "192.168.251.1",  "TCP", "8033" ).  		 
 context(ctxsensoremitter, "192.168.1.103",  "TCP", "8133" ).  		 
