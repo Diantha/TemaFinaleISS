@@ -1,110 +1,133 @@
+/* 
+ * ==============================================================
+ * robot.ddr  Robot
+ * ==============================================================
+ */ 
+ 
 RobotSystem robot       
 
-Event obstacle    : obstacle(X) /* From the user GUI and from the sensor on the robot */
-Event alarm       : alarm       /* Emitted when distance from sensor is less than DMIN  */
-Event usercmd     : usercmd(X)  /* From the user GUI (es. STOP command) */
+Event obstacle  : obstacle(X)   /* From the console and from the sonar on the robot */
+Event alarm     : alarm         /* Emitted when distance from sonar is less than the threshold DMIN */
+Event usercmd   : usercmd(CMD)  /* From the user GUI */
+Event sonarArea : sonarArea(N)  /* From the console (which sensed it by the sonar subsystem) */
 
 Context ctxRobot ip [ host="localhost"  port=8070 ] -httpserver
+Context ctxConsole ip [ host="192.168.251.1"  port=8033 ]  -httpserver
 
-EventHandler evh for usercmd, obstacle -print ;  
-               
-Robot nano0 QActor robot context ctxRobot {  /* nano0 = nome file config */
+EventHandler evh for obstacle, alarm -print ;
+     
+/* ROBOT */
+Robot robot0 QActor robot context ctxRobot {  /* "robot0" will be the name of the configuration file */
 
-   	Plan init normal
-		switchToPlan config ;
-		println( "Ready to start...") ;
-		delay time(4000) ;  /* Aspetto 4 secondi prima che il robot parta */
-		switchToPlan moveForward ;
+	/* First plan */
+   	Plan main normal
+ 		println( "Ready to start!") ;
+		switchToPlan connectToMqttServer ;
+		switchToPlan waiting ;
+	
+	/* Connects to MQTT server */
+	Plan connectToMqtt resumeLastPlan  
+ 		println( "Connecting to MQTT server..." ) ;
+		actorOp connectToMqttServer( "mqtt_robot_system", "tcp://m2m.eclipse.org:1883", "photo" ) ;
+		[ ?? tout(X,Y) ] switchToPlan timeoutExpired
 		
-		println( "ROBOT ENDS" )
-		
-	Plan config resumeLastPlan
-		/* Se serve, carico una KB .pl o la definisco con Rules */
-		/* Connessione a MQTT? */
-		
+	/* Waiting state of the robot */
+	Plan waiting
+		println( "Waiting for a command..." ) ;
+		sense time(30000) usercmd -> continue ;  /* Blocks the execution of the robot until the required event occurs or timeout happens */
+		[ !? tout(30000,Y) ] switchToPlan timeoutExpired ;
+  		printCurrentEvent ;
+		onEvent usercmd : usercmd(robotgui(w(S))) -> switchToPlan moveForward ;  /* START/FORWARD command */
+		onEvent usercmd : usercmd(robotgui(h(S))) -> switchToPlan stop ;  /* STOP command */
+		repeatPlan
+
+	/* (Req. 1.a.i) Moves forward the robot and handles the event that the robot can perceive while moving */
  	Plan moveForward
 		println( "Moving forward..." ) ;
-		robotForward speed(40) time (20000) react event usercmd     -> checkCommand
-												  or event alarm    -> takePhoto  /* Il robot è nel raggio d'azione di un sensore */
-												  or event obstacle -> stopTheRobot ;
-		
+		robotForward speed(40) time(20000) react event usercmd   -> checkUserCommand   /* A command from console arrives */
+											  or event alarm     -> stop               /* The consoles has played an alarm */
+											  or event obstacle  -> stop   		       /* There is an obstacle */
+											  or event sonarArea -> handlePhotoShoot;  /* The robot has reached the area of a sonar */
 		repeatPlan
-	
-	Plan takePhoto
-		switchToPlan stopRobot ;
-		switchToPlan turnLeft ;
-		switchToPlan blinkLed; 
-		
-	Plan blinkLed
-		// ON
-		delay(1000) ;
-		// OFF
-		repeatPlan
-		
-	Plan stopRobot
-		println( "Robot stopped" ) ;
-		robotStop speed(10) time(0)	
-	
-	
-	Plan turnLeft resumeLastPlan  /* Nota: il robot continua a girarsi fino al timeout anche se gli arriva un evento */
-		println( "Robot turned left" ) ;
-		robotLeft speed(70) time (2000) react event usercmd -> checkCommand
-											  or event obstacle -> stopTheRobot
-		
-	Plan turnRight resumeLastPlan  /* Nota: il robot continua a girarsi fino al timeout anche se gli arriva un evento */
-		println( "Robot turned right" ) ;
-		robotLeft speed(70) time (2000) react event usercmd -> checkCommand
-											  or event obstacle -> stopTheRobot
-	
-	Plan handleSensorMessages
-		/* Codice per la ricezione di messaggi dai sensori sul muro
-		receiveTheMsg m(qualcosa)
-		printCurrentMessage ;
-		OnMsg command:x() -> println(*/
-		
-		repeatPlan
-		
-	Plan stopTheRobot resumeLastPlan    
-   		println("Stop the robot" )   ;    
-   		sound time(1500) file("./audio/tada2.wav");
-  		robotStop speed(10) time(0)	 
-		
-	Plan prologFailure resumeLastPlan
-		println( "Prolog goal failure" )	
-		
-	
-		
-	
-	
- 		//WARNING: THE MOVE CONTINUES (unitl timeout) AFTER A REACTION 
- 	    robotLeft   speed(70)   time(2000 ) react 
- 	                        event alarm -> stopTheRobot or event obstacle -> stopTheRobot ;      
- 	    [ ?? tout(X,Y)] sound time(1500) file("./audio/illogical_most2.wav");
- 	    robotRight  speed(70)   time(2000 ) react event alarm -> stopTheRobot or event obstacle -> stopTheRobot ;      
-	    [ ?? tout(X,Y)] sound time(1500) file("./audio/illogical_most2.wav") 
- 	Plan cmdDriven                         
-		println("wait for a command  " ) ;           
-		sense time(600000) usercmd ,  inputcmd -> continue ,  evalInputCmd ;  
-   		[ !? tout(X,Y)] println(tout(X,Y)) ;      
-  		[ ?? tout(600000,Y)] switchToPlan endJob ;     
-  		printCurrentEvent ;
-  		//The robot executes a command given with to a button
-   		onEvent usercmd :  usercmd( CMD ) -> println(evalRobotCmd(CMD) ) ; 
-  		onEvent usercmd :  usercmd( CMD ) ->  actorOp execCmdGui(CMD)  ; 
-  						  //execCmdGui is defined in RobotActor, CmdUilInterpreter
-  		[ !? actorOpDone(OP,R)]  println( actorOpDone(OP,R) ) ;	
-  		repeatPlan
-  	//The robot executes a command written as a string 
-    Plan evalInputCmd   resumeLastPlan   
-   		printCurrentEvent ;
-  		println("evalInputCmd" ) ; 
-  		onEvent inputcmd :  usercmd( CMD ) -> demo CMD   ; 
-  		[ !? result(R)]  println(resultInputCmd(R)) 	
-		
-   	
-		
- 	
 
-	Plan handleAlarm resumeLastPlan     
-		println("handleAlarm" )       	      	  
-}     
+	/* Checks the command received by the robot while it was moving */
+	Plan checkUserCommand
+		println( "Checking user command..." ) ;
+		onEvent usercmd : usercmd(robotgui(h(S))) -> switchToPlan stop ;  /* STOP command */
+	
+	/* (Req. 1.a.iii) Stops the robot movements */
+	Plan stop
+		robotStop speed(0) time(0) ;
+		println( "Robot stopped!" ) ;
+		switchToPlan waiting
+	
+	/* Handles the photo shoot routine */
+	Plan handlePhotoShoot
+		robotStop speed(0) time(0) ;  /* Stop the robot */
+		println( "The robot is going to take a photo..." ) ;
+		robotLeft speed(70) time(2000) ;  /* Rotate to the left */
+		actorOp startLedBlink ;  /* (Req. 1.c) Start led blinking */
+		println( "Led started to blink" ) ;
+		switchToPlan takeAndSendPhoto ;
+		robotRight speed(70) time(2000) ;  /* Turn back on its original position */
+		actorOp stopLedBlink ;  /* Stop led blinking */
+		println( "Led stopped blinking" ) ;
+		switchToPlan checkReachedArea ;
+		switchToPlan moveForward
+	
+	/* (Req. 1.d) Takes a photo and sends it to the console */
+	Plan takeAndSendPhoto resumeLastPlan
+		[ !? msg( reachedSonarArea, event, console, none, sonarArea(K), N) ] actorOp takeAndSendPhoto(K) ;
+		println( "Photo shooted and sent to the user!" ) ;
+	
+	/* Checks which area the robot has reached */
+	Plan checkReachedArea resumeLastPlan
+		[ ?? msg( reachedSonarArea, event, console, none, sonarArea(0), N) ] switchToPlan moveTowardsAreaB ;	
+	
+	/* The robot is going to reach the area B */
+	Plan moveTowardsAreaB
+		robotForward speed(40) time(30000) react event usercmd  -> checkUserCommand  /* A command from console arrives */
+											  or event obstacle -> stop   		     /* There is an obstacle */
+		robotStop speed(0) time(0) ;
+		println( "The robot has reached the area B!" ) ;
+		switchToPlan waiting
+		
+	/* Alerts that a timeout expired */
+	Plan timeoutExpired
+		println( tout(X,Y) ) ;
+}
+
+
+/* SONAR */
+QActor robotsonar QActor context ctxRobot {
+
+	/* First plan */
+   	Plan main normal
+   		switchToPlan init ;
+ 		
+ 	/* Activates the sonar */
+ 	Plan init
+ 		demo loadTheory( "./robotSonarKB.pl" ) onFailSwitchTo prologFailure ;
+ 		[ !? simulate ] switchToPlan simulateMode ;  /* Simulate the work */
+ 		[ !? physicSonar ] switchToPlan realMode ;  /* Real sonar */
+ 		println( "Sonar on robot starts working.") ;
+ 		
+ 	/* Simulates the sonar work */
+ 	Plan simulateMode
+ 		println( "Simulate mode" ) ;
+ 	
+ 	/* Manages the real physic sonar */
+ 	Plan realMode
+ 		println( "Working with physic sonar" ) ;
+ 		actorOp startRobotSonar ;
+ 		switchToPlan working
+ 	
+ 	Plan working
+ 		[!? obstacle(X) ] emit obstacle : obstacle(X) ;
+ 		actorOp getDistanceFromSonar ;
+ 		delay(500) ;
+ 		repeatPlan
+ 	
+ 	Plan prologFailure resumeLastPlan            
+		println( "Prolog goal fails" ) 
+}
