@@ -75,9 +75,9 @@ QActor controller context ctxRadar -g yellow {
 	repeatPlan
 	
 	Plan checkCmd
-	[?? actorOpDone (OP ," start ")] switchToPlan inizio ; // se gli ritorna il comando star, ricomincia
-	[?? actorOpDone (OP ," stop ")] switchToPlan stopTheRobot ;//stoppa il robot
-	[?? actorOpDone (OP ," alarm ")] switchToPlan alarmSound ; //allarme
+	[?? actorOpDone (OP ,"start")] switchToPlan inizio ; // se gli ritorna il comando star, ricomincia
+	[?? actorOpDone (OP ,"stop")] switchToPlan stopTheRobot ;//stoppa il robot
+	[?? actorOpDone (OP ,"alarm")] switchToPlan alarmSound ; //allarme
 	resumeLastPlan
 	
 

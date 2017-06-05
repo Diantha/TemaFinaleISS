@@ -175,13 +175,13 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP, \" start \" )" )) != null ){
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP, \"start\" )" )) != null ){
 	    		if( ! planUtils.switchToPlan("inizio").getGoon() ) break;
 	    		}
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP, \" stop \" )" )) != null ){
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP, \"stop\" )" )) != null ){
 	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
 	    		}
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP, \" alarm \" )" )) != null ){
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP, \"alarm\" )" )) != null ){
 	    		if( ! planUtils.switchToPlan("alarmSound").getGoon() ) break;
 	    		}
 	    		returnValue = continueWork; //we must restore nPlanIter and curPlanInExec of the 'interrupted' plan
