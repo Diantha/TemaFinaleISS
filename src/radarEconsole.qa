@@ -1,3 +1,4 @@
+
 /* 
  * ==============================================================
  * radargui.qa
@@ -153,6 +154,3 @@ Rules{
 //		[ ?? actorOpDone(OP,R )] println(R)	;	//remove actorOpDone
   		repeatPlan
 } 
-
-
-

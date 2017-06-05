@@ -1,0 +1,55 @@
+System sonarSensorEmitter    
+
+Event sonar : p( Distance, SID   )    
+Event numOfSonar : numOfSonar( N )   
+  
+Context  ctxRadarTfCe16    ip [ host="192.168.251.1"      port=8033 ]  -standalone  	 
+Context  ctxSensorEmitter  ip [ host="192.168.251.118"    port=8133 ]            
+ 
+QActor sensorsonar context ctxSensorEmitter  {    
+Rules{
+	/* THESE RULES ARE WRITTEN IN THE WorldTheory of the sensorsonar */
+	/* CONFIGURATION   */
+		onRaspberry.  
+		mysonar( s1, coloryellow, "192.168.251.118" ).	 
+		//mysonar( s2, colorred, "192.168.251.121" ).		 
+		//mysonar( s3, colorgreen, "192.168.251.120" ).	 		
+	/* SIMULATION DATA */	   
+   		p(80,1).p(70,1).p(60,1).p(50,3).p(40,3).p(30,3).p(20,2).p(40,2).p(60,2).p(80,2).
+ 	/* RULES */
+		sonar(s1,1).
+		sonar(s2,2).
+ 		sonar(s3,3).
+		numOfSonars(N) :- bagof(sonar(S,P), sonar(S,P), SonarList), length(SonarList,N).	
+		setmyposition  :-  
+			numOfSonars(N),
+			assert( numSonars( N ) ),
+			mysonar( SONAR, _, _ ), sonar(SONAR,SID), 
+			assert( position( SID ) ).		
+		obstacledata( p(D,SID) ) :- 
+			//numSonars( N ),
+			actorOpDone( _,d(D) ), 	//set by actorOp getDistanceFromSonar (1)
+			position(SID).
+	}	  
+ 	Plan init normal     
+ 		println("sensorsonar STARTS")  ;
+		[ !? onRaspberry ] actorOp startSonarC ;
+  		demo setmyposition ;	//depends on mysonar
+ 		[ !? position(POS) ] println( position(POS) );
+ 		[ !? numSonars(N) ]  println( numSonars(N) );
+ 		[ !? numSonars(N) ]  emit numOfSonar : numOfSonar(N) ;
+ 		switchToPlan workSimulate ;
+  		println("sensorsonar workReal")  ;       
+  		[ !? onRaspberry ] switchToPlan workReal
+ 	Plan workSimulate   resumeLastPlan  
+  	 	[ !? p(DIST, SID) ] println(p(DIST, SID)) else endPlan  "bye"; 	//p(D,SID) does not work
+		[ ?? p(DIST, SID) ] emit sonar : p(DIST,SID) ;
+		delay time(500) ;
+		repeatPlan 9	 	
+	Plan workReal 
+		actorOp getDistanceFromSonar ;		//(1)
+		[ !? obstacledata( VAL )] println( uuuuu(VAL) ) ;
+		[ !? obstacledata( VAL )] emit sonar : VAL ;
+//		[ ?? actorOpDone(OP,R )] println(R)	;	//remove actorOpDone
+  		repeatPlan
+}      
