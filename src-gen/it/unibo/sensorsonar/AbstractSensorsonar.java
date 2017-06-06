@@ -78,20 +78,26 @@ public abstract class AbstractSensorsonar extends QActor implements IActivity{
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = "\"sensorsonar STARTS\"";
+	    		temporaryStr = " \"sensorsonar STARTS\" ";
 	    		println( temporaryStr );  
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?onRaspberry" )) != null ){
 	    		parg = "actorOp(startSonarC)";
 	    		parg = QActorUtils.substituteVars(guardVars,parg);
-	    		//aar = solveGoalReactive(parg,3600000,"","");
-	    		//genCheckAar(m.name)»
-	    		QActorUtils.solveGoal(parg,pengine );
+	    		aar = solveGoalReactive(parg,3600000,"","");
+	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    		if( aar.getInterrupted() ){
+	    			curPlanInExec   = "init";
+	    			if( ! aar.getGoon() ) break;
+	    		} 			
 	    		}
 	    		parg = "setmyposition";
 	    		//tout=1 day (24 h)
-	    		//aar = solveGoalReactive(parg,86400000,"","");
-	    		//genCheckAar(m.name)»		
-	    		QActorUtils.solveGoal(parg,pengine );
+	    		aar = solveGoalReactive(parg,86400000,"","");
+	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    		if( aar.getInterrupted() ){
+	    			curPlanInExec   = "init";
+	    			if( ! aar.getGoon() ) break;
+	    		} 			
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?position(POS)" )) != null ){
 	    		temporaryStr = "position(POS)";
 	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
@@ -107,7 +113,7 @@ public abstract class AbstractSensorsonar extends QActor implements IActivity{
 	    		emit( "numOfSonar", temporaryStr );
 	    		}
 	    		if( ! planUtils.switchToPlan("workSimulate").getGoon() ) break;
-	    		temporaryStr = "\"sensorsonar workReal\"";
+	    		temporaryStr = " \"sensorsonar workReal\" ";
 	    		println( temporaryStr );  
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?onRaspberry" )) != null ){
 	    		if( ! planUtils.switchToPlan("workReal").getGoon() ) break;
@@ -134,10 +140,10 @@ public abstract class AbstractSensorsonar extends QActor implements IActivity{
 	    		}
 	    		else{ println( "bye" );
 	    		returnValue = continueWork;
-	    		//QActorContext.terminateQActorSystem(this);
+	    		QActorContext.terminateQActorSystem(this);
 	    		break;
 	    		}if( (guardVars = QActorUtils.evalTheGuard(this, " ??p(DIST,SID)" )) != null ){
-	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,Angle)","p(DIST,SID)", guardVars ).toString();
+	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","p(DIST,SID)", guardVars ).toString();
 	    		emit( "sonar", temporaryStr );
 	    		}
 	    		//delay
@@ -162,16 +168,19 @@ public abstract class AbstractSensorsonar extends QActor implements IActivity{
 	    while(true){
 	    nPlanIter++;
 	    		parg = "actorOp(getDistanceFromSonar)";
-	    		//aar = solveGoalReactive(parg,3600000,"","");
-	    		//genCheckAar(m.name)»
-	    		QActorUtils.solveGoal(parg,pengine );
+	    		aar = solveGoalReactive(parg,3600000,"","");
+	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    		if( aar.getInterrupted() ){
+	    			curPlanInExec   = "workReal";
+	    			if( ! aar.getGoon() ) break;
+	    		} 			
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?obstacledata(VAL)" )) != null ){
 	    		temporaryStr = "uuuuu(VAL)";
 	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
 	    		println( temporaryStr );  
 	    		}
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?obstacledata(VAL)" )) != null ){
-	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,Angle)","VAL", guardVars ).toString();
+	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","VAL", guardVars ).toString();
 	    		emit( "sonar", temporaryStr );
 	    		}
 	    		if( planUtils.repeatPlan(0).getGoon() ) continue;

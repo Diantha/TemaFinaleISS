@@ -18,5 +18,5 @@ digraph finite_state_machine {
   	
   	init -> doWorkMsgs [ label = ""];
   	
-  	doWorkMsgs -> doWorkMsgs [ label = "p(Distance,Angle)/"];
+  	doWorkMsgs -> doWorkMsgs [ label = "p(Distance,SID)/"];
 }

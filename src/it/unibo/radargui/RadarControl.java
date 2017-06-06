@@ -43,7 +43,7 @@ public class RadarControl extends SituatedPlainObject {
 			double distance = Double.parseDouble(dist);
 			double arg 		= Double.parseDouble(theta);
 			IPosition2D p0 	= Position2D.createPolar(distance,arg);
-				outView.addOutput( "RadarControl UPDATE " + p0  );
+//				outView.addOutput( "RadarControl UPDATE " + p0  );
 				if( radar == null ) return;
 				radar.update(p0);
 		} catch (Exception e) {

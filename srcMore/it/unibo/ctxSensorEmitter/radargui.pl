@@ -11,5 +11,6 @@ qactor( controller_ctrl , ctxradar, "it.unibo.controller.Controller"   ). %%cont
 qactor( sensorsonar , ctxsensoremitter, "it.unibo.sensorsonar.MsgHandle_Sensorsonar"   ). %%store msgs 
 qactor( sensorsonar_ctrl , ctxsensoremitter, "it.unibo.sensorsonar.Sensorsonar"   ). %%control-driven 
 %%% -------------------------------------------
+eventhandler(evh,ctxsensoremitter,"it.unibo.ctxSensorEmitter.Evh","sonar").  
 %%% -------------------------------------------
 
