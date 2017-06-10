@@ -1,0 +1,33 @@
+/* 
+ * ==============================================================
+ * sonarSensorEmitter.qa  Sonar subsystem
+ * ==============================================================
+ */
+ 
+System sonarSensorEmitter   
+   
+Event sonarData : p( Distance, SID  )
+  
+Context ctxRadar ip [ host="localhost" port=8033 ]
+Context ctxSensorEmitter ip [ host="localhost" port=8133 ]
+
+QActor sensorsonar context ctxSensorEmitter {    
+
+	Rules {
+		onRaspberry.
+	}
+	/* First plan */
+ 	Plan main normal
+ 		[ !? onRaspberry ] switchToPlan init
+ 
+ 	/* Starts the sonar subsystem */
+ 	Plan init
+ 		actorOp startSonarC ;
+ 		[ !? actorOpDone ] switchToPlan work
+ 		
+ 	/* Collects and emits data */
+	Plan work
+		actorOp getDistanceFromSonar ;
+		[ ?? actorOpDone(OP, R) ] emit sonarData : sonarData(R, ss);
+  		repeatPlan
+}      
