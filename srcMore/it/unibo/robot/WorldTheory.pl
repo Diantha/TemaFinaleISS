@@ -1,11 +1,11 @@
 %==============================================
-% WorldTheory.pl for actor sensorsonar
+% WorldTheory.pl for actor robot
 %==============================================
 /*
 For a QActor as a singleton statically degined in the model
 */
-myname(qatusensorsonar).	%%old version (deprecated)
-actorobj(qatusensorsonar).	%% see registerActorInProlog18 in QActor
+myname(qaturobot).	%%old version (deprecated)
+actorobj(qaturobot).	%% see registerActorInProlog18 in QActor
 
 /*
 For a QActor instance of name=Name dynamically created
@@ -72,7 +72,7 @@ evalGuard( G ) :-
 
 output( M ):-stdout <- println( M ).
 %-------------------------------------------------
-%  TuProlo FEATURES of the QActor sensorsonar
+%  TuProlo FEATURES of the QActor robot
 %-------------------------------------------------
 dialog( FileName ) :-  
 	java_object('javax.swing.JFileChooser', [], Dialog),
@@ -80,7 +80,7 @@ dialog( FileName ) :-
 	Dialog <- getSelectedFile returns File,
 	File <- getName returns FileName. 		 
 
-%% :- stdout <- println(  "hello from world theory of sensorsonar" ). 
+%% :- stdout <- println(  "hello from world theory of robot" ). 
 
 %-------------------------------------------------
 %  UTILITIES for TuProlog computations
@@ -117,9 +117,9 @@ inc(I,K,N):-
 actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 
 %-------------------------------------------------
-%  User static rules about sensorsonar
+%  User static rules about robot
 %------------------------------------------------- 
-onRaspberry.
+pinLed( 18).
 /*
 ------------------------------------------------------------------------
 testex :- actorPrintln( testex ),

@@ -19,6 +19,42 @@ EventHandler evhinput for usercmd, sonarArea -print {
 	memo currentEvent for robot
 };
 
+/* SONAR */
+QActor robotsonar context ctxRobot {
+
+	/* First plan */
+   	Plan main normal
+   		switchToPlan init
+ 		
+ 	/* Activates the sonar */
+ 	Plan init
+ 		demo loadTheory( "./robotSonarKB.pl" ) onFailSwitchTo prologFailure ;
+ 		[ !? simulate ] switchToPlan simulateMode ;  /* Simulate the work */
+ 		[ !? physicSonar ] switchToPlan realMode ;  /* Real sonar */
+ 		println( "Sonar on robot starts working.")
+ 		
+ 	/* Simulates the sonar work */
+ 	Plan simulateMode
+ 		println( "Simulate mode" )
+ 	
+ 	/* Manages the real physic sonar */
+ 	Plan realMode
+ 		println( "Working with physic sonar" ) ;
+ 		actorOp startRobotSonarC ;
+ 		switchToPlan working
+ 	
+ 	/* (Req. 3.b) Collects and emits data */
+ 	Plan working
+ 		[!? obstacle(X) ] emit obstacle : obstacle(X) ;
+ 		actorOp getDistanceFromSonar ;
+ 		delay time(500);
+ 		repeatPlan
+ 	
+ 	Plan prologFailure resumeLastPlan            
+		println( "Prolog goal fails" ) 
+}
+
+
 /* ROBOT */
 Robot robot0 QActor robot context ctxRobot {
 
@@ -103,37 +139,3 @@ Robot robot0 QActor robot context ctxRobot {
 }
 
 
-/* SONAR */
-QActor robotsonar context ctxRobot {
-
-	/* First plan */
-   	Plan main normal
-   		switchToPlan init
- 		
- 	/* Activates the sonar */
- 	Plan init
- 		demo loadTheory( "./robotSonarKB.pl" ) onFailSwitchTo prologFailure ;
- 		[ !? simulate ] switchToPlan simulateMode ;  /* Simulate the work */
- 		[ !? physicSonar ] switchToPlan realMode ;  /* Real sonar */
- 		println( "Sonar on robot starts working.")
- 		
- 	/* Simulates the sonar work */
- 	Plan simulateMode
- 		println( "Simulate mode" )
- 	
- 	/* Manages the real physic sonar */
- 	Plan realMode
- 		println( "Working with physic sonar" ) ;
- 		actorOp startRobotSonarC ;
- 		switchToPlan working
- 	
- 	/* (Req. 3.b) Collects and emits data */
- 	Plan working
- 		[!? obstacle(X) ] emit obstacle : obstacle(X) ;
- 		actorOp getDistanceFromSonar ;
- 		delay(500) ;
- 		repeatPlan
- 	
- 	Plan prologFailure resumeLastPlan            
-		println( "Prolog goal fails" ) 
-}

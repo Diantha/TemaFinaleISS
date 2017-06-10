@@ -18,7 +18,10 @@ digraph finite_state_machine {
   	
   	main -> init [ label = ""];
   	
-  	init -> work [ label = ""];
+  	init -> simulateMode [ label = ""];
+  	init -> realMode [ label = ""];
   	
-  	work -> work [ label = ""];
+  	realMode -> working [ label = ""];
+  	
+  	working -> working [ label = ""];
 }
