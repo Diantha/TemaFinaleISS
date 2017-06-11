@@ -128,7 +128,7 @@ protected IActorAction  action;
     		temporaryStr = " \"Waiting for a command...\" ";
     		println( temporaryStr );  
     		//senseEvent
-    		timeoutval = 30000;
+    		int timeoutval = 30000;
     		aar = planUtils.senseEvents( timeoutval,"usercmd,sonarArea","continue,continue",
     		"" , "",ActionExecMode.synch );
     		if( ! aar.getGoon() || aar.getTimeRemained() <= 0 ){
@@ -158,7 +158,7 @@ protected IActorAction  action;
     		 				 if( ! planUtils.switchToPlan("stop").getGoon() ) break; 
     		 			}//else println("guard  fails");  //parg is null when there is no guard (onEvent)
     		 }
-    		if( planUtils.repeatPlan(0).getGoon() ) continue;
+    		if( planUtils.repeatPlan(0,0).getGoon() ) continue;
     break;
     }//while
     return returnValue;
@@ -178,7 +178,7 @@ protected IActorAction  action;
     		println( temporaryStr );  
     		//forward
     		if( ! execRobotMove("moveForward","forward",40,0,20000, "usercmd,alarm,obstacle,sonarArea" , "checkUserCommand,stop,stop,handlePhotoShoot") ) break;
-    		if( planUtils.repeatPlan(0).getGoon() ) continue;
+    		if( planUtils.repeatPlan(0,0).getGoon() ) continue;
     break;
     }//while
     return returnValue;

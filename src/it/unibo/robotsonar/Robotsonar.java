@@ -3,11 +3,50 @@
 This code is generated only ONCE
 */
 package it.unibo.robotsonar;
+import java.io.BufferedReader;
+
 import it.unibo.is.interfaces.IOutputEnvView;
 import it.unibo.qactors.QActorContext;
+import it.unibo.qactors.QActorUtils;
 
 public class Robotsonar extends AbstractRobotsonar { 
+	
+	protected BufferedReader readerC;
+	protected String distance = ""; //d(  distance  )
+	protected int counter = 1;
+	
 	public Robotsonar(String actorId, QActorContext myCtx, IOutputEnvView outEnvView )  throws Exception{
 		super(actorId, myCtx, outEnvView);
 	}
+	
+	public void startSonarC(){
+  		try {
+  			println("startSonarC"   );
+			Process p = Runtime.getRuntime().exec("sudo ./SonarAlone");
+			readerC   = new BufferedReader(new java.io.InputStreamReader(p.getInputStream()));
+			println("Process in C STARTED "  +  readerC);
+			//println("Process in C reads   "  +  getDistanceFromSonar() );
+		} catch (Exception e) {
+ 			e.printStackTrace();
+		}		
+	}	
+	public void getDistanceFromSonar(){
+		try {
+//			println("getDistanceFromSonar"   );
+			String inpS = readerC.readLine();			
+			//println("getDistanceFromSonar " + inpS  );
+			//distance = "data( "+ counter++ + ", distance, d("+inpS+") )";  
+			int d = Integer.parseInt(inpS);
+			if(d < 20){
+			QActorUtils.raiseEvent(this.getQActorContext(),"sensor",
+			"obstacle", "obstacle("+d+")" );
+			}
+			//return "d("+inpS+")";
+		} catch (Exception e) {
+ 			e.printStackTrace();
+ 			//return "d(0)"; 
+		}
+	}
 }
+
+

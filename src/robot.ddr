@@ -20,7 +20,7 @@ EventHandler evhinput for usercmd, sonarArea -print {
 };
 
 /* SONAR */
-QActor robotsonar context ctxRobot {
+Robot robot0 QActor robot context ctxRobot {
 
 	/* First plan */
    	Plan main normal
