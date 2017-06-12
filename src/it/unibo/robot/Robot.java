@@ -52,25 +52,19 @@ public class Robot extends AbstractRobot {
 		println(" %%% subscribe done " );
 	}
 
-	private String encodeFileToBase64Binary(File file){
+	private String encodeFileToBase64Binary(File file) throws java.io.IOException{
 		String encodedfile = null;
-		try {
-			FileInputStream fileInputStreamReader = new
-					FileInputStream(file);
-			byte[] bytes = new byte[(int)file.length()];
+		FileInputStream fileInputStreamReader = new
+				FileInputStream(file);
+		byte[] bytes = new byte[(int)file.length()];
 
-			fileInputStreamReader.read(bytes);
-			encodedfile = Base64.getEncoder().encodeToString(bytes);
-			fileInputStreamReader.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		fileInputStreamReader.read(bytes);
+		encodedfile = Base64.getEncoder().encodeToString(bytes);
+		fileInputStreamReader.close();
 		return encodedfile;
 	}
 
-	private String encodePhoto(int numfoto){
+	private String encodePhoto(int numfoto) throws java.io.IOException{
 		System.out.println(""+numfoto);
 		String path = "./image/"+numfoto+".jpg";
 		System.out.println(path);
@@ -79,7 +73,7 @@ public class Robot extends AbstractRobot {
 		return encodestring;
 	}
 
-	public void encodeAndSendPhoto(int numfoto){
+	public void encodeAndSendPhoto(int numfoto) throws java.io.IOException{
 		String msg= encodePhoto(numfoto);
 		try {
 			publish("obse_mqtt","tcp://test.mosquitto.org:1883",
@@ -98,19 +92,19 @@ public class Robot extends AbstractRobot {
 		}
 	}
 
-	public void startLedBlink(){
-		timer = new Timer();
-		timer.scheduleAtFixedRate(new TimerTask(){
-			@Override
-			public void run() {
-				ledOnRasp.doSwitch();
-			};
-		}, 0, 250);
-	}
-
-	public void stopBlink(){
-		timer.cancel();
-		timer.purge();
-		ledOnRasp.turnOff();
-	}
+//	public void startLedBlink(){
+//		timer = new Timer();
+//		timer.scheduleAtFixedRate(new TimerTask(){
+//			@Override
+//			public void run() {
+//				ledOnRasp.doSwitch();
+//			};
+//		}, 0, 250);
+//	}
+//
+//	public void stopBlink(){
+//		timer.cancel();
+//		timer.purge();
+//		ledOnRasp.turnOff();
+//	}
 }
