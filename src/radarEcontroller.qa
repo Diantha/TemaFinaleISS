@@ -18,9 +18,9 @@ Dispatch robotCommand : rc( Command )
 Dispatch mqttmsg : mqttmsg
 
 
-Context  ctxRadar    ip [ host="localhost"  port=8033 ] -httpserver //192.168.251.1
+Context  ctxRadar    ip [ host="localhost"  port=8033 ]  -g yellow -httpserver //192.168.251.1
 //Context  ctxRadar    ip [ host="192.168.251.1"  port=8033 ] -g green -httpserver
-Context  ctxSensorEmitter  ip [ host="localhost"  port=8133 ] -standalone /*"localhost"*/
+Context  ctxSensorEmitter  ip [ host="localhost"  port=8133 ] /*"localhost"*/
 
 
 //EventHandler evh for sonar -print  {  //event => dispatch
