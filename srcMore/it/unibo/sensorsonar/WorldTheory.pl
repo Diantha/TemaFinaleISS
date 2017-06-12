@@ -120,23 +120,6 @@ actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 %  User static rules about sensorsonar
 %------------------------------------------------- 
 onRaspberry.
-mysonar( s1,coloryellow,"192.168.1.103").
-p( 80,1).
-p( 70,1).
-p( 60,1).
-p( 50,3).
-p( 40,3).
-p( 30,3).
-p( 20,2).
-p( 40,2).
-p( 60,2).
-p( 80,2).
-sonar( s1,1).
-sonar( s2,2).
-sonar( s3,3).
-numOfSonars( N):-bagof( sonar( S,P),sonar( S,P),SonarList),length( SonarList,N).
-setmyposition:-numOfSonars( N),assert( numSonars( N)),mysonar( SONAR,_,_),sonar( SONAR,SID),assert( position( SID)).
-obstacledata( p( D,SID)):-actorOpDone( _,d( D)),position( SID).
 /*
 ------------------------------------------------------------------------
 testex :- actorPrintln( testex ),
@@ -171,18 +154,12 @@ actionResultOp( Op ):-
  						[ ( E, setActorOpResult( Op,failure ), fail )],  
   						setActorOpResult( Op,R )				%%executed in any way
 					). 
-
-%% setActorOpResulttt(Op, V ):-  actorPrintln( setActorOpResulttt(Op, V ) ),setActorOpResult( Op, V ).
-setActorOpResult( Op, V ):-   unbound(V),!, storeActorOpResult( Op,void  ).	  
-setActorOpResult( Op, Res ):- text_term(Res,Term),!,storeActorOpResult( Op,Term  ).
-setActorOpResult( Op, Res ):- %% Res is $obj_xxx	
-	cvtToString(Res,ResStr),
-	%% actorPrintln( actorOpDone( Op,ResStr  ) ),  
-   	storeActorOpResult( Op, ResStr ).
-storeActorOpResult( Op, R ):-
-	%% actorPrintln( storeActorOpResult( Op,R  ) ),  
+setActorOpResult( Op, V ):-      unbound(V),!, setActorOpResult( Op,void  ).	  
+setActorOpResult( Op, Res ):-
 	( retract( actorOpDone( _,_ ) ),!; true ), %%remove previous actionResult (if any) 
-	assert( actorOpDone( Op, R) ).
+	cvtToString(Res,ResStr),
+	%% actorPrintln( actorOpDone( Op,ResStr  ) ),  %% Res is $obj_xxx
+   	assert( actorOpDone( Op, ResStr) ).
 
 
 %% setActionResult : Actor register (in Java) the result under name 'actoropresult'
@@ -287,17 +264,12 @@ runTheSentence(Actor, sentence( GUARD, MOVE, EVENTS, PLANS ) ):-
   	). 
 runTheSentence(Actor, sentence( GUARD, MOVE, EVENTS, PLANS ) ):-   
 	setAnswer( guard(GUARD,failed)  ).
-runTheSentence(Actor, sentence( GUARD, GOAL, ANSWEREV  ) ) :- 
-	%%actorPrintln(  goingToexecuteCmd( Actor, GOAL , ANSWEREV , RES) ),
-	executeCmd( Actor, GOAL , ANSWEREV , RES ),
-	setAnswer(RES). 
-
+	
 /*
 -----------------------------------
 Not implemented actions
 -----------------------------------
 */	 
- 
 runTheSentence(Actor, sentence( GUARD, GOAL, DURATION, ANSWEREV, EVENTS, PLANS ) ) :-
  	actorPrintln(  "WARNING: actions asynchronous and reactive not implemented" ).
 %% perhaps to remove  
@@ -324,12 +296,6 @@ MOVES
 ======================================================================
 */
 %%% ---------  Actor move	---------------
-executeCmd( Actor, move(robotmove,CMD,SPEED,DURATION,ANGLE), ENDEV, RES ):-
- 	!,
- 	mapCmdToMove(CMD,MOVE), 
-	%% actorPrintln(  executeCmd(Actor,MOVE, SPEED, ANGLE, DURATION, ENDEV ) ),
-	Actor <- execute(MOVE, SPEED, ANGLE, DURATION, ENDEV, '', '') returns AAR,
-	AAR <- getResult returns RES.
 executeCmd( Actor, move(robotmove,CMD,SPEED,DURATION,ANGLE), Events, Plans, RES ):-
  	!,
  	mapCmdToMove(CMD,MOVE), 
@@ -437,13 +403,4 @@ fibWithCache( V,N ) :-
   	N is N1 + N2,
 	%% actorPrintln( fib( V,N ) ),
 	assert( fibmemo( V,N ) ).
-/*
-------------------------------------------------------------
-initialize
-------------------------------------------------------------
-*/
-initialize  :-  
-	actorobj(Actor),
- 	actorPrintln( worlTheoryLoaded(Actor) ).
- 
-:- initialization(initialize).
+
