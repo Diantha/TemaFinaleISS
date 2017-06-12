@@ -10,7 +10,7 @@ public static QActorContext initTheContext() throws Exception{
 	IOutputEnvView outEnvView = SituatedSysKb.standardOutEnvView;
 	String webDir = null;
 	return QActorContext.initQActorSystem(
-		"ctxradar", "./srcMore/it/unibo/ctxRadar/sonarsensoremitter.pl", 
+		"ctxradar", "./srcMore/it/unibo/ctxRadar/radargui.pl", 
 		"./srcMore/it/unibo/ctxRadar/sysRules.pl", outEnvView,webDir,false);
 }
 public static void main(String[] args) throws Exception{
