@@ -1,8 +1,8 @@
 %====================================================================================
 % Context ctxRadar  SYSTEM-configuration: file it.unibo.ctxRadar.robot.pl 
 %====================================================================================
-context(ctxrobot, "localhost",  "TCP", "8071" ).  		 
-context(ctxradar, "localhost",  "TCP", "8032" ).  		 
+context(ctxrobot, "localhost",  "TCP", "8070" ).  		 
+context(ctxradar, "localhost",  "TCP", "8033" ).  		 
 %%% -------------------------------------------
 qactor( robotsonar , ctxrobot, "it.unibo.robotsonar.MsgHandle_Robotsonar"   ). %%store msgs 
 qactor( robotsonar_ctrl , ctxrobot, "it.unibo.robotsonar.Robotsonar"   ). %%control-driven 
