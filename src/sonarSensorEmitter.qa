@@ -7,16 +7,9 @@
 System sonarSensorEmitter   
    
 Event sonarData : p( Distance, SID  )
-<<<<<<< HEAD
  
 Context ctxSensorEmitter ip [ host="localhost" port=8045 ]
 Context ctxRadar ip [ host="localhost" port=8010 ]
-
-=======
-  
-Context ctxRadar ip [ host="localhost" port=8033 ]
-Context ctxSensorEmitter ip [ host="localhost" port=8133 ]
->>>>>>> branch 'master' of https://github.com/Diantha/TemaFinaleISS.git
 
 QActor sensorsonar context ctxSensorEmitter {    
 
