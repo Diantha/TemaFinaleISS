@@ -7,9 +7,10 @@
 System sonarSensorEmitter   
    
 Event sonarData : p( Distance, SID  )
-  
+ 
+Context ctxSensorEmitter ip [ host="localhost" port=8133 ]  -g blue
 Context ctxRadar ip [ host="localhost" port=8033 ]
-Context ctxSensorEmitter ip [ host="localhost" port=8133 ]
+
 
 QActor sensorsonar context ctxSensorEmitter {    
 
