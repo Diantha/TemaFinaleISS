@@ -18,9 +18,10 @@ Dispatch robotCommand : rc( Command )
 Dispatch mqttmsg : mqttmsg
 
 
-Context  ctxRadar    ip [ host="192.168.251.1"  port=8033 ] -httpserver //192.168.251.1
+Context  ctxRadar    ip [ host="localhost"  port=8033 ] -httpserver //192.168.251.1
 //Context  ctxRadar    ip [ host="192.168.251.1"  port=8033 ] -g green -httpserver
-//Context  ctxSensorEmitter  ip [ host="192.168.1.103"  port=8133 ] -standalone /*"localhost"*/
+Context  ctxSensorEmitter  ip [ host="localhost"  port=8133 ] -standalone /*"localhost"*/
+
 
 //EventHandler evh for sonar -print  {  //event => dispatch
 //	forwardEvent radargui -m polar;  
@@ -87,7 +88,7 @@ QActor controller context ctxRadar -g yellow {
 //	forward robot  -m robotCommand :rc( blinkLedStop );
 //	forward robot  -m robotCommand :rc( goForward );
 	resumeLastPlan
-	
+
 }
 
 
@@ -139,3 +140,4 @@ QActor controller context ctxRadar -g yellow {
 ////		[ ?? actorOpDone(OP,R )] println(R)	;	//remove actorOpDone
 //  		repeatPlan
 //} 
+
