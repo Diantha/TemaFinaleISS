@@ -11,8 +11,8 @@ Event alarm     : alarm         /* Emitted when distance from sonar is less than
 Event usercmd   : usercmd(CMD)  /* From the user GUI */
 Event sonarArea : sonarArea(N)  /* From the console (which sensed it by the sonar subsystem) */
 
-Context ctxRobot ip [ host="localhost"  port=8070 ] -g cyan -httpserver
-Context ctxRadar ip [ host="localhost"  port=8033 ] -httpserver
+Context ctxRobot ip [ host="localhost"  port=8021 ] -httpserver
+Context ctxRadar ip [ host="localhost"  port=8010 ]
 
 EventHandler evh for obstacle, alarm -print ;
 EventHandler evhinput for usercmd, sonarArea -print {

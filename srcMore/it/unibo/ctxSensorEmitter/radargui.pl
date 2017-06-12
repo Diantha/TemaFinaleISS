@@ -1,8 +1,8 @@
 %====================================================================================
 % Context ctxSensorEmitter  SYSTEM-configuration: file it.unibo.ctxSensorEmitter.radargui.pl 
 %====================================================================================
-context(ctxradar, "localhost",  "TCP", "8033" ).  		 
-context(ctxsensoremitter, "localhost",  "TCP", "8133" ).  		 
+context(ctxradar, "localhost",  "TCP", "8010" ).  		 
+context(ctxsensoremitter, "localhost",  "TCP", "8045" ).  		 
 %%% -------------------------------------------
 qactor( radargui , ctxradar, "it.unibo.radargui.MsgHandle_Radargui"   ). %%store msgs 
 qactor( radargui_ctrl , ctxradar, "it.unibo.radargui.Radargui"   ). %%control-driven 
