@@ -58,7 +58,7 @@ QActor controller context ctxRadar -g yellow {
 	println("Sto aspettando un comando");
 	receiveMsg time ( 30000000 ) react event usercmd ->checkCmd ;
 	onMsg mqttmsg : mqttmsg -> actorOp retrieveAndSavePhoto ; //per la foto del robot
-	onMsg polar : p( Distance , SID ) -> actorOp evaluateExpr(numOfSonars(N)); //per i sonar 
+	onMsg polar : p( Distance , SID ) -> actorOp evaluateExpr(); //per i sonar 
 	[?? actorOpDone (OP ,"takePhoto")] switchToPlan moveToTakePhoto ; //se l'actor op del sonar mi dice che in pratica sono davanti ad un sonar
 	[?? actorOpDone (OP ,"alarm")] switchToPlan alarmSound ;//se la valutazione dell'espressione 
 	printCurrentMessage ;

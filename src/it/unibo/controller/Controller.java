@@ -3,35 +3,75 @@
 This code is generated only ONCE
  */
 package it.unibo.controller;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
 import it.unibo.is.interfaces.IOutputEnvView;
 import it.unibo.qactors.QActorContext;
+import it.unibo.qactors.QActorMessage;
 
 public class Controller extends AbstractController { 
-	public int DMIN=70;
-	public int num_of_sonar=3;
-	public int reached_sonar=1;
+	private Map<Integer, List<Integer>> values = new HashMap<>(); //SID, Distanza
+	private static final int DMIN=70;
+	private int num_of_sonar=3;
+	private int firstSensorNotReached=1;
+	private boolean robotStopped = false;
+	//private NewMqttUtils util;
 	public Controller(String actorId, QActorContext myCtx, IOutputEnvView outEnvView )  throws Exception{
 		super(actorId, myCtx, outEnvView);
 	}
 	
-	public String evaluateExpr(int lenghTSonar1,int lenghTSonar2,int lenghTSonar3){
+	public void initialization()
+	{
+		this.firstSensorNotReached=1;
+		this.robotStopped=false;
+		values.get(1).clear();
+		values.get(2).clear();
+	}
+	
+	
+	//I dati del sonar vengono presi dalla queue
+	public String evaluateExpr(){
 		System.out.println("Sto valutando l'espressione");
-		if(reached_sonar==4){
+		if(this.firstSensorNotReached==4){
 			return "alarm";
 		}
 		else{
+			QActorMessage msg = this.getMsgFromQueue();
+			int totalLenght=values.get(0).get(0)+values.get(1).get(0)+values.get(2).get(0);
+			if(this.firstSensorNotReached==2)
+				totalLenght=totalLenght-values.get(0).get(0);
+			if(firstSensorNotReached==3)
+				totalLenght=totalLenght-values.get(1).get(0);
 
-			int totalLenght=lenghTSonar1+lenghTSonar2+lenghTSonar3;
-			if(reached_sonar==2)
-				totalLenght=totalLenght-lenghTSonar1;
-			if(reached_sonar==3)
-				totalLenght=totalLenght-lenghTSonar2;
-
-			if(totalLenght/(num_of_sonar-reached_sonar+1)<DMIN){
-				reached_sonar++;
+			if((totalLenght/(num_of_sonar-this.firstSensorNotReached+1)<DMIN) && totalLenght!=0){
+				this.firstSensorNotReached++;
 				return "takePhoto";
 			}
 			return "";
 		}
 	}
+	//Decodifico l'immagine ricevuta come byte array in base64.
+	public void retrieveAndSavePhoto(){
+	MqttMessage msg = new MqttMessage();//util.getMsg();
+		byte[] photoByte=Base64.getDecoder().decode(msg.getPayload());
+	      BufferedImage image;
+		try {
+			image = ImageIO.read( new ByteArrayInputStream( photoByte ) );
+			ImageIO.write(image, "JPG", new File("imageReceived.jpg"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
