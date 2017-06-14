@@ -25,7 +25,7 @@ private it.unibo.qactor.robot.RobotActor robot;
 	public static void main(String[] args) throws Exception{
 			IOutputEnvView outEnvView = SituatedSysKb.standardOutEnvView;
 			it.unibo.qactors.QActorUtils.setRobotBase("robot0" );  
-		    String webDir = "./srcMore/it/unibo/ctxRobot";
+		    String webDir = null;
 			QActorContext.initQActorSystem(
 				"ctxrobot", "./srcMore/it/unibo/ctxRobot/robot.pl", 
 				"./srcMore/it/unibo/ctxRobot/sysRules.pl", outEnvView,webDir, false);
