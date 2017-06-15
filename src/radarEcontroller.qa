@@ -65,6 +65,8 @@ QActor controller context ctxRadar -g yellow {
 	repeatPlan
 	
 	Plan checkCmd
+	[ !? msg( MSGID, MSGTYPE, SENDER, RECEIVER, usercmd(robotgui(userstart)), SEQNUM )] println("CONSOLE: user start from web!!");
+	[ ?? msg( MSGID, MSGTYPE, SENDER, RECEIVER, usercmd(robotgui(userstart)), SEQNUM )] //MANDA IL MESSAGGIO AL ROBOT
 	[?? actorOpDone (OP ,"restart")] switchToPlan init ; // se gli ritorna il comando star, ricomincia
 	[?? actorOpDone (OP ,"stop")] switchToPlan stopTheRobot ;//stoppa il robot
 	resumeLastPlan
