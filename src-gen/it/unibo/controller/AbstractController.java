@@ -148,7 +148,7 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    		if( ! planUtils.switchToPlan("alarmSound").getGoon() ) break;
 	    		}
 	    		printCurrentMessage(false);
-	    		if( planUtils.repeatPlan(0,0).getGoon() ) continue;
+	    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
@@ -164,20 +164,16 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(MSGID,MSGTYPE,SENDER,RECEIVER,usercmd(robotgui(userstart)),SEQNUM)" )) != null ){
-	    		temporaryStr = "\"CONSOLE: user start from web!!\"";
-	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
-	    		println( temporaryStr );  
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(usercmd,\"event\",wsock,none,usercmd(robotgui(h(low))),N)" )) != null ){
+	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
 	    		}
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??msg(MSGID,MSGTYPE,SENDER,RECEIVER,usercmd(robotgui(userstart)),SEQNUM)" )) != null ){
-	    		temporaryStr = "\"CONSOLE: user start from web!!\"";
-	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
-	    		println( temporaryStr );  
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(usercmd,\"event\",wsock,none,usercmd(robotgui(h(low))),N)" )) != null ){
+	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
 	    		}
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP,\"restart\")" )) != null ){
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?actorOpDone(OP,\"restart\")" )) != null ){
 	    		if( ! planUtils.switchToPlan("init").getGoon() ) break;
 	    		}
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP,\"stop\")" )) != null ){
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?actorOpDone(OP,\"stop\")" )) != null ){
 	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
 	    		}
 	    		returnValue = continueWork; //we must restore nPlanIter and curPlanInExec of the 'interrupted' plan
