@@ -7,7 +7,7 @@
 System radargui     
 Event sonar : p( Distance, SID  ) 
 Event obstacle       : obstacle(X)   //from WebGUI red button X= near or from actor GUI
-Event usercmd        : usercmd    //from robot-part of WebGUI;  X=robotgui(CMD) CMD=s(low)
+Event usercmd        : usercmd(CMD)    //from robot-part of WebGUI;  X=robotgui(CMD) CMD=s(low)
 Event numOfSonar : numOfSonar( N )  
 Event stopRobot : stopRobot
 Event stopAndTakePhoto : stopAndTakePhoto
@@ -65,24 +65,26 @@ QActor controller context ctxRadar -g yellow {
 	printCurrentMessage ;
 	repeatPlan
 	
-	Plan checkCmd 
-		onEvent usercmd : usercmd( robotgui(h(S)) ) -> switchToPlan stopTheRobot ;
-		onEvent usercmd : usercmd( robotgui(w(S)) ) -> switchToPlan startTheRobot ;
+	Plan checkCmd resumeLastPlan
+		onEvent usercmd : usercmd(robotgui(h(S))) -> switchToPlan stopTheRobot ;
+		onEvent usercmd : usercmd(robotgui(w(S))) -> switchToPlan startTheRobot ;
+		println("prova") 
 	//[!? msg(usercmd,'event',wsock,none,usercmd(robotgui(h(low))),N)] switchToPlan init;
 	//[!? msg(usercmd,'event',wsock,none,usercmd(robotgui(w(low))),N)] switchToPlan stopTheRobot;//MANDA IL MESSAGGIO AL ROBOT
 	//[!? actorOpDone (OP ,"restart")] switchToPlan init ; // se gli ritorna il comando star, ricomincia
 	//[!? actorOpDone (OP ,"stop")] switchToPlan stopTheRobot ;//stoppa il robot
-	resumeLastPlan
 	
-	Plan startTheRobot 
+	
+	Plan startTheRobot
 		println("Start the robot!!!");
 		emit usercmd : usercmd(robotgui(w(S))) ;
-		resumeLastPlan
+		switchToPlan init
+		
 	
 	Plan stopTheRobot
 	println("Stop the robot!!!");
-	emit usercmd : usercmd(robotgui(h(S))) ; //manda un messaggio al robot per dire di fermarsi
-	resumeLastPlan
+	emit usercmd : usercmd(robotgui(h(S))) ;  //manda un messaggio al robot per dire di fermarsi
+	switchToPlan init
 	
 	Plan alarmSound
 	println("An alarm sound is playing !!!");
