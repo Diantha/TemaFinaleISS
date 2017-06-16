@@ -166,9 +166,9 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    while(true){
 	    nPlanIter++;
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(usercmd, \"event\" ,wsock,none,usercmd(robotgui(h(low))),N)" )) != null ){
-	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
+	    		if( ! planUtils.switchToPlan("init").getGoon() ) break;
 	    		}
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(usercmd, \"event\" ,wsock,none,usercmd(robotgui(h(low))),N)" )) != null ){
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(usercmd, \"event\" ,wsock,none,usercmd(robotgui(w(low))),N)" )) != null ){
 	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
 	    		}
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?actorOpDone(OP, \"restart\" )" )) != null ){

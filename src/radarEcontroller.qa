@@ -65,8 +65,8 @@ QActor controller context ctxRadar -g yellow {
 	repeatPlan
 	
 	Plan checkCmd
-	[!? msg(usercmd,'event',wsock,none,usercmd(robotgui(h(low))),N)] switchToPlan stopTheRobot;
-	[!? msg(usercmd,'event',wsock,none,usercmd(robotgui(h(low))),N)] switchToPlan stopTheRobot;//MANDA IL MESSAGGIO AL ROBOT
+	[!? msg(usercmd,'event',wsock,none,usercmd(robotgui(h(low))),N)] switchToPlan init;
+	[!? msg(usercmd,'event',wsock,none,usercmd(robotgui(w(low))),N)] switchToPlan stopTheRobot;//MANDA IL MESSAGGIO AL ROBOT
 	[!? actorOpDone (OP ,"restart")] switchToPlan init ; // se gli ritorna il comando star, ricomincia
 	[!? actorOpDone (OP ,"stop")] switchToPlan stopTheRobot ;//stoppa il robot
 	resumeLastPlan
