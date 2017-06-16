@@ -148,7 +148,7 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    		if( ! planUtils.switchToPlan("alarmSound").getGoon() ) break;
 	    		}
 	    		printCurrentMessage(false);
-	    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
+	    		if( planUtils.repeatPlan(0).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
@@ -164,12 +164,10 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(usercmd,\"event\",wsock,none,usercmd(robotgui(h(low))),N)" )) != null ){
-	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
-
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(usercmd, \"event\" ,wsock,none,usercmd(robotgui(w(low))),N)" )) != null ){
-
+	    		if( ! planUtils.switchToPlan("init").getGoon() ) break;
+	    		}
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(usercmd,\"event\",wsock,none,usercmd(robotgui(w(low))),N)" )) != null ){
 	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
 	    		}
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?actorOpDone(OP,\"restart\")" )) != null ){
