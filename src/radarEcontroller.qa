@@ -54,9 +54,10 @@ QActor controller context ctxRadar -g yellow {
 	 //setta tutti i vari parametri valori a 0
 
 	
+	
 	Plan work 
 	println("Sto aspettando un comando");
-	receiveMsg time ( 30000000 ) react event usercmd ->checkCmd ;
+	receiveMsg time ( 30000000 ) react event usercmd -> checkCmd ;
 	onMsg mqttmsg : mqttmsg -> actorOp retrieveAndSavePhoto ; //per la foto del robot
 	onMsg polar : p( Distance , SID ) -> actorOp evaluateExpr(); //per i sonar 
 	[?? actorOpDone (OP ,"takePhoto")] switchToPlan moveToTakePhoto ; //se l'actor op del sonar mi dice che in pratica sono davanti ad un sonar
@@ -64,16 +65,23 @@ QActor controller context ctxRadar -g yellow {
 	printCurrentMessage ;
 	repeatPlan
 	
-	Plan checkCmd
-	[!? msg(usercmd,'event',wsock,none,usercmd(robotgui(h(low))),N)] switchToPlan init;
-	[!? msg(usercmd,'event',wsock,none,usercmd(robotgui(w(low))),N)] switchToPlan stopTheRobot;//MANDA IL MESSAGGIO AL ROBOT
-	[!? actorOpDone (OP ,"restart")] switchToPlan init ; // se gli ritorna il comando star, ricomincia
-	[!? actorOpDone (OP ,"stop")] switchToPlan stopTheRobot ;//stoppa il robot
+	Plan checkCmd 
+		onEvent usercmd : usercmd( robotgui(h(S)) ) -> switchToPlan stopTheRobot ;
+		onEvent usercmd : usercmd( robotgui(w(S)) ) -> switchToPlan startTheRobot ;
+	//[!? msg(usercmd,'event',wsock,none,usercmd(robotgui(h(low))),N)] switchToPlan init;
+	//[!? msg(usercmd,'event',wsock,none,usercmd(robotgui(w(low))),N)] switchToPlan stopTheRobot;//MANDA IL MESSAGGIO AL ROBOT
+	//[!? actorOpDone (OP ,"restart")] switchToPlan init ; // se gli ritorna il comando star, ricomincia
+	//[!? actorOpDone (OP ,"stop")] switchToPlan stopTheRobot ;//stoppa il robot
 	resumeLastPlan
+	
+	Plan startTheRobot 
+		println("Start the robot!!!");
+		emit usercmd : usercmd(robotgui(w(S))) ;
+		resumeLastPlan
 	
 	Plan stopTheRobot
 	println("Stop the robot!!!");
-	emit stopRobot: stopRobot ; //manda un messaggio al robot per dire di fermarsi
+	emit usercmd : usercmd(robotgui(h(S))) ; //manda un messaggio al robot per dire di fermarsi
 	resumeLastPlan
 	
 	Plan alarmSound

@@ -164,24 +164,52 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(usercmd,\"event\",wsock,none,usercmd(robotgui(h(low))),N)" )) != null ){
-	    		if( ! planUtils.switchToPlan("init").getGoon() ) break;
-	    		}
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(usercmd,\"event\",wsock,none,usercmd(robotgui(w(low))),N)" )) != null ){
-	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
-	    		}
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?actorOpDone(OP,\"restart\")" )) != null ){
-	    		if( ! planUtils.switchToPlan("init").getGoon() ) break;
-	    		}
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?actorOpDone(OP,\"stop\")" )) != null ){
-	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
-	    		}
+	    		//onEvent
+	    		if( currentEvent.getEventId().equals("usercmd") ){
+	    		 		String parg = "";
+	    		 		/* SwitchPlan */
+	    		 		parg =  updateVars(  Term.createTerm("usercmd"), Term.createTerm("usercmd(robotgui(h(S)))"), 
+	    		 			    		  					Term.createTerm(currentEvent.getMsg()), parg);
+	    		 			if( parg != null ){
+	    		 				 if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break; 
+	    		 			}//else println("guard  fails");  //parg is null when there is no guard (onEvent)
+	    		 }
+	    		//onEvent
+	    		if( currentEvent.getEventId().equals("usercmd") ){
+	    		 		String parg = "";
+	    		 		/* SwitchPlan */
+	    		 		parg =  updateVars(  Term.createTerm("usercmd"), Term.createTerm("usercmd(robotgui(w(S)))"), 
+	    		 			    		  					Term.createTerm(currentEvent.getMsg()), parg);
+	    		 			if( parg != null ){
+	    		 				 if( ! planUtils.switchToPlan("startTheRobot").getGoon() ) break; 
+	    		 			}//else println("guard  fails");  //parg is null when there is no guard (onEvent)
+	    		 }
 	    		returnValue = continueWork; //we must restore nPlanIter and curPlanInExec of the 'interrupted' plan
 	    break;
 	    }//while
 	    return returnValue;
 	    }catch(Exception e){
 	       //println( getName() + " plan=checkCmd WARNING:" + e.getMessage() );
+	       QActorContext.terminateQActorSystem(this); 
+	       return false;  
+	    }
+	    }
+	    public boolean startTheRobot() throws Exception{	//public to allow reflection
+	    try{
+	    	curPlanInExec =  "startTheRobot";
+	    	boolean returnValue = suspendWork;
+	    while(true){
+	    nPlanIter++;
+	    		temporaryStr = "\"Start the robot!!!\"";
+	    		println( temporaryStr );  
+	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "usercmd","usercmd(robotgui(w(S)))", guardVars ).toString();
+	    		emit( "usercmd", temporaryStr );
+	    		returnValue = continueWork; //we must restore nPlanIter and curPlanInExec of the 'interrupted' plan
+	    break;
+	    }//while
+	    return returnValue;
+	    }catch(Exception e){
+	       //println( getName() + " plan=startTheRobot WARNING:" + e.getMessage() );
 	       QActorContext.terminateQActorSystem(this); 
 	       return false;  
 	    }
@@ -194,8 +222,8 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    nPlanIter++;
 	    		temporaryStr = "\"Stop the robot!!!\"";
 	    		println( temporaryStr );  
-	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "stopRobot","stopRobot", guardVars ).toString();
-	    		emit( "stopRobot", temporaryStr );
+	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "usercmd","usercmd(robotgui(h(S)))", guardVars ).toString();
+	    		emit( "usercmd", temporaryStr );
 	    		returnValue = continueWork; //we must restore nPlanIter and curPlanInExec of the 'interrupted' plan
 	    break;
 	    }//while
