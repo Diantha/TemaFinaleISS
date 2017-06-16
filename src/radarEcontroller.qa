@@ -18,7 +18,7 @@ Dispatch robotCommand : rc( Command )
 Dispatch mqttmsg : mqttmsg
 
 
-Context  ctxRadar    ip [ host="localhost"  port=8010 ] -standalone //192.168.251.1
+Context  ctxRadar    ip [ host="localhost"  port=8010 ] -httpserver //192.168.251.1
 //Context  ctxRadar    ip [ host="192.168.251.1"  port=8033 ] -g green -httpserver
 //Context  ctxRadar    ip [ host="192.168.251.1"  port=8033 ] -g green -httpserver
 Context  ctxSensorEmitter  ip [ host="localhost"  port=8045 ] /*"localhost"*/
@@ -65,8 +65,8 @@ QActor controller context ctxRadar -g yellow {
 	repeatPlan
 	
 	Plan checkCmd
-	[ !? msg( MSGID, MSGTYPE, SENDER, RECEIVER, usercmd(robotgui(userstart)), SEQNUM )] println("CONSOLE: user start from web!!");
-	[ ?? msg( MSGID, MSGTYPE, SENDER, RECEIVER, usercmd(robotgui(userstart)), SEQNUM )] println("CONSOLE: user start from web!!");//MANDA IL MESSAGGIO AL ROBOT
+	[!? msg( MSGID, MSGTYPE, SENDER, RECEIVER, usercmd(robotgui(userstart)), SEQNUM )] println("CONSOLE: user start from web!!");
+	[?? msg( MSGID, MSGTYPE, SENDER, RECEIVER, usercmd(robotgui(userstart)), SEQNUM )] println("CONSOLE: user start from web!!");//MANDA IL MESSAGGIO AL ROBOT
 	[?? actorOpDone (OP ,"restart")] switchToPlan init ; // se gli ritorna il comando star, ricomincia
 	[?? actorOpDone (OP ,"stop")] switchToPlan stopTheRobot ;//stoppa il robot
 	resumeLastPlan

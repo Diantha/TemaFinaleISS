@@ -128,7 +128,7 @@ protected IActorAction  action;
     		temporaryStr = " \"Waiting for a command...\" ";
     		println( temporaryStr );  
     		//senseEvent
-    		timeoutval = 30000;
+    		int timeoutval = 30000;
     		aar = planUtils.senseEvents( timeoutval,"usercmd,sonarArea","continue,continue",
     		"" , "",ActionExecMode.synch );
     		if( ! aar.getGoon() || aar.getTimeRemained() <= 0 ){
@@ -158,7 +158,7 @@ protected IActorAction  action;
     		 				 if( ! planUtils.switchToPlan("stop").getGoon() ) break; 
     		 			}//else println("guard  fails");  //parg is null when there is no guard (onEvent)
     		 }
-    		if( planUtils.repeatPlan(0).getGoon() ) continue;
+    		if( planUtils.repeatPlan(0, timeoutval).getGoon() ) continue;
     break;
     }//while
     return returnValue;
@@ -177,8 +177,8 @@ protected IActorAction  action;
     		temporaryStr = " \"Moving forward...\" ";
     		println( temporaryStr );  
     		//forward
-    		if( ! execRobotMove("moveForward","forward",40,0,20000, "usercmd,alarm,obstacle,sonarArea" , "checkUserCommand,stop,stop,handlePhotoShoot") ) break;
-    		if( planUtils.repeatPlan(0).getGoon() ) continue;
+    		if( null!= execRobotMove("moveForward","forward",40,0,20000, "usercmd,alarm,obstacle,sonarArea" , "checkUserCommand,stop,stop,handlePhotoShoot") ) break;
+    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
     break;
     }//while
     return returnValue;
@@ -221,7 +221,7 @@ protected IActorAction  action;
     while(true){
     nPlanIter++;
     		//stop
-    		if( ! execRobotMove("stop","stop",0,0,0, "" , "") ) break;
+    		if( null!= execRobotMove("stop","stop",0,0,0, "" , "") ) break;
     		temporaryStr = " \"Robot stopped!\" ";
     		println( temporaryStr );  
     		if( ! planUtils.switchToPlan("waiting").getGoon() ) break;
@@ -241,11 +241,11 @@ protected IActorAction  action;
     while(true){
     nPlanIter++;
     		//stop
-    		if( ! execRobotMove("handlePhotoShoot","stop",0,0,0, "" , "") ) break;
+    		if( null!= execRobotMove("handlePhotoShoot","stop",0,0,0, "" , "") ) break;
     		temporaryStr = " \"The robot is going to take a photo...\" ";
     		println( temporaryStr );  
     		//left
-    		if( ! execRobotMove("handlePhotoShoot","left",70,0,2000, "" , "") ) break;
+    		if( null!= execRobotMove("handlePhotoShoot","left",70,0,2000, "" , "") ) break;
     		if( (guardVars = QActorUtils.evalTheGuard(this, " !?pinLed(PIN)" )) != null ){
     		parg = "actorOp(startLedBlink)";
     		parg = QActorUtils.substituteVars(guardVars,parg);
@@ -258,7 +258,7 @@ protected IActorAction  action;
     		}
     		if( ! planUtils.switchToPlan("takeAndSendPhoto").getGoon() ) break;
     		//right
-    		if( ! execRobotMove("handlePhotoShoot","right",70,0,2000, "" , "") ) break;
+    		if( null!= execRobotMove("handlePhotoShoot","right",70,0,2000, "" , "") ) break;
     		parg = "actorOp(stopLedBlink)";
     		aar = solveGoalReactive(parg,3600000,"","");
     		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
@@ -333,9 +333,9 @@ protected IActorAction  action;
     while(true){
     nPlanIter++;
     		//forward
-    		if( ! execRobotMove("moveTowardsAreaB","forward",40,0,30000, "usercmd,obstacle" , "checkUserCommand,stop") ) break;
+    		if( null!= execRobotMove("moveTowardsAreaB","forward",40,0,30000, "usercmd,obstacle" , "checkUserCommand,stop") ) break;
     		//stop
-    		if( ! execRobotMove("moveTowardsAreaB","stop",10,0,0, "" , "") ) break;
+    		if( null!= execRobotMove("moveTowardsAreaB","stop",10,0,0, "" , "") ) break;
     		temporaryStr = " \"The robot has reached the area B!\" ";
     		println( temporaryStr );  
     		if( ! planUtils.switchToPlan("waiting").getGoon() ) break;
