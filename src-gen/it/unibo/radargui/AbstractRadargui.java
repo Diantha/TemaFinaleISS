@@ -128,7 +128,7 @@ public abstract class AbstractRadargui extends QActor implements IActivity{
 	    					if( ! aar.getGoon() ) break;
 	    				} 			
 	    			}
-	    		}if( planUtils.repeatPlan(0).getGoon() ) continue;
+	    		}if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
