@@ -1,4 +1,3 @@
-
 /* 
  * ==============================================================
  * radargui.qa
@@ -9,8 +8,8 @@ Event sonar : p( Distance, SID  )
 Event obstacle       : obstacle(X)   //from WebGUI red button X= near or from actor GUI
 Event usercmd        : usercmd(CMD)    //from robot-part of WebGUI;  X=robotgui(CMD) CMD=s(low)
 Event numOfSonar : numOfSonar( N )  
-Event stopRobot : stopRobot
-Event stopAndTakePhoto : stopAndTakePhoto
+Event alarm : alarm
+Event sonarArea : sonarArea
 
 
 Dispatch polar    : p( Distance, SID  )   //Distance, Angle 
@@ -47,21 +46,20 @@ QActor radargui context ctxRadar -g green {	  	/*( R2 )*/
 
 QActor controller context ctxRadar -g yellow {
 	Plan init normal
-	println("Start controller ");
+	println("Start controller");
 	actorOp initialization;
 	switchToPlan work
 	
 	 //setta tutti i vari parametri valori a 0
 
-	
-	
 	Plan work 
-	println("Sto aspettando un comando");
+	println("Sto aspettando un comando per partire");
 	receiveMsg time ( 30000000 ) react event usercmd -> checkCmd ;
 	onMsg mqttmsg : mqttmsg -> actorOp retrieveAndSavePhoto ; //per la foto del robot
 	onMsg polar : p( Distance , SID ) -> actorOp evaluateExpr(); //per i sonar 
-	[?? actorOpDone (OP ,"takePhoto")] switchToPlan moveToTakePhoto ; //se l'actor op del sonar mi dice che in pratica sono davanti ad un sonar
-	[?? actorOpDone (OP ,"alarm")] switchToPlan alarmSound ;//se la valutazione dell'espressione 
+	//[?? actorOpDone (OP ,"takePhoto")] switchToPlan moveToTakePhoto ; 
+	[?? actorOpDone (OP ,"alarm")] switchToPlan alarmSound ;//se l'actor op del sonar mi dice che in pratica sono davanti ad un sonar
+	[?? actorOpDone (OP ,"stop")] switchToPlan stopTheRobot ;
 	printCurrentMessage ;
 	repeatPlan
 	
@@ -77,8 +75,9 @@ QActor controller context ctxRadar -g yellow {
 	
 	Plan startTheRobot
 		println("Start the robot!!!");
-		emit usercmd : usercmd(robotgui(w(S))) ;
-		switchToPlan init
+		actorOp initialization;
+		emit usercmd : usercmd(robotgui(w(S)));
+		switchToPlan work
 		
 	
 	Plan stopTheRobot
@@ -89,11 +88,11 @@ QActor controller context ctxRadar -g yellow {
 	Plan alarmSound
 	println("An alarm sound is playing !!!");
 	sound time (3000) file ("./audio/illogical_most2 .mp3");
-	emit stopRobot: stopRobot ; //Il robot, come da requisiti dopo l'allarme si deve fermare
+	emit sonarArea : sonarArea ; //Il robot, come da requisiti dopo l'allarme si deve fermare anche perchè è giunto davanti ad un sonar 
 	resumeLastPlan
 	
 	Plan moveToTakePhoto  
-	emit stopAndTakePhoto : stopAndTakePhoto ;
+	emit sonarArea : sonarArea ;
 //	forward robot  -m robotCommand :rc( left );
 //	forward robot  -m robotCommand :rc( blinkLedStart );
 //	forward robot  -m robotCommand :rc( takePhoto );

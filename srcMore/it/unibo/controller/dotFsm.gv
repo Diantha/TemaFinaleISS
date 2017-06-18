@@ -18,14 +18,14 @@ digraph finite_state_machine {
   	
   	init -> work [ label = ""];
   	
-  	work -> moveToTakePhoto [ label = "mqttmsg/p(Distance,SID)/"];
   	work -> alarmSound [ label = "mqttmsg/p(Distance,SID)/"];
+  	work -> stopTheRobot [ label = "mqttmsg/p(Distance,SID)/"];
   	work -> work [ label = "mqttmsg/p(Distance,SID)/"];
   	
   	checkCmd -> stopTheRobot [ label = "usercmd(CMD)/"];
   	checkCmd -> startTheRobot [ label = "usercmd(CMD)/"];
   	
-  	startTheRobot -> init [ label = ""];
+  	startTheRobot -> work [ label = ""];
   	
   	stopTheRobot -> init [ label = ""];
 }

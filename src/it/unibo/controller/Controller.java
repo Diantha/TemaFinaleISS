@@ -35,8 +35,8 @@ public class Controller extends AbstractController {
 	{
 		this.firstSensorNotReached=1;
 		this.robotStopped=false;
-		values.get(1).clear();
-		values.get(2).clear();
+		this.values.get(1).clear();
+		this.values.get(2).clear();
 	}
 	
 	
@@ -44,7 +44,8 @@ public class Controller extends AbstractController {
 	public String evaluateExpr(){
 		System.out.println("Sto valutando l'espressione");
 		if(this.firstSensorNotReached==4){
-			return "alarm";
+			this.robotStopped=true;
+			return "stop";
 		}
 		else{
 			QActorMessage msg = this.getMsgFromQueue();
@@ -56,7 +57,7 @@ public class Controller extends AbstractController {
 
 			if((totalLenght/(num_of_sonar-this.firstSensorNotReached+1)<DMIN) && totalLenght!=0){
 				this.firstSensorNotReached++;
-				return "takePhoto";
+				return "alarm";
 			}
 			return "";
 		}
