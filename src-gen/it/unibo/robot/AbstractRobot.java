@@ -158,7 +158,7 @@ protected IActorAction  action;
     		 				 if( ! planUtils.switchToPlan("stop").getGoon() ) break; 
     		 			}//else println("guard  fails");  //parg is null when there is no guard (onEvent)
     		 }
-    		if( planUtils.repeatPlan(0, timeoutval).getGoon() ) continue;
+    		if(  planUtils.repeatPlan(0, nPlanIter).getGoon()  ) continue;
     break;
     }//while
     return returnValue;
@@ -178,7 +178,7 @@ protected IActorAction  action;
     		println( temporaryStr );  
     		//forward
     		if( null!= execRobotMove("moveForward","forward",40,0,20000, "usercmd,alarm,obstacle,sonarArea" , "checkUserCommand,stop,stop,handlePhotoShoot") ) break;
-    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
+    		if(  planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
     break;
     }//while
     return returnValue;
