@@ -36,7 +36,7 @@ public abstract class AbstractSensorsonar extends QActor {
 		public AbstractSensorsonar(String actorId, QActorContext myCtx, IOutputEnvView outEnvView )  throws Exception{
 			super(actorId, myCtx,  
 			"./srcMore/it/unibo/sensorsonar/WorldTheory.pl",
-			setTheEnv( outEnvView )  , "main");		
+			setTheEnv( outEnvView )  , "init");		
 			this.planFilePath = "./srcMore/it/unibo/sensorsonar/plans.txt";
 			//Plan interpretation is done in Prolog
 			//if(planFilePath != null) planUtils.buildPlanTable(planFilePath);
@@ -46,7 +46,7 @@ public abstract class AbstractSensorsonar extends QActor {
 			String name  = getName().replace("_ctrl", "");
 			mysupport = (IMsgQueue) QActorUtils.getQActor( name );
 	 		initSensorSystem();
-			boolean res = main();
+			boolean res = init();
 			//println(getName() + " doJob " + res );
 		} 
 		/* 
@@ -54,39 +54,41 @@ public abstract class AbstractSensorsonar extends QActor {
 		* PLANS
 		* ------------------------------------------------------------
 		*/
-	    public boolean main() throws Exception{	//public to allow reflection
-	    try{
-	    	curPlanInExec =  "main";
-	    	boolean returnValue = suspendWork;
-	    while(true){
-	    nPlanIter++;
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?onRaspberry" )) != null ){
-	    		if( ! planUtils.switchToPlan("init").getGoon() ) break;
-	    		}
-	    break;
-	    }//while
-	    return returnValue;
-	    }catch(Exception e){
-	       //println( getName() + " plan=main WARNING:" + e.getMessage() );
-	       QActorContext.terminateQActorSystem(this); 
-	       return false;  
-	    }
-	    }
 	    public boolean init() throws Exception{	//public to allow reflection
 	    try{
 	    	curPlanInExec =  "init";
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		parg = "actorOp(startSonarC)";
-	    		aar = solveGoalReactive(parg,3600000,"","");
+	    		temporaryStr = " \"sensorsonar STARTS\" ";
+	    		println( temporaryStr );  
+	    		parg = "setmyposition";
+	    		//tout=1 day (24 h)
+	    		aar = solveGoalReactive(parg,86400000,"","");
 	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
 	    		if( aar.getInterrupted() ){
 	    			curPlanInExec   = "init";
 	    			if( ! aar.getGoon() ) break;
 	    		} 			
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?actorOpDone" )) != null ){
-	    		if( ! planUtils.switchToPlan("work").getGoon() ) break;
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?position(POS)" )) != null ){
+	    		temporaryStr = "position(POS)";
+	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
+	    		println( temporaryStr );  
+	    		}
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?numSonars(N)" )) != null ){
+	    		temporaryStr = "numSonars(N)";
+	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
+	    		println( temporaryStr );  
+	    		}
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?numSonars(N)" )) != null ){
+	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "numOfSonar(N)","numOfSonar(N)", guardVars ).toString();
+	    		emit( "numOfSonar", temporaryStr );
+	    		}
+	    		if( ! planUtils.switchToPlan("workSimulate").getGoon() ) break;
+	    		temporaryStr = " \"sensorsonar workReal\" ";
+	    		println( temporaryStr );  
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?onRaspberry" )) != null ){
+	    		if( ! planUtils.switchToPlan("workReal").getGoon() ) break;
 	    		}
 	    break;
 	    }//while
@@ -97,9 +99,41 @@ public abstract class AbstractSensorsonar extends QActor {
 	       return false;  
 	    }
 	    }
-	    public boolean work() throws Exception{	//public to allow reflection
+	    public boolean workSimulate() throws Exception{	//public to allow reflection
 	    try{
-	    	curPlanInExec =  "work";
+	    	curPlanInExec =  "workSimulate";
+	    	boolean returnValue = suspendWork;
+	    while(true){
+	    nPlanIter++;
+	    		temporaryStr = " \"Work simulate\" ";
+	    		println( temporaryStr );  
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?p(DIST,SID)" )) != null ){
+	    		temporaryStr = "p(DIST,SID)";
+	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
+	    		println( temporaryStr );  
+	    		}
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??p(DIST,SID)" )) != null ){
+	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","p(DIST,SID)", guardVars ).toString();
+	    		emit( "sonar", temporaryStr );
+	    		}
+	    		//delay
+	    		aar = delayReactive(500,"" , "");
+	    		if( aar.getInterrupted() ) curPlanInExec   = "workSimulate";
+	    		if( ! aar.getGoon() ) break;
+	    		if( planUtils.repeatPlan(10, nPlanIter).getGoon() ) continue;
+	    		returnValue = continueWork;  
+	    break;
+	    }//while
+	    return returnValue;
+	    }catch(Exception e){
+	       //println( getName() + " plan=workSimulate WARNING:" + e.getMessage() );
+	       QActorContext.terminateQActorSystem(this); 
+	       return false;  
+	    }
+	    }
+	    public boolean workReal() throws Exception{	//public to allow reflection
+	    try{
+	    	curPlanInExec =  "workReal";
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
@@ -107,19 +141,26 @@ public abstract class AbstractSensorsonar extends QActor {
 	    		aar = solveGoalReactive(parg,3600000,"","");
 	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
 	    		if( aar.getInterrupted() ){
-	    			curPlanInExec   = "work";
+	    			curPlanInExec   = "workReal";
 	    			if( ! aar.getGoon() ) break;
 	    		} 			
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP,R)" )) != null ){
-	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","sonarData(R,ss)", guardVars ).toString();
-	    		emit( "sonarData", temporaryStr );
+	    		temporaryStr = " \"prima di emit\" ";
+	    		println( temporaryStr );  
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?p(DIST,SID)" )) != null ){
+	    		temporaryStr = "p(DIST,SID)";
+	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
+	    		println( temporaryStr );  
+	    		}
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??p(DIST,SID)" )) != null ){
+	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","p(DIST,SID)", guardVars ).toString();
+	    		emit( "sonar", temporaryStr );
 	    		}
 	    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
 	    }catch(Exception e){
-	       //println( getName() + " plan=work WARNING:" + e.getMessage() );
+	       //println( getName() + " plan=workReal WARNING:" + e.getMessage() );
 	       QActorContext.terminateQActorSystem(this); 
 	       return false;  
 	    }

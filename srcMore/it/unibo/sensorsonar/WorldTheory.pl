@@ -120,6 +120,23 @@ actorPrintln( X ):- actorobj(A), text_term(XS,X), A  <- println( XS ).
 %  User static rules about sensorsonar
 %------------------------------------------------- 
 onRaspberry.
+mysonar( s1,coloryellow,"192.168.251.118").
+p( 80,1).
+p( 70,1).
+p( 60,1).
+p( 50,3).
+p( 40,3).
+p( 30,3).
+p( 20,2).
+p( 40,2).
+p( 60,2).
+p( 80,2).
+sonar( s1,1).
+sonar( s2,2).
+sonar( s3,3).
+numOfSonars( N):-bagof( sonar( S,P),sonar( S,P),SonarList),length( SonarList,N).
+setmyposition:-numOfSonars( N),assert( numSonars( N)),mysonar( SONAR,_,_),sonar( SONAR,SID),assert( position( SID)).
+obstacledata( p( D,SID)):-actorOpDone( _,d( D)),position( SID).
 /*
 ------------------------------------------------------------------------
 testex :- actorPrintln( testex ),

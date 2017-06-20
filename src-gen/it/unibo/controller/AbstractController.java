@@ -130,7 +130,7 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    					} 			
 	    			}
 	    		}//onMsg
-	    		if( currentMessage.msgId().equals("polar") ){
+	    		if( currentMessage.msgId().equals("sonar") ){
 	    			String parg = "actorOp(evaluateExpr())";
 	    			parg =  updateVars( Term.createTerm("p(Distance,SID)"), Term.createTerm("p(Distance,SID)"), 
 	    				    		  					Term.createTerm(currentMessage.msgContent()), parg);

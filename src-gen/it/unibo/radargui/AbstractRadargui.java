@@ -118,9 +118,9 @@ public abstract class AbstractRadargui extends QActor implements IActivity{
 	    				//println(getName() + " received " + aar.getResult() );
 	    		printCurrentMessage(false);
 	    		//onMsg
-	    		if( currentMessage.msgId().equals("polar") ){
+	    		if( currentMessage.msgId().equals("sonar") ){
 	    			String parg = "actorOp(sendDataToGui(DIST,THETA))";
-	    			parg =  updateVars( Term.createTerm("p(Distance,SID)"), Term.createTerm("p(DIST,SID)"), 
+	    			parg =  updateVars( Term.createTerm("p(Distance,SID)"), Term.createTerm("p(Distance,SID)"), 
 	    				    		  					Term.createTerm(currentMessage.msgContent()), parg);
 	    			if( parg != null ){
 	    					aar = solveGoalReactive(parg,3600000,"","");

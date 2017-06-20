@@ -13,12 +13,13 @@ digraph finite_state_machine {
   	node [shape = point]; iniziale;
   	node [shape = doublecircle]; 
   	node [shape = circle];
-  	iniziale -> main [label = ""];
+  	iniziale -> init [label = ""];
   	
   	
-  	main -> init [ label = ""];
+  	init -> workSimulate [ label = ""];
+  	init -> workReal [ label = ""];
   	
-  	init -> work [ label = ""];
+  	workSimulate -> workSimulate [ label = ""];
   	
-  	work -> work [ label = ""];
+  	workReal -> workReal [ label = ""];
 }
