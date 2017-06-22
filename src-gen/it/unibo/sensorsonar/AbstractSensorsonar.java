@@ -163,7 +163,7 @@ public abstract class AbstractSensorsonar extends QActor {
 	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","p(Distance,SID)", guardVars ).toString();
 	    		emit( "sonar", temporaryStr );
 	    		}
-	    		if( planUtils.repeatPlan(0,nPlanIter).getGoon() ) continue;
+	    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
