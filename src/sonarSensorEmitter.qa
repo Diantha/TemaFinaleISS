@@ -89,7 +89,9 @@ Rules{
 		actorOp getDistanceFromSonar ;		//(1)
 //		[ !? obstacledata( VAL )] println( uuuuu(VAL) ) ;
 //		[ !? obstacledata( VAL )] emit sonar : VAL ;
-		println("prima di emit") ;
+		//println("prima di emit") ;
+		println(p(DIST, SID)) ;
+		emit sonar : p(DIST,SID) ;
   	 	[ !? p(DIST, SID) ] println(p(DIST, SID)) ;//else endPlan  "bye" 	//p(D,SID) does not work
 		[ ?? p(DIST, SID) ] emit sonar : p(DIST,SID) ;
 //		[ ?? actorOpDone(OP,R )] println(R)	;	//remove actorOpDone

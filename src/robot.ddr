@@ -9,7 +9,7 @@ RobotSystem robot
 Event obstacle  : obstacle(X)   /* From the console and from the sonar on the robot */
 Event alarm     : alarm         /* Emitted when distance from sonar is less than the threshold DMIN */
 Event usercmd   : usercmd(CMD)  /* From the user GUI */
-Event sonarArea : sonarArea(N)  /* From the console (which sensed it by the sonar subsystem) */
+Event sonarArea : sonarArea(K)  /* From the console (which sensed it by the sonar subsystem) */
 
 Context ctxRobot ip [ host="localhost"  port=8021 ] 
 Context ctxRadar ip [ host="localhost"  port=8010 ]
@@ -76,7 +76,7 @@ Robot robot0 QActor robot context ctxRobot{
 	/* Waiting state of the robot */
 	Plan waiting
 		println( "Waiting for a command..." ) ;
-		sense time(30000) usercmd, sonarArea -> continue, continue ;  /* Blocks the execution of the robot until the required event occurs or timeout happens */
+		sense time(30000) usercmd -> continue ;  /* Blocks the execution of the robot until the required event occurs or timeout happens */
 		[ !? tout(30000,Y) ] switchToPlan toutExpired ;
   		printCurrentEvent ;
 		onEvent usercmd : usercmd(robotgui(w(S))) -> switchToPlan moveForward ;  /* START/FORWARD command */
@@ -97,7 +97,7 @@ Robot robot0 QActor robot context ctxRobot{
 		println( "Checking user command..." ) ;
 		onEvent usercmd : usercmd(robotgui(h(S))) -> switchToPlan stop  /* STOP command */
 	
-	/* (Req. 1.a.iii) Stops the robot movements */
+	/* (Req. 1.a.iii) Stops the robot movements (usercmd or alarm or obstacle) */
 	Plan stop
 		robotStop speed(0) time(0) ;
 		println( "Robot stopped!" ) ;
@@ -109,7 +109,7 @@ Robot robot0 QActor robot context ctxRobot{
 		println( "The robot is going to take a photo..." ) ;
 		robotLeft speed(70) time(2000) ;  /* Rotate to the left */
 		[ !? pinLed( PIN ) ] actorOp startLedBlink ;  /* (Req. 1.c) Starts led blinking */
-		switchToPlan takeAndSendPhoto ;
+		switchToPlan sendPhoto ;
 		robotRight speed(70) time(2000) ;  /* Turn back on its original position */
 		actorOp stopLedBlink ;  /* Stop led blinking */
 		println( "Led stopped blinking" ) ;
@@ -117,8 +117,8 @@ Robot robot0 QActor robot context ctxRobot{
 		switchToPlan moveForward
 
 	/* (Req. 1.d) Takes a photo and sends it to the console */
-	Plan takeAndSendPhoto resumeLastPlan
-		[ !? msg( reachedSonarArea, 'event', controller, none, sonarArea(K), N) ] actorOp takeAndSendPhoto(K) ;
+	Plan sendPhoto resumeLastPlan
+		[ !? msg( reachedSonarArea, 'event', controller, none, sonarArea(K), N) ] actorOp sendPhotoToConsole(K) ;  /* Uso la guardia solo per sapere in quale area ho scattato la foto */
 		println( "Photo shooted and sent to the user!" )
 	
 	/* Checks which area the robot has reached */
@@ -127,7 +127,7 @@ Robot robot0 QActor robot context ctxRobot{
 	
 	/* The robot is going to reach the area B */
 	Plan moveTowardsAreaB
-		robotForward speed(40) time(30000) react event usercmd  -> checkUserCommand  /* A command from console arrives */
+		robotForward speed(40) time(3000) react event usercmd  -> checkUserCommand  /* A command from console arrives */
 											  or event obstacle -> stop ;  		     /* There is an obstacle */
 		robotStop speed(10) time(0) ;
 		println( "The robot has reached the area B!" ) ;
