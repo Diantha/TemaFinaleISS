@@ -9,5 +9,6 @@ qactor( radargui_ctrl , ctxradar, "it.unibo.radargui.Radargui"   ). %%control-dr
 qactor( controller , ctxradar, "it.unibo.controller.MsgHandle_Controller"   ). %%store msgs 
 qactor( controller_ctrl , ctxradar, "it.unibo.controller.Controller"   ). %%control-driven 
 %%% -------------------------------------------
+eventhandler(evh,ctxsensoremitter,"it.unibo.ctxSensorEmitter.Evh","sonar").  
 %%% -------------------------------------------
 
