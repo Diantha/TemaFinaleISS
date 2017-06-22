@@ -131,7 +131,7 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    			}
 	    		}//onEvent
 	    		if( currentEvent.getEventId().equals("sonar") ){
-	    		 		String parg = "actorOp(evaluateExpr())";
+	    		 		String parg = "actorOp(evaluateExpr)";
 	    		 		parg =  updateVars( Term.createTerm("p(Distance,SID)"), Term.createTerm("p(Distance,SID)"), 
 	    		 			    		  					Term.createTerm(currentEvent.getMsg()), parg);
 	    		 		if( parg != null ){
@@ -150,7 +150,7 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
 	    		}
 	    		printCurrentMessage(false);
-	    		if( planUtils.repeatPlan(0,nPlanIter).getGoon() ) continue;
+	    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
