@@ -149,7 +149,7 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    		if( ! planUtils.switchToPlan("stopTheRobot").getGoon() ) break;
 	    		}
 	    		printCurrentMessage(false);
-	    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
+	    		if( planUtils.repeatPlan(0,nPlanIter).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
