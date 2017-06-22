@@ -23,10 +23,9 @@ Context  ctxRadar    ip [ host="localhost"  port=8010 ] -httpserver //192.168.25
 Context  ctxSensorEmitter  ip [ host="localhost"  port=8045 ] /*"localhost"*/
 
 
-//EventHandler evh for sonar -print  {  //event => dispatch
-//	forwardEvent radargui -m polar;  
-//	forwardEvent controller -m polar
-//};  
+EventHandler evh for sonar -print {
+	memo currentEvent for controller
+};
 
 
 QActor radargui context ctxRadar -g green {	  	/*( R2 )*/  
@@ -54,9 +53,11 @@ QActor controller context ctxRadar -g yellow {
 
 	Plan work 
 	println("Sto aspettando un comando per partire");
+	onEvent sonar : p( Distance , SID ) -> println("Arrivato") ; 
 	receiveMsg time ( 30000000 ) react event usercmd -> checkCmd ;
 	onMsg mqttmsg : mqttmsg -> actorOp retrieveAndSavePhoto ; //per la foto del robot
-	onEvent sonar : p( Distance , SID ) -> actorOp evaluateExpr; //per i sonar 
+	//onEvent sonar : p( Distance , SID ) -> actorOp evaluateExpr; //per i sonar
+	
 	//[?? actorOpDone (OP ,"takePhoto")] switchToPlan moveToTakePhoto ; 
 	[?? actorOpDone (OP ,"alarm")] switchToPlan alarmSound ;//se l'actor op del sonar mi dice che in pratica sono davanti ad un sonar
 	[?? actorOpDone (OP ,"stop")] switchToPlan stopTheRobot ;

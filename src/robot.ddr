@@ -34,7 +34,7 @@ QActor robotsonar context ctxRobot {
  		println( "Sonar on robot starts working.")
  		
  	/* Simulates the sonar work */
- 	Plan simulateMode
+ 	Plan simulateMode resumeLastPlan
  		println( "Simulate mode" )
  	
  	/* Manages the real physic sonar */
@@ -137,5 +137,7 @@ Robot robot0 QActor robot context ctxRobot{
 	Plan toutExpired
 		println( tout(X,Y) )
 }
+
+
 
 

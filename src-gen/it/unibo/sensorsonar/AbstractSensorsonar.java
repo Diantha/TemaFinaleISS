@@ -60,16 +60,13 @@ public abstract class AbstractSensorsonar extends QActor {
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = " \"sensorsonar STARTS\" ";
+	    		temporaryStr = "\"sensorsonar STARTS\"";
 	    		println( temporaryStr );  
 	    		parg = "setmyposition";
 	    		//tout=1 day (24 h)
-	    		aar = solveGoalReactive(parg,86400000,"","");
-	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    		if( aar.getInterrupted() ){
-	    			curPlanInExec   = "init";
-	    			if( ! aar.getGoon() ) break;
-	    		} 			
+	    		//aar = solveGoalReactive(parg,86400000,"","");
+	    		//genCheckAar(m.name)»		
+	    		QActorUtils.solveGoal(parg,pengine );
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?position(POS)" )) != null ){
 	    		temporaryStr = "position(POS)";
 	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
@@ -85,9 +82,9 @@ public abstract class AbstractSensorsonar extends QActor {
 	    		emit( "numOfSonar", temporaryStr );
 	    		}
 	    		if( ! planUtils.switchToPlan("workSimulate").getGoon() ) break;
-	    		temporaryStr = " \"sensorsonar workReal\" ";
+	    		temporaryStr = "\"sensorsonar workReal\"";
 	    		println( temporaryStr );  
-	    		temporaryStr = " \"Sto per stampare una serie di valori\" ";
+	    		temporaryStr = "\"Sto per stampare una serie di valori\"";
 	    		println( temporaryStr );  
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?onRaspberry" )) != null ){
 	    		if( ! planUtils.switchToPlan("workReal").getGoon() ) break;
@@ -107,7 +104,7 @@ public abstract class AbstractSensorsonar extends QActor {
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = " \"Work simulate\" ";
+	    		temporaryStr = "\"Work simulate\"";
 	    		println( temporaryStr );  
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?p(DIST,SID)" )) != null ){
 	    		temporaryStr = "p(Distance,SID)";
@@ -140,12 +137,9 @@ public abstract class AbstractSensorsonar extends QActor {
 	    while(true){
 	    nPlanIter++;
 	    		parg = "actorOp(getDistanceFromSonar)";
-	    		aar = solveGoalReactive(parg,3600000,"","");
-	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    		if( aar.getInterrupted() ){
-	    			curPlanInExec   = "workReal";
-	    			if( ! aar.getGoon() ) break;
-	    		} 			
+	    		//aar = solveGoalReactive(parg,3600000,"","");
+	    		//genCheckAar(m.name)»
+	    		QActorUtils.solveGoal(parg,pengine );
 	    		//delay
 	    		aar = delayReactive(500,"" , "");
 	    		if( aar.getInterrupted() ) curPlanInExec   = "workReal";
@@ -163,7 +157,7 @@ public abstract class AbstractSensorsonar extends QActor {
 	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","p(Distance,SID)", guardVars ).toString();
 	    		emit( "sonar", temporaryStr );
 	    		}
-	    		if( planUtils.repeatPlan(0,nPlanIter).getGoon() ) continue;
+	    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;

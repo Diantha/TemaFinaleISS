@@ -78,7 +78,7 @@ protected IActorAction  action;
     	boolean returnValue = suspendWork;
     while(true){
     nPlanIter++;
-    		temporaryStr = " \"Ready to start!\" ";
+    		temporaryStr = "\"Ready to start!\"";
     		println( temporaryStr );  
     		if( ! planUtils.switchToPlan("connectToMqtt").getGoon() ) break;
     		if( ! planUtils.switchToPlan("waiting").getGoon() ) break;
@@ -97,15 +97,12 @@ protected IActorAction  action;
     	boolean returnValue = suspendWork;
     while(true){
     nPlanIter++;
-    		temporaryStr = " \"Connecting to MQTT server...\" ";
+    		temporaryStr = "\"Connecting to MQTT server...\"";
     		println( temporaryStr );  
-    		parg = "actorOp(connectToMqttServer( \"mqtt_robot_system\" , \"tcp://m2m.eclipse.org:1883\" , \"photo\" ))";
-    		aar = solveGoalReactive(parg,3600000,"","");
-    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-    		if( aar.getInterrupted() ){
-    			curPlanInExec   = "connectToMqtt";
-    			if( ! aar.getGoon() ) break;
-    		} 			
+    		parg = "actorOp(connectToMqttServer(\"mqtt_robot_system\",\"tcp://m2m.eclipse.org:1883\",\"photo\"))";
+    		//aar = solveGoalReactive(parg,3600000,"","");
+    		//genCheckAar(m.name)»
+    		QActorUtils.solveGoal(parg,pengine );
     		if( (guardVars = QActorUtils.evalTheGuard(this, " ??tout(X,Y)" )) != null ){
     		if( ! planUtils.switchToPlan("toutExpired").getGoon() ) break;
     		}
@@ -125,7 +122,7 @@ protected IActorAction  action;
     	boolean returnValue = suspendWork;
     while(true){
     nPlanIter++;
-    		temporaryStr = " \"Waiting for a command...\" ";
+    		temporaryStr = "\"Waiting for a command...\"";
     		println( temporaryStr );  
     		//senseEvent
     		int timeoutval = 30000;
@@ -143,6 +140,7 @@ protected IActorAction  action;
     		//onEvent
     		if( currentEvent.getEventId().equals("usercmd") ){
     		 		String parg = "";
+    		 		/* SwitchPlan */
     		 		parg =  updateVars(  Term.createTerm("usercmd(CMD)"), Term.createTerm("usercmd(robotgui(w(S)))"), 
     		 			    		  					Term.createTerm(currentEvent.getMsg()), parg);
     		 			if( parg != null ){
@@ -152,13 +150,14 @@ protected IActorAction  action;
     		//onEvent
     		if( currentEvent.getEventId().equals("usercmd") ){
     		 		String parg = "";
+    		 		/* SwitchPlan */
     		 		parg =  updateVars(  Term.createTerm("usercmd(CMD)"), Term.createTerm("usercmd(robotgui(h(S)))"), 
     		 			    		  					Term.createTerm(currentEvent.getMsg()), parg);
     		 			if( parg != null ){
     		 				 if( ! planUtils.switchToPlan("stop").getGoon() ) break; 
     		 			}//else println("guard  fails");  //parg is null when there is no guard (onEvent)
     		 }
-    		if( planUtils.repeatPlan(0,nPlanIter).getGoon() ) continue;
+    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
     break;
     }//while
     return returnValue;
@@ -174,11 +173,11 @@ protected IActorAction  action;
     	boolean returnValue = suspendWork;
     while(true){
     nPlanIter++;
-    		temporaryStr = " \"Moving forward...\" ";
+    		temporaryStr = "\"Moving forward...\"";
     		println( temporaryStr );  
     		//forward
-    		if(null !=execRobotMove("moveForward","forward",40,0,20000, "usercmd,alarm,obstacle,sonarArea" , "checkUserCommand,stop,stop,handlePhotoShoot") ) break;
-    		if( planUtils.repeatPlan(0,nPlanIter).getGoon() ) continue;
+    		if( null == execRobotMove("moveForward","forward",40,0,20000, "usercmd,alarm,obstacle,sonarArea" , "checkUserCommand,stop,stop,handlePhotoShoot") ) break;
+    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
     break;
     }//while
     return returnValue;
@@ -194,11 +193,12 @@ protected IActorAction  action;
     	boolean returnValue = suspendWork;
     while(true){
     nPlanIter++;
-    		temporaryStr = " \"Checking user command...\" ";
+    		temporaryStr = "\"Checking user command...\"";
     		println( temporaryStr );  
     		//onEvent
     		if( currentEvent.getEventId().equals("usercmd") ){
     		 		String parg = "";
+    		 		/* SwitchPlan */
     		 		parg =  updateVars(  Term.createTerm("usercmd(CMD)"), Term.createTerm("usercmd(robotgui(h(S)))"), 
     		 			    		  					Term.createTerm(currentEvent.getMsg()), parg);
     		 			if( parg != null ){
@@ -221,8 +221,8 @@ protected IActorAction  action;
     while(true){
     nPlanIter++;
     		//stop
-    		if(null !=execRobotMove("stop","stop",0,0,0, "" , "") ) break;
-    		temporaryStr = " \"Robot stopped!\" ";
+    		if( null == execRobotMove("stop","stop",0,0,0, "" , "") ) break;
+    		temporaryStr = "\"Robot stopped!\"";
     		println( temporaryStr );  
     		if( ! planUtils.switchToPlan("waiting").getGoon() ) break;
     break;
@@ -241,32 +241,26 @@ protected IActorAction  action;
     while(true){
     nPlanIter++;
     		//stop
-    		if(null !=execRobotMove("handlePhotoShoot","stop",0,0,0, "" , "") ) break;
-    		temporaryStr = " \"The robot is going to take a photo...\" ";
+    		if( null == execRobotMove("handlePhotoShoot","stop",0,0,0, "" , "") ) break;
+    		temporaryStr = "\"The robot is going to take a photo...\"";
     		println( temporaryStr );  
     		//left
-    		if(null !=execRobotMove("handlePhotoShoot","left",70,0,2000, "" , "") ) break;
+    		if( null == execRobotMove("handlePhotoShoot","left",70,0,2000, "" , "") ) break;
     		if( (guardVars = QActorUtils.evalTheGuard(this, " !?pinLed(PIN)" )) != null ){
     		parg = "actorOp(startLedBlink)";
     		parg = QActorUtils.substituteVars(guardVars,parg);
-    		aar = solveGoalReactive(parg,3600000,"","");
-    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-    		if( aar.getInterrupted() ){
-    			curPlanInExec   = "handlePhotoShoot";
-    			if( ! aar.getGoon() ) break;
-    		} 			
+    		//aar = solveGoalReactive(parg,3600000,"","");
+    		//genCheckAar(m.name)»
+    		QActorUtils.solveGoal(parg,pengine );
     		}
     		if( ! planUtils.switchToPlan("sendPhoto").getGoon() ) break;
     		//right
-    		if(null !=execRobotMove("handlePhotoShoot","right",70,0,2000, "" , "") ) break;
+    		if( null == execRobotMove("handlePhotoShoot","right",70,0,2000, "" , "") ) break;
     		parg = "actorOp(stopLedBlink)";
-    		aar = solveGoalReactive(parg,3600000,"","");
-    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-    		if( aar.getInterrupted() ){
-    			curPlanInExec   = "handlePhotoShoot";
-    			if( ! aar.getGoon() ) break;
-    		} 			
-    		temporaryStr = " \"Led stopped blinking\" ";
+    		//aar = solveGoalReactive(parg,3600000,"","");
+    		//genCheckAar(m.name)»
+    		QActorUtils.solveGoal(parg,pengine );
+    		temporaryStr = "\"Led stopped blinking\"";
     		println( temporaryStr );  
     		if( ! planUtils.switchToPlan("checkReachedArea").getGoon() ) break;
     		if( ! planUtils.switchToPlan("moveForward").getGoon() ) break;
@@ -285,17 +279,14 @@ protected IActorAction  action;
     	boolean returnValue = suspendWork;
     while(true){
     nPlanIter++;
-    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(reachedSonarArea, \"event\" ,controller,none,sonarArea(K),N)" )) != null ){
+    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(reachedSonarArea,\"event\",controller,none,sonarArea(K),N)" )) != null ){
     		parg = "actorOp(sendPhotoToConsole(K))";
     		parg = QActorUtils.substituteVars(guardVars,parg);
-    		aar = solveGoalReactive(parg,3600000,"","");
-    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-    		if( aar.getInterrupted() ){
-    			curPlanInExec   = "sendPhoto";
-    			if( ! aar.getGoon() ) break;
-    		} 			
+    		//aar = solveGoalReactive(parg,3600000,"","");
+    		//genCheckAar(m.name)»
+    		QActorUtils.solveGoal(parg,pengine );
     		}
-    		temporaryStr = " \"Photo shooted and sent to the user!\" ";
+    		temporaryStr = "\"Photo shooted and sent to the user!\"";
     		println( temporaryStr );  
     		returnValue = continueWork;  
     break;
@@ -313,7 +304,7 @@ protected IActorAction  action;
     	boolean returnValue = suspendWork;
     while(true){
     nPlanIter++;
-    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??msg(reachedSonarArea, \"event\" ,console,none,sonarArea(0),N)" )) != null ){
+    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??msg(reachedSonarArea,\"event\",console,none,sonarArea(0),N)" )) != null ){
     		if( ! planUtils.switchToPlan("moveTowardsAreaB").getGoon() ) break;
     		}
     		returnValue = continueWork;  
@@ -333,10 +324,10 @@ protected IActorAction  action;
     while(true){
     nPlanIter++;
     		//forward
-    		if(null !=execRobotMove("moveTowardsAreaB","forward",40,0,3000, "usercmd,obstacle" , "checkUserCommand,stop") ) break;
+    		if( null == execRobotMove("moveTowardsAreaB","forward",40,0,3000, "usercmd,obstacle" , "checkUserCommand,stop") ) break;
     		//stop
-    		if(null !=execRobotMove("moveTowardsAreaB","stop",10,0,0, "" , "") ) break;
-    		temporaryStr = " \"The robot has reached the area B!\" ";
+    		if( null == execRobotMove("moveTowardsAreaB","stop",10,0,0, "" , "") ) break;
+    		temporaryStr = "\"The robot has reached the area B!\"";
     		println( temporaryStr );  
     		if( ! planUtils.switchToPlan("waiting").getGoon() ) break;
     break;

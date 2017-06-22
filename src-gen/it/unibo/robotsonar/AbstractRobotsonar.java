@@ -76,21 +76,18 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		parg = "loadTheory( \"./robotSonarKB.pl\" )";
+	    		parg = "loadTheory(\"./robotSonarKB.pl\")";
 	    		//tout=1 day (24 h)
-	    		aar = solveGoalReactive(parg,86400000,"","");
-	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    		if( aar.getInterrupted() ){
-	    			curPlanInExec   = "init";
-	    			if( ! aar.getGoon() ) break;
-	    		} 			
+	    		//aar = solveGoalReactive(parg,86400000,"","");
+	    		//genCheckAar(m.name)»		
+	    		QActorUtils.solveGoal(parg,pengine );
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?simulate" )) != null ){
 	    		if( ! planUtils.switchToPlan("simulateMode").getGoon() ) break;
 	    		}
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?physicSonar" )) != null ){
 	    		if( ! planUtils.switchToPlan("realMode").getGoon() ) break;
 	    		}
-	    		temporaryStr = " \"Sonar on robot starts working.\" ";
+	    		temporaryStr = "\"Sonar on robot starts working.\"";
 	    		println( temporaryStr );  
 	    break;
 	    }//while
@@ -107,8 +104,9 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = " \"Simulate mode\" ";
+	    		temporaryStr = "\"Simulate mode\"";
 	    		println( temporaryStr );  
+	    		returnValue = continueWork;  
 	    break;
 	    }//while
 	    return returnValue;
@@ -124,15 +122,12 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = " \"Working with physic sonar\" ";
+	    		temporaryStr = "\"Working with physic sonar\"";
 	    		println( temporaryStr );  
 	    		parg = "actorOp(startRobotSonarC)";
-	    		aar = solveGoalReactive(parg,3600000,"","");
-	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    		if( aar.getInterrupted() ){
-	    			curPlanInExec   = "realMode";
-	    			if( ! aar.getGoon() ) break;
-	    		} 			
+	    		//aar = solveGoalReactive(parg,3600000,"","");
+	    		//genCheckAar(m.name)»
+	    		QActorUtils.solveGoal(parg,pengine );
 	    		if( ! planUtils.switchToPlan("working").getGoon() ) break;
 	    break;
 	    }//while
@@ -154,17 +149,14 @@ public abstract class AbstractRobotsonar extends QActor {
 	    		emit( "obstacle", temporaryStr );
 	    		}
 	    		parg = "actorOp(getDistanceFromSonar)";
-	    		aar = solveGoalReactive(parg,3600000,"","");
-	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    		if( aar.getInterrupted() ){
-	    			curPlanInExec   = "working";
-	    			if( ! aar.getGoon() ) break;
-	    		} 			
+	    		//aar = solveGoalReactive(parg,3600000,"","");
+	    		//genCheckAar(m.name)»
+	    		QActorUtils.solveGoal(parg,pengine );
 	    		//delay
 	    		aar = delayReactive(500,"" , "");
 	    		if( aar.getInterrupted() ) curPlanInExec   = "working";
 	    		if( ! aar.getGoon() ) break;
-	    		if( planUtils.repeatPlan(0,nPlanIter).getGoon() ) continue;
+	    		if( planUtils.repeatPlan(0, nPlanIter).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
@@ -180,7 +172,7 @@ public abstract class AbstractRobotsonar extends QActor {
 	    	boolean returnValue = suspendWork;
 	    while(true){
 	    nPlanIter++;
-	    		temporaryStr = " \"Prolog goal fails\" ";
+	    		temporaryStr = "\"Prolog goal fails\"";
 	    		println( temporaryStr );  
 	    		returnValue = continueWork;  
 	    break;

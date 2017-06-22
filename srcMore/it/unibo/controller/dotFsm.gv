@@ -18,9 +18,9 @@ digraph finite_state_machine {
   	
   	init -> work [ label = ""];
   	
-  	work -> alarmSound [ label = "mqttmsg/p(Distance,SID)/"];
-  	work -> stopTheRobot [ label = "mqttmsg/p(Distance,SID)/"];
-  	work -> work [ label = "mqttmsg/p(Distance,SID)/"];
+  	work -> alarmSound [ label = "p(Distance,SID)/mqttmsg/"];
+  	work -> stopTheRobot [ label = "p(Distance,SID)/mqttmsg/"];
+  	work -> work [ label = "p(Distance,SID)/mqttmsg/"];
   	
   	checkCmd -> stopTheRobot [ label = "usercmd(CMD)/"];
   	checkCmd -> startTheRobot [ label = "usercmd(CMD)/"];
