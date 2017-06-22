@@ -87,6 +87,8 @@ public abstract class AbstractSensorsonar extends QActor {
 	    		if( ! planUtils.switchToPlan("workSimulate").getGoon() ) break;
 	    		temporaryStr = " \"sensorsonar workReal\" ";
 	    		println( temporaryStr );  
+	    		temporaryStr = " \"Sto per stampare una serie di valori\" ";
+	    		println( temporaryStr );  
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?onRaspberry" )) != null ){
 	    		if( ! planUtils.switchToPlan("workReal").getGoon() ) break;
 	    		}
@@ -108,12 +110,12 @@ public abstract class AbstractSensorsonar extends QActor {
 	    		temporaryStr = " \"Work simulate\" ";
 	    		println( temporaryStr );  
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?p(DIST,SID)" )) != null ){
-	    		temporaryStr = "p(DIST,SID)";
+	    		temporaryStr = "p(Distance,SID)";
 	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
 	    		println( temporaryStr );  
 	    		}
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??p(DIST,SID)" )) != null ){
-	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","p(DIST,SID)", guardVars ).toString();
+	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","p(Distance,SID)", guardVars ).toString();
 	    		emit( "sonar", temporaryStr );
 	    		}
 	    		//delay
@@ -144,15 +146,21 @@ public abstract class AbstractSensorsonar extends QActor {
 	    			curPlanInExec   = "workReal";
 	    			if( ! aar.getGoon() ) break;
 	    		} 			
-	    		temporaryStr = " \"prima di emit\" ";
+	    		//delay
+	    		aar = delayReactive(500,"" , "");
+	    		if( aar.getInterrupted() ) curPlanInExec   = "workReal";
+	    		if( ! aar.getGoon() ) break;
+	    		temporaryStr = "p(Distance,SID)";
 	    		println( temporaryStr );  
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?p(DIST,SID)" )) != null ){
-	    		temporaryStr = "p(DIST,SID)";
+	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","p(Distance,SID)", guardVars ).toString();
+	    		emit( "sonar", temporaryStr );
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " !?p(Distance,SID)" )) != null ){
+	    		temporaryStr = "p(Distance,SID)";
 	    		temporaryStr = QActorUtils.substituteVars(guardVars,temporaryStr);
 	    		println( temporaryStr );  
 	    		}
-	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??p(DIST,SID)" )) != null ){
-	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","p(DIST,SID)", guardVars ).toString();
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??p(Distance,SID)" )) != null ){
+	    		temporaryStr = QActorUtils.unifyMsgContent(pengine, "p(Distance,SID)","p(Distance,SID)", guardVars ).toString();
 	    		emit( "sonar", temporaryStr );
 	    		}
 	    		if( planUtils.repeatPlan(0,nPlanIter).getGoon() ) continue;

@@ -129,7 +129,7 @@ protected IActorAction  action;
     		println( temporaryStr );  
     		//senseEvent
     		int timeoutval = 30000;
-    		aar = planUtils.senseEvents( timeoutval,"usercmd,sonarArea","continue,continue",
+    		aar = planUtils.senseEvents( timeoutval,"usercmd","continue",
     		"" , "",ActionExecMode.synch );
     		if( ! aar.getGoon() || aar.getTimeRemained() <= 0 ){
     			//println("			WARNING: sense timeout");
@@ -177,7 +177,7 @@ protected IActorAction  action;
     		temporaryStr = " \"Moving forward...\" ";
     		println( temporaryStr );  
     		//forward
-    		if( null!= execRobotMove("moveForward","forward",40,0,20000, "usercmd,alarm,obstacle,sonarArea" , "checkUserCommand,stop,stop,handlePhotoShoot") ) break;
+    		if(null !=execRobotMove("moveForward","forward",40,0,20000, "usercmd,alarm,obstacle,sonarArea" , "checkUserCommand,stop,stop,handlePhotoShoot") ) break;
     		if( planUtils.repeatPlan(0,nPlanIter).getGoon() ) continue;
     break;
     }//while
@@ -221,7 +221,7 @@ protected IActorAction  action;
     while(true){
     nPlanIter++;
     		//stop
-    		if( null!= execRobotMove("stop","stop",0,0,0, "" , "") ) break;
+    		if(null !=execRobotMove("stop","stop",0,0,0, "" , "") ) break;
     		temporaryStr = " \"Robot stopped!\" ";
     		println( temporaryStr );  
     		if( ! planUtils.switchToPlan("waiting").getGoon() ) break;
@@ -241,11 +241,11 @@ protected IActorAction  action;
     while(true){
     nPlanIter++;
     		//stop
-    		if( null!= execRobotMove("handlePhotoShoot","stop",0,0,0, "" , "") ) break;
+    		if(null !=execRobotMove("handlePhotoShoot","stop",0,0,0, "" , "") ) break;
     		temporaryStr = " \"The robot is going to take a photo...\" ";
     		println( temporaryStr );  
     		//left
-    		if( null!= execRobotMove("handlePhotoShoot","left",70,0,2000, "" , "") ) break;
+    		if(null !=execRobotMove("handlePhotoShoot","left",70,0,2000, "" , "") ) break;
     		if( (guardVars = QActorUtils.evalTheGuard(this, " !?pinLed(PIN)" )) != null ){
     		parg = "actorOp(startLedBlink)";
     		parg = QActorUtils.substituteVars(guardVars,parg);
@@ -256,9 +256,9 @@ protected IActorAction  action;
     			if( ! aar.getGoon() ) break;
     		} 			
     		}
-    		if( ! planUtils.switchToPlan("takeAndSendPhoto").getGoon() ) break;
+    		if( ! planUtils.switchToPlan("sendPhoto").getGoon() ) break;
     		//right
-    		if( null!= execRobotMove("handlePhotoShoot","right",70,0,2000, "" , "") ) break;
+    		if(null !=execRobotMove("handlePhotoShoot","right",70,0,2000, "" , "") ) break;
     		parg = "actorOp(stopLedBlink)";
     		aar = solveGoalReactive(parg,3600000,"","");
     		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
@@ -279,19 +279,19 @@ protected IActorAction  action;
        return false;  
     }
     }
-    public boolean takeAndSendPhoto() throws Exception{	//public to allow reflection
+    public boolean sendPhoto() throws Exception{	//public to allow reflection
     try{
-    	curPlanInExec =  "takeAndSendPhoto";
+    	curPlanInExec =  "sendPhoto";
     	boolean returnValue = suspendWork;
     while(true){
     nPlanIter++;
     		if( (guardVars = QActorUtils.evalTheGuard(this, " !?msg(reachedSonarArea, \"event\" ,controller,none,sonarArea(K),N)" )) != null ){
-    		parg = "actorOp(takeAndSendPhoto(K))";
+    		parg = "actorOp(sendPhotoToConsole(K))";
     		parg = QActorUtils.substituteVars(guardVars,parg);
     		aar = solveGoalReactive(parg,3600000,"","");
     		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
     		if( aar.getInterrupted() ){
-    			curPlanInExec   = "takeAndSendPhoto";
+    			curPlanInExec   = "sendPhoto";
     			if( ! aar.getGoon() ) break;
     		} 			
     		}
@@ -302,7 +302,7 @@ protected IActorAction  action;
     }//while
     return returnValue;
     }catch(Exception e){
-       //println( getName() + " plan=takeAndSendPhoto WARNING:" + e.getMessage() );
+       //println( getName() + " plan=sendPhoto WARNING:" + e.getMessage() );
        QActorContext.terminateQActorSystem(this); 
        return false;  
     }
@@ -333,9 +333,9 @@ protected IActorAction  action;
     while(true){
     nPlanIter++;
     		//forward
-    		if( null!= execRobotMove("moveTowardsAreaB","forward",40,0,30000, "usercmd,obstacle" , "checkUserCommand,stop") ) break;
+    		if(null !=execRobotMove("moveTowardsAreaB","forward",40,0,3000, "usercmd,obstacle" , "checkUserCommand,stop") ) break;
     		//stop
-    		if( null!= execRobotMove("moveTowardsAreaB","stop",10,0,0, "" , "") ) break;
+    		if(null !=execRobotMove("moveTowardsAreaB","stop",10,0,0, "" , "") ) break;
     		temporaryStr = " \"The robot has reached the area B!\" ";
     		println( temporaryStr );  
     		if( ! planUtils.switchToPlan("waiting").getGoon() ) break;

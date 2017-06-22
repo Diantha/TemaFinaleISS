@@ -129,20 +129,21 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    						if( ! aar.getGoon() ) break;
 	    					} 			
 	    			}
-	    		}//onMsg
-	    		if( currentMessage.msgId().equals("sonar") ){
-	    			String parg = "actorOp(evaluateExpr())";
-	    			parg =  updateVars( Term.createTerm("p(Distance,SID)"), Term.createTerm("p(Distance,SID)"), 
-	    				    		  					Term.createTerm(currentMessage.msgContent()), parg);
-	    			if( parg != null ){
-	    					aar = solveGoalReactive(parg,3600000,"","");
-	    					//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    					if( aar.getInterrupted() ){
-	    						curPlanInExec   = "work";
-	    						if( ! aar.getGoon() ) break;
-	    					} 			
-	    			}
-	    		}if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP, \"alarm\" )" )) != null ){
+	    		}//onEvent
+	    		if( currentEvent.getEventId().equals("sonar") ){
+	    		 		String parg = "actorOp(evaluateExpr())";
+	    		 		parg =  updateVars( Term.createTerm("p(Distance,SID)"), Term.createTerm("p(Distance,SID)"), 
+	    		 			    		  					Term.createTerm(currentEvent.getMsg()), parg);
+	    		 		if( parg != null ){
+	    		 				aar = solveGoalReactive(parg,3600000,"","");
+	    		 				//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    		 				if( aar.getInterrupted() ){
+	    		 					curPlanInExec   = "work";
+	    		 					if( ! aar.getGoon() ) break;
+	    		 				} 			
+	    		 		}
+	    		 }
+	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP, \"alarm\" )" )) != null ){
 	    		if( ! planUtils.switchToPlan("alarmSound").getGoon() ) break;
 	    		}
 	    		if( (guardVars = QActorUtils.evalTheGuard(this, " ??actorOpDone(OP, \"stop\" )" )) != null ){

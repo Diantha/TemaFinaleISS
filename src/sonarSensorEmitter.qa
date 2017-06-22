@@ -77,21 +77,25 @@ Rules{
  		[ !? numSonars(N) ]  println( numSonars(N) );
  		[ !? numSonars(N) ]  emit numOfSonar : numOfSonar(N) ;
  		switchToPlan workSimulate ;
-  		println("sensorsonar workReal")  ;       
+  		println("sensorsonar workReal")  ; 
+  		println("Sto per stampare una serie di valori");      
   		[ !? onRaspberry ] switchToPlan workReal
  	Plan workSimulate   resumeLastPlan  
  		println("Work simulate");
-  	 	[ !? p(DIST, SID) ] println(p(DIST, SID)) ;//else endPlan  "bye" 	//p(D,SID) does not work
-		[ ?? p(DIST, SID) ] emit sonar : p(DIST,SID) ;
+  	 	[ !? p(DIST, SID) ] println(p(Distance, SID)) ;//else endPlan  "bye" 	//p(D,SID) does not work
+		[ ?? p(DIST, SID) ] emit sonar : p(Distance,SID) ;
 		delay time(500) ;
 		repeatPlan 10	 	
 	Plan workReal 
 		actorOp getDistanceFromSonar ;		//(1)
 //		[ !? obstacledata( VAL )] println( uuuuu(VAL) ) ;
 //		[ !? obstacledata( VAL )] emit sonar : VAL ;
-		println("prima di emit") ;
-  	 	[ !? p(DIST, SID) ] println(p(DIST, SID)) ;//else endPlan  "bye" 	//p(D,SID) does not work
-		[ ?? p(DIST, SID) ] emit sonar : p(DIST,SID) ;
+		//println("prima di emit") ;
+		delay time(500) ;
+		println(p(Distance, SID)) ;
+		emit sonar : p(Distance,SID) ;
+  	 	[ !? p(Distance, SID) ] println(p(Distance, SID)) ;//else endPlan  "bye" 	//p(D,SID) does not work
+		[ ?? p(Distance, SID) ] emit sonar : p(Distance,SID) ;
 //		[ ?? actorOpDone(OP,R )] println(R)	;	//remove actorOpDone
   		repeatPlan
 }
