@@ -15,7 +15,7 @@ import it.unibo.qactors.action.IActorAction.ActionExecMode;
 import it.unibo.qactors.action.IMsgQueue;
 import it.unibo.qactors.akka.QActor;
 
-//aa
+
 //REGENERATE AKKA: QActor instead QActorPlanned
 public abstract class AbstractSensorsonar extends QActor { 
 	protected AsynchActionResult aar = null;
