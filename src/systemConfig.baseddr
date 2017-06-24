@@ -27,7 +27,7 @@ Mainrobot mocksimple [ motors ]
  * ===================================
  */
  
-RobotBase robot0               
+RobotBase robot0
 //BASIC
 motorleft = Motor [ gpiomotor pincw 8 pinccw 9 ] position: LEFT
 motorright = Motor [ gpiomotor pincw 12 pinccw 13 ] position: RIGHT

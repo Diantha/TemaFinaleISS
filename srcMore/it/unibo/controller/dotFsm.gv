@@ -13,19 +13,26 @@ digraph finite_state_machine {
   	node [shape = point]; iniziale;
   	node [shape = doublecircle]; 
   	node [shape = circle];
-  	iniziale -> init [label = ""];
+  	iniziale -> main [label = ""];
   	
   	
-  	init -> work [ label = ""];
+  	main -> init [ label = ""];
+  	main -> work [ label = ""];
   	
-  	work -> alarmSound [ label = "p(Distance,SID)/mqttmsg/"];
-  	work -> stopTheRobot [ label = "p(Distance,SID)/mqttmsg/"];
-  	work -> work [ label = "p(Distance,SID)/mqttmsg/"];
+  	work -> work [ label = ""];
+  	work -> checkUserCommand [ label = "usercmd(CMD)/"];
+  	work -> checkSonarData [ label = "p(Distance,Angle)/"];
   	
-  	checkCmd -> stopTheRobot [ label = "usercmd(CMD)/"];
-  	checkCmd -> startTheRobot [ label = "usercmd(CMD)/"];
+  	checkSonarData -> playAlarm [ label = ""];
+  	checkSonarData -> stopRobot [ label = ""];
   	
-  	startTheRobot -> work [ label = ""];
+  	playAlarm -> init [ label = ""];
+  	playAlarm -> work [ label = ""];
   	
-  	stopTheRobot -> init [ label = ""];
+  	checkUserCommand -> stopRobot [ label = "usercmd(CMD)/"];
+  	checkUserCommand -> moveRobot [ label = "usercmd(CMD)/"];
+  	
+  	moveRobot -> init [ label = ""];
+  	
+  	stopRobot -> work [ label = ""];
 }

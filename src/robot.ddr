@@ -6,7 +6,7 @@
 
 RobotSystem robot
 
-Event obstacle  : obstacle(X)   /* From the console and from the sonar on the robot */
+Event obstacle  : obstacle(X)   /* From the controller */
 Event alarm     : alarm         /* Emitted when distance from sonar is less than the threshold DMIN */
 Event usercmd   : usercmd(CMD)  /* From the user GUI */
 Event sonarArea : sonarArea(K)  /* From the console (which sensed it by the sonar subsystem) */
@@ -54,13 +54,13 @@ QActor robotsonar context ctxRobot {
 		println( "Prolog goal fails" ) 
 }
 
-
 /* ROBOT */
-Robot robot0 QActor robot context ctxRobot{
+Robot robot0 QActor robot context ctxRobot {
 
 	Rules {
 		pinLed(18).
 	}
+	
 	/* First plan */
    	Plan main normal
  		println( "Ready to start!") ;
@@ -137,7 +137,3 @@ Robot robot0 QActor robot context ctxRobot{
 	Plan toutExpired
 		println( tout(X,Y) )
 }
-
-
-
-

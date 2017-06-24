@@ -3,52 +3,11 @@
 This code is generated only ONCE
 */
 package it.unibo.sensorsonar;
-import java.io.BufferedReader;
-
 import it.unibo.is.interfaces.IOutputEnvView;
 import it.unibo.qactors.QActorContext;
 
 public class Sensorsonar extends AbstractSensorsonar { 
-	
-	protected BufferedReader readerC;
-	protected String distance = ""; //d(  distance  )
-	protected int counter = 1;
-	
 	public Sensorsonar(String actorId, QActorContext myCtx, IOutputEnvView outEnvView )  throws Exception{
 		super(actorId, myCtx, outEnvView);
-		//startSonarC();
 	}
-	
-	public void startSonarC(){
-  		try {
-  	  		//Execute a C program that generates the sonar values
-			Process p = Runtime.getRuntime().exec("sudo ./SonarAlone");
-			readerC   = new BufferedReader(new java.io.InputStreamReader(p.getInputStream()));
-			println("Process in C STARTED "  +  readerC);
-		} catch (Exception e) {
- 			e.printStackTrace();
-		}		
-	}	
-	public int getDistanceFromSonar(){
-		try {
-		//	String inpS = readerC.readLine();
-		//	distance = "data( "+ counter++ + ", distance, d("+inpS+") )";  
-			
-			
-			//this.addRule("obstacledata("+ inpS +")" );
-			//int inpSInt = Integer.parseInt(inpS);
-			//this.emit("sonar", "p("+inpSInt + ","+mID+")");
-			
-			
-		//	int inpSInt = Integer.parseInt(inpS);
-		//	return inpSInt;
-			this.counter++;
-			return 15+counter;
-			//return distance;
-		} catch (Exception e) {
-			System.out.println("EXCEPTION " + e.getMessage());
- 			e.printStackTrace();
- 			return 0;//"data( "+ counter++ + ", distance, d(0) )"; 
-		}
-	}	
 }

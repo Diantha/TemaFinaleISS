@@ -13,10 +13,10 @@ digraph finite_state_machine {
   	node [shape = point]; iniziale;
   	node [shape = doublecircle]; 
   	node [shape = circle];
-  	iniziale -> init [label = ""];
+  	iniziale -> main [label = ""];
   	
   	
-  	init -> doWorkMsgs [ label = ""];
+  	main -> doWorkMsgs [ label = ""];
   	
-  	doWorkMsgs -> doWorkMsgs [ label = "p(Distance,SID)/"];
+  	doWorkMsgs -> doWorkMsgs [ label = "p(Distance,Angle)/"];
 }

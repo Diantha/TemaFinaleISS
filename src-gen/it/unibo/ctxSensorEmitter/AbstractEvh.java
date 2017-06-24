@@ -21,7 +21,16 @@ protected IEventItem event;
 //showMsg( "---------------------------------------------------------------------" );	
 showMsg( event.getPrologRep()  );				 
 //showMsg( "---------------------------------------------------------------------" );	
-		QActorUtils.getQActor("controller_ctrl").addRule(event.getDefaultRep());
+		{
+		Term msgt       = Term.createTerm(event.getMsg());
+		Term msgPattern = Term.createTerm("p(Distance,Angle)");
+				boolean b = this.pengine.unify(msgt, msgPattern);
+				if( b ) {
+			  		sendMsg("polar","radargui", QActorContext.dispatch, msgt.toString() ); 
+				}else{
+					println("non unifiable");
+				}
+		}
 	}//handleCurrentEvent
 	
 	@Override

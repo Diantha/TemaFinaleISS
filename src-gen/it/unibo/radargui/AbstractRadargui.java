@@ -44,7 +44,7 @@ public abstract class AbstractRadargui extends QActor implements IActivity{
 		public AbstractRadargui(String actorId, QActorContext myCtx, IOutputEnvView outEnvView )  throws Exception{
 			super(actorId, myCtx,  
 			"./srcMore/it/unibo/radargui/WorldTheory.pl",
-			setTheEnv( outEnvView )  , "init");		
+			setTheEnv( outEnvView )  , "main");		
 			addInputPanel(80);
 			addCmdPanels();	
 			this.planFilePath = "./srcMore/it/unibo/radargui/plans.txt";
@@ -62,75 +62,79 @@ public abstract class AbstractRadargui extends QActor implements IActivity{
 		@Override
 		protected void doJob() throws Exception {
 			String name  = getName().replace("_ctrl", "");
-			mysupport = (IMsgQueue) QActorUtils.getQActor( name );
+			mysupport = (IMsgQueue) QActorUtils.getQActor( name ); 
 	 		initSensorSystem();
-			boolean res = init();
+			boolean res = main();
 			//println(getName() + " doJob " + res );
+			QActorContext.terminateQActorSystem(this);
 		} 
 		/* 
 		* ------------------------------------------------------------
 		* PLANS
 		* ------------------------------------------------------------
 		*/
-	    public boolean init() throws Exception{	//public to allow reflection
+	    public boolean main() throws Exception{	//public to allow reflection
 	    try{
-	    	curPlanInExec =  "init";
-	    	boolean returnValue = suspendWork;
+	    	int nPlanIter = 0;
+	    	//curPlanInExec =  "main";
+	    	boolean returnValue = suspendWork;		//MARCHH2017
 	    while(true){
-	    nPlanIter++;
-	    		temporaryStr = " \"RADAR init the GUI ... \" ";
+	    	curPlanInExec =  "main";	//within while since it can be lost by switchlan
+	    	nPlanIter++;
+	    		temporaryStr = "\"Starting the radar GUI...\"";
 	    		println( temporaryStr );  
 	    		parg = "actorOp(activateGui)";
 	    		aar = solveGoalReactive(parg,3600000,"","");
 	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
 	    		if( aar.getInterrupted() ){
-	    			curPlanInExec   = "init";
+	    			curPlanInExec   = "main";
+	    			if( aar.getTimeRemained() <= 0 ) addRule("tout(actorOp,"+getName()+")");
 	    			if( ! aar.getGoon() ) break;
 	    		} 			
+	    		//QActorUtils.solveGoal(parg,pengine );
 	    		if( ! planUtils.switchToPlan("doWorkMsgs").getGoon() ) break;
 	    break;
 	    }//while
 	    return returnValue;
 	    }catch(Exception e){
-	       //println( getName() + " plan=init WARNING:" + e.getMessage() );
+	       //println( getName() + " plan=main WARNING:" + e.getMessage() );
 	       QActorContext.terminateQActorSystem(this); 
 	       return false;  
 	    }
 	    }
 	    public boolean doWorkMsgs() throws Exception{	//public to allow reflection
 	    try{
-	    	curPlanInExec =  "doWorkMsgs";
-	    	boolean returnValue = suspendWork;
+	    	int nPlanIter = 0;
+	    	//curPlanInExec =  "doWorkMsgs";
+	    	boolean returnValue = suspendWork;		//MARCHH2017
 	    while(true){
-	    nPlanIter++;
-	    		temporaryStr = " \"RADAR receive\" ";
+	    	curPlanInExec =  "doWorkMsgs";	//within while since it can be lost by switchlan
+	    	nPlanIter++;
+	    		temporaryStr = "\"Radar ready to receive data\"";
 	    		println( temporaryStr );  
 	    		//ReceiveMsg
-	    		 		 aar = planUtils.receiveAMsg(mysupport,30000000, "" , "" ); 	//could block
-	    				if( aar.getInterrupted() ){
-	    					curPlanInExec   = "playTheGame";
-	    					if( ! aar.getGoon() ) break;
-	    				} 			
-	    				//if( ! aar.getGoon() ){
-	    					//System.out.println("			WARNING: receiveMsg in " + getName() + " TOUT " + aar.getTimeRemained() + "/" +  30000000);
-	    					//addRule("tout(receive,"+getName()+")");
-	    				//} 		 
-	    				//println(getName() + " received " + aar.getResult() );
+	    		 		aar = planUtils.receiveAMsg(mysupport,30000000, "" , "" ); 	//could block
+	    			    if( ! aar.getGoon() || aar.getTimeRemained() <= 0 ){
+	    			    	//println("	WARNING: receivemsg timeout " + aar.getTimeRemained());
+	    			    	addRule("tout(receivemsg,"+getName()+")");
+	    			    }
 	    		printCurrentMessage(false);
 	    		//onMsg
-	    		if( currentMessage.msgId().equals("sonar") ){
+	    		if( currentMessage.msgId().equals("polar") ){
 	    			String parg = "actorOp(sendDataToGui(DIST,THETA))";
-	    			parg =  updateVars( Term.createTerm("p(Distance,SID)"), Term.createTerm("p(Distance,SID)"), 
+	    			/* ActorOp */
+	    			parg =  updateVars( Term.createTerm("p(Distance,Angle)"), Term.createTerm("p(DIST,THETA)"), 
 	    				    		  					Term.createTerm(currentMessage.msgContent()), parg);
 	    			if( parg != null ){
-	    					aar = solveGoalReactive(parg,3600000,"","");
-	    					//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
-	    					if( aar.getInterrupted() ){
-	    						curPlanInExec   = "doWorkMsgs";
-	    						if( ! aar.getGoon() ) break;
-	    					} 			
+	    				aar = solveGoalReactive(parg,3600000,"","");
+	    				//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    				if( aar.getInterrupted() ){
+	    					curPlanInExec   = "doWorkMsgs";
+	    					if( aar.getTimeRemained() <= 0 ) addRule("tout(actorOp,"+getName()+")");
+	    					if( ! aar.getGoon() ) break;
+	    				} 			
 	    			}
-	    		}if( planUtils.repeatPlan(0).getGoon() ) continue;
+	    		}if( planUtils.repeatPlan(nPlanIter,0).getGoon() ) continue;
 	    break;
 	    }//while
 	    return returnValue;
