@@ -9,7 +9,7 @@
 //Event sonarData : p( Distance, SID  )
 // 
 //Context ctxSensorEmitter ip [ host="localhost" port=8045 ]
-//Context ctxRadar ip [ host="localhost" port=8010 ]
+//Context ctxConsole ip [ host="localhost" port=8010 ]
 //
 //QActor sensorsonar context ctxSensorEmitter {    
 //
@@ -42,7 +42,7 @@ Event sonar : p( Distance, SID  )
 Event numOfSonar : numOfSonar( N )  
 
 Context ctxSensorEmitter ip [ host="localhost" port=8045 ] 
-Context ctxRadar ip [ host="localhost" port=8010 ]
+Context ctxConsole ip [ host="localhost" port=8010 ]
 
 QActor sensorsonar context ctxSensorEmitter  {    
 Rules{

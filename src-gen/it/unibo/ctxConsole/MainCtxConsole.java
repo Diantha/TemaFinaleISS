@@ -8,9 +8,9 @@ public class MainCtxConsole  {
 //MAIN
 public static QActorContext initTheContext() throws Exception{
 	IOutputEnvView outEnvView = SituatedSysKb.standardOutEnvView;
-	String webDir = "./srcMore/it/unibo/ctxConsole";
+	String webDir = null;
 	return QActorContext.initQActorSystem(
-		"ctxconsole", "./srcMore/it/unibo/ctxConsole/console.pl", 
+		"ctxconsole", "./srcMore/it/unibo/ctxConsole/sonarsensoremitter.pl", 
 		"./srcMore/it/unibo/ctxConsole/sysRules.pl", outEnvView,webDir,false);
 }
 public static void main(String[] args) throws Exception{

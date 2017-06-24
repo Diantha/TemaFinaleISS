@@ -12,7 +12,7 @@ Event usercmd   : usercmd(CMD)  /* From the user GUI */
 Event sonarArea : sonarArea(K)  /* From the console (which sensed it by the sonar subsystem) */
 
 Context ctxRobot ip [ host="localhost"  port=8021 ] 
-Context ctxRadar ip [ host="localhost"  port=8010 ]
+Context ctxConsole ip [ host="localhost"  port=8010 ]
 
 EventHandler evh for obstacle, alarm -print ;
 EventHandler evhinput for usercmd, sonarArea -print {

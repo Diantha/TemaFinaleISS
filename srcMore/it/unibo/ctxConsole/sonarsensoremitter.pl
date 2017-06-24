@@ -1,5 +1,5 @@
 %====================================================================================
-% Context ctxSensorEmitter  SYSTEM-configuration: file it.unibo.ctxSensorEmitter.sonarSensorEmitter.pl 
+% Context ctxConsole  SYSTEM-configuration: file it.unibo.ctxConsole.sonarSensorEmitter.pl 
 %====================================================================================
 context(ctxsensoremitter, "localhost",  "TCP", "8045" ).  		 
 context(ctxconsole, "localhost",  "TCP", "8010" ).  		 
