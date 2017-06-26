@@ -1,0 +1,166 @@
+/*
+ * ==============================================================
+ * console.qa  Console (radar + controller)
+ * ==============================================================
+ */
+
+System console
+
+Event sonarData : p( Distance, Angle )  /* Emitted by the sonars */
+Event obstacle  : obstacle(X)           /* Emitted when sonars detect an object along the path */
+Event alarm     : alarm         	    /* Emitted when distance from sonar is less than the threshold DMIN */
+Event usercmd   : usercmd(CMD)  	    /* From the web GUI */
+Event sonarArea : sonarArea(K)  	    /* Sensed by the sonar subsystem and emitted to the robot */
+
+Dispatch polar   : p( Distance, Angle )  /* Sent to the radar GUI by the event handler */
+Dispatch mqttmsg : mqttmsg
+
+Context ctxConsole       ip [ host="localhost" port=8010 ] -httpserver //192.168.251.1
+Context ctxSensorEmitter ip [ host="localhost" port=8045 ] /*"localhost"*/
+
+EventHandler evh for sonarData -print {  /* Handles the event emitted by the sonars and forwards a "polar" message to the radar GUI */
+	forwardEvent radargui -m polar
+};
+
+/* RADAR */
+QActor radargui context ctxConsole -g green {
+  
+  	/* First plan */
+	Plan main normal        
+		println( "Starting the radar GUI..." ) ;     
+		actorOp activateGui ;
+		switchToPlan doWorkMsgs
+
+	/* Receives the data from the sonars */
+	Plan doWorkMsgs
+ 		println( "Radar ready to receive data" ) ;
+		receiveMsg time ( 30000000 ) ;
+		printCurrentMessage ;
+		onMsg polar : p( DIST, THETA ) -> actorOp sendDataToGui( DIST, THETA ) ;
+ 		repeatPlan
+}
+
+/* CONTROLLER */
+QActor controller context ctxConsole -g yellow {
+
+	/* First plan */
+	Plan main normal
+		println( "Start controller" ) ;
+		switchToPlan init ;
+		switchToPlan work
+		
+	Plan init resumeLastPlan
+		actorOp initialization
+	
+	/* Waiting state of the console */
+	Plan work
+		println( "Waiting for a command..." ) ;
+		sense time( 30000000 ) sonarData, usercmd -> continue, continue ;
+		onEvent sonarData : p( Distance , Angle ) -> switchToPlan checkSonarData ;
+		onEvent usercmd   : usercmd( CMD )        -> switchToPlan checkUserCommand ;  /* Check commands from the GUI */
+		
+		
+		//onMsg mqttmsg : mqttmsg -> actorOp retrieveAndSavePhoto ; //per la foto del robot
+
+		printCurrentMessage ;
+		repeatPlan
+	
+	/* Req. 2.b (data from the sonars) */
+	Plan checkSonarData resumeLastPlan
+		actorOp evaluateExpr ;
+		[ ?? actorOpDone ( OP, "alarm" ) ] switchToPlan playAlarm ;  /* Play an alarm sound */
+		[ ?? actorOpDone ( OP, "stop" ) ] switchToPlan stopRobot  /* Stop the robot */
+	
+	/* (Req 2.c) Plays an alarm sound */
+	Plan playAlarm
+		emit alarm : alarm ;
+		println( "An alarm sound is playing!" );
+		sound time ( 3000 ) file ( "./audio/illogical_most2.mp3" ) ;
+		switchToPlan init ;
+		switchToPlan work
+	
+	Plan checkUserCommand resumeLastPlan
+		printCurrentEvent ;
+		onEvent usercmd : usercmd(robotgui(w(S))) -> switchToPlan moveRobot ;  /* START/FORWARD command */
+		onEvent usercmd : usercmd(robotgui(h(S))) -> switchToPlan stopRobot
+	
+	/* Req. 2.a */
+	Plan moveRobot
+		println("Start the robot!!!");
+		actorOp initialization;
+		emit usercmd : usercmd(robotgui(w(S)));
+		switchToPlan init
+		
+	/* (Req. 2.a) Stops the robot movements */
+	Plan stopRobot
+		println( "Stopping the robot..." );
+		emit usercmd : usercmd(robotgui(h(S))) ;  /* Emit an event for the robot */
+		switchToPlan work
+	
+	
+	
+	
+	
+	
+	//Plan moveToTakePhoto  
+//	emit sonarArea : sonarArea ;
+//	forward robot  -m robotCommand :rc( left );
+//	forward robot  -m robotCommand :rc( blinkLedStart );
+//	forward robot  -m robotCommand :rc( takePhoto );
+//	forward robot  -m robotCommand :rc( right );
+//	forward robot  -m robotCommand :rc( blinkLedStop );
+//	forward robot  -m robotCommand :rc( goForward );
+	//resumeLastPlan
+
+}
+
+
+//
+//QActor sensorsonar context ctxSensorEmitter  -g cyan{    
+//Rules{
+//	/* THESE RULES ARE WRITTEN IN THE WorldTheory of the sensorsonar */
+//	/* CONFIGURATION   */
+//		onRaspberry.  
+//		mysonar( s1, coloryellow, /*"localhost"*/"192.168.1.103" ).	 
+//		//mysonar( s2, colorred, "192.168.251.121" ).		 
+//		//mysonar( s3, colorgreen, "192.168.251.120" ).	 		
+//	/* SIMULATION DATA */	   
+//   		p(80,1).p(70,1).p(60,1).p(50,3).p(40,3).p(30,3).p(20,2).p(40,2).p(60,2).p(80,2).
+// 	/* RULES */
+//		sonar(s1,1).
+//		sonar(s2,2).
+// 		sonar(s3,3).
+//		numOfSonars(N) :- bagof(sonar(S,P), sonar(S,P), SonarList), length(SonarList,N).	
+//		setmyposition  :-  
+//			numOfSonars(N),
+//			assert( numSonars( N ) ),
+//			mysonar( SONAR, _, _ ), sonar(SONAR,SID), 
+//			assert( position( SID ) ).		
+//		obstacledata( p(D,SID) ) :- 
+//			//numSonars( N ),
+//			actorOpDone( _,d(D) ), 	//set by actorOp getDistanceFromSonar (1)
+//			position(SID).
+//	}	  
+// 	Plan init normal     
+// 		println("sensorsonar STARTS")  ;
+//		[ !? onRaspberry ] actorOp startSonarC ;
+//  		demo setmyposition ;	//depends on mysonar
+// 		[ !? position(POS) ] println( position(POS) );
+// 		[ !? numSonars(N) ]  println( numSonars(N) );
+// 		[ !? numSonars(N) ]  emit numOfSonar : numOfSonar(N) ;
+// 		switchToPlan workSimulate ;
+//  		println("sensorsonar workReal")  ;       
+//  		[ !? onRaspberry ] switchToPlan workReal
+// 	Plan workSimulate   resumeLastPlan  
+//  	 	[ !? p(DIST, SID) ] println(p(DIST, SID)) else endPlan  "bye"; 	//p(D,SID) does not work
+//		[ ?? p(DIST, SID) ] emit sonar : p(DIST,SID) ;
+//		delay time(500) ;
+//		repeatPlan 9	 	
+//	Plan workReal 
+//		actorOp getDistanceFromSonar ;		//(1)
+//		[ !? obstacledata( VAL )] println( uuuuu(VAL) ) ;
+//		[ !? obstacledata( VAL )] emit sonar : VAL ;
+////		[ ?? actorOpDone(OP,R )] println(R)	;	//remove actorOpDone
+//  		repeatPlan
+//} 
+
