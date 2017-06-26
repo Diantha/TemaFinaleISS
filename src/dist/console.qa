@@ -50,7 +50,9 @@ QActor controller context ctxConsole -g yellow {
 		switchToPlan work
 		
 	Plan init resumeLastPlan
-		actorOp initialization
+		actorOp initialization;
+		actorOp connect("observer","tcp://m2m.eclipse.org:1883","photo");
+		actorOp subscribe("observer","tcp://m2m.eclipse.org:1883","photo")
 	
 	/* Waiting state of the console */
 	Plan work

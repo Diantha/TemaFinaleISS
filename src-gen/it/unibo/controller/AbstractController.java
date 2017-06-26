@@ -111,6 +111,24 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    			if( ! aar.getGoon() ) break;
 	    		} 			
 	    		//QActorUtils.solveGoal(parg,pengine );
+	    		parg = "actorOp(connect(\"observer\",\"tcp://m2m.eclipse.org:1883\",\"photo\"))";
+	    		aar = solveGoalReactive(parg,3600000,"","");
+	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    		if( aar.getInterrupted() ){
+	    			curPlanInExec   = "init";
+	    			if( aar.getTimeRemained() <= 0 ) addRule("tout(actorOp,"+getName()+")");
+	    			if( ! aar.getGoon() ) break;
+	    		} 			
+	    		//QActorUtils.solveGoal(parg,pengine );
+	    		parg = "actorOp(subscribe(\"observer\",\"tcp://m2m.eclipse.org:1883\",\"photo\"))";
+	    		aar = solveGoalReactive(parg,3600000,"","");
+	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
+	    		if( aar.getInterrupted() ){
+	    			curPlanInExec   = "init";
+	    			if( aar.getTimeRemained() <= 0 ) addRule("tout(actorOp,"+getName()+")");
+	    			if( ! aar.getGoon() ) break;
+	    		} 			
+	    		//QActorUtils.solveGoal(parg,pengine );
 	    		returnValue = continueWork;  
 	    break;
 	    }//while
