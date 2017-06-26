@@ -5,13 +5,11 @@ import java.io.FileInputStream;
 import java.util.Base64;
 
 import akka.actor.FSM.Timer;
-import cli.System.IO.FileNotFoundException;
-import cli.System.IO.IOException;
+import it.unibo.bls.highLevel.interfaces.IDevLed.LedColor;
+import it.unibo.bls.raspberry.components.DeviceLedPi4j;
 import it.unibo.is.interfaces.IOutputEnvView;
 import it.unibo.mqtt.utils.MqttUtils;
 import it.unibo.qactors.QActorContext;
-import it.unibo.bls.highLevel.interfaces.IDevLed.LedColor;
-import it.unibo.bls.raspberry.components.DeviceLedPi4j;
 
 //
 public class Robot extends AbstractRobot { 

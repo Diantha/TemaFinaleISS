@@ -14,11 +14,14 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import it.unibo.is.interfaces.IOutputEnvView;
+import it.unibo.mqtt.utils.MqttUtils;
 import it.unibo.qactors.QActorContext;
 import it.unibo.qactors.QActorMessage;
+
 
 public class Controller extends AbstractController { 
 	private Map<Integer, List<Integer>> values = new HashMap<>(); //SID, Distanza
@@ -26,14 +29,15 @@ public class Controller extends AbstractController {
 	private int num_of_sonar=3;
 	private int firstSensorNotReached=1;
 	private boolean robotStopped = false;
+	private MqttUtils util;
+	private MqttMessage mess;
 	//private NewMqttUtils util;
 	public Controller(String actorId, QActorContext myCtx, IOutputEnvView outEnvView )  throws Exception{
 		super(actorId, myCtx, outEnvView);
 	}
-		public void connect(String clientid, String brokerAddr, String topic){
+	public void connect(String clientid, String brokerAddr, String topic){
 		try {
 			util.connect(this,clientid,brokerAddr, topic);
-			util.setActor(this);
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}
@@ -83,7 +87,7 @@ public class Controller extends AbstractController {
 	}
 	//Decodifico l'immagine ricevuta come byte array in base64.
 	public void retrieveAndSavePhoto(){
-	MqttMessage msg = new MqttMessage();//util.getMsg();
+	MqttMessage msg = mess;
 		byte[] photoByte=Base64.getDecoder().decode(msg.getPayload());
 	      BufferedImage image;
 		try {
