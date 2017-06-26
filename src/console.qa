@@ -51,13 +51,13 @@ QActor controller context ctxConsole -g yellow {
 		
 	Plan init resumeLastPlan
 		actorOp initialization;
-		actorOp connect("observer","tcp://m2m.eclipse.org:1883","photo");
-		actorOp subscribe("observer","tcp://m2m.eclipse.org:1883","photo")
+		actorOp connect("observer","tcp://m2m.eclipse.org:1883","photo")
+		//actorOp subscribe("observer","tcp://m2m.eclipse.org:1883","photo")
 	
 	/* Waiting state of the console */
 	Plan work
 		println( "Waiting for a command..." ) ;
-		sense time( 30000000 ) sonarData, usercmd -> continue, continue ;
+		receiveMsg time ( 30000000 ) react event usercmd -> checkUserCommand;
 		onEvent sonarData : p( Distance , Angle ) -> switchToPlan checkSonarData ;
 		onEvent usercmd   : usercmd( CMD )        -> switchToPlan checkUserCommand ;  /* Check commands from the GUI */
 		
