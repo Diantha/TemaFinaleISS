@@ -66,7 +66,7 @@ dependencies {
 	compile fileTree(dir: 'C:/Users/Andrea/git/local/it.unibo.iss.libs/libs/unibo', include: 'uniboQactorRobot.jar') 
 	compile fileTree(dir: 'C:/Users/Andrea/git/local/it.unibo.iss.libs/libs/steel', include: 'trident.jar')
     testCompile 'junit:junit:4.12'
-	compile group: 'com.typesafe.akka', name: 'akka-actor_2.11', version: '2.4.8'
+	compile group: 'com.typesafe.akka', name: 'akka-actor_2.11', version: '2.5.1'
 	compile group: 'com.typesafe.akka', name: 'akka-remote_2.11', version: '2.4.9-RC2'
 	compile group: 'org.eclipse.paho', name: 'org.eclipse.paho.client.mqttv3', version: '1.1.0'
 }
