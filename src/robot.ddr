@@ -55,7 +55,7 @@ QActor robotsonar context ctxRobot {
 }
 
 /* ROBOT */
-Robot robot0 QActor robot context ctxRobot {
+Robot mocksimple QActor robot context ctxRobot {
 
 	Rules {
 		pinLed(18).

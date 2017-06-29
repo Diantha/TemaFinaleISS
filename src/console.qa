@@ -15,8 +15,8 @@ Event sonarArea : sonarArea(K)  	    /* Sensed by the sonar subsystem and emitte
 Dispatch polar   : p( Distance, Angle )  /* Sent to the radar GUI by the event handler */
 Dispatch mqttmsg : mqttmsg
 
-Context ctxConsole       ip [ host="localhost" port=8010 ] -httpserver //192.168.251.1
-Context ctxSensorEmitter ip [ host="localhost" port=8045 ] /*"localhost"*/
+Context ctxConsole       ip [ host="localhost" port=8010 ] -httpserver 
+Context ctxSensorEmitter ip [ host="localhost" port=8045 ] 
 
 EventHandler evh for sonarData -print {  /* Handles the event emitted by the sonars and forwards a "polar" message to the radar GUI */
 	forwardEvent radargui -m polar
@@ -43,16 +43,12 @@ QActor radargui context ctxConsole -g green {
 /* CONTROLLER */
 QActor controller context ctxConsole -g yellow {
 
-	/* First plan */
-	Plan main normal
+	Plan init normal
 		println( "Start controller" ) ;
-		switchToPlan init ;
-		switchToPlan work
-		
-	Plan init resumeLastPlan
 		actorOp initialization;
-		actorOp connect("observer","tcp://m2m.eclipse.org:1883","photo")
-		//actorOp subscribe("observer","tcp://m2m.eclipse.org:1883","photo")
+		actorOp connect("observer","tcp://m2m.eclipse.org:1883","photo");
+		actorOp subscribe("observer","tcp://m2m.eclipse.org:1883","photo");
+		switchToPlan work
 	
 	/* Waiting state of the console */
 	Plan work

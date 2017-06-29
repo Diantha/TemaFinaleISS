@@ -146,5 +146,8 @@ private static MqttUtils myself = null;
 		 }
 			 public static void main(String[] args) throws Exception{
 		new MqttUtils().test();
-		}	
+		}
+				public void setActor(QActor actor){
+					this.actor = actor;
+				}
 }

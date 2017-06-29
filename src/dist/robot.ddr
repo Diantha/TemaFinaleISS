@@ -1,0 +1,139 @@
+/* 
+ * ==============================================================
+ * robot.ddr  Robot
+ * ==============================================================
+ */
+
+RobotSystem robot
+
+Event obstacle  : obstacle(X)   /* From the controller */
+Event alarm     : alarm         /* Emitted when distance from sonar is less than the threshold DMIN */
+Event usercmd   : usercmd(CMD)  /* From the user GUI */
+Event sonarArea : sonarArea(K)  /* From the console (which sensed it by the sonar subsystem) */
+
+Context ctxRobot ip [ host="localhost"  port=8021 ] 
+Context ctxConsole ip [ host="localhost"  port=8010 ]
+
+EventHandler evh for obstacle, alarm -print ;
+EventHandler evhinput for usercmd, sonarArea -print {
+	memo currentEvent for robot
+};
+
+/* SONAR */
+QActor robotsonar context ctxRobot {
+
+	/* First plan */
+   	Plan main normal
+   		switchToPlan init
+ 		
+ 	/* Activates the sonar */
+ 	Plan init
+ 		demo loadTheory( "./robotSonarKB.pl" ) onFailSwitchTo prologFailure ;
+ 		[ !? simulate ] switchToPlan simulateMode ;  /* Simulate the work */
+ 		[ !? physicSonar ] switchToPlan realMode ;  /* Real sonar */
+ 		println( "Sonar on robot starts working.")
+ 		
+ 	/* Simulates the sonar work */
+ 	Plan simulateMode resumeLastPlan
+ 		println( "Simulate mode" )
+ 	
+ 	/* Manages the real physic sonar */
+ 	Plan realMode
+ 		println( "Working with physic sonar" ) ;
+ 		actorOp startRobotSonarC ;
+ 		switchToPlan working
+ 	
+ 	/* (Req. 3.b) Collects and emits data */
+ 	Plan working
+ 		[!? obstacle(X) ] emit obstacle : obstacle(X) ;
+ 		actorOp getDistanceFromSonar ;
+ 		delay time(500);
+ 		repeatPlan
+ 	
+ 	Plan prologFailure resumeLastPlan            
+		println( "Prolog goal fails" ) 
+}
+
+/* ROBOT */
+Robot mocksimple QActor robot context ctxRobot {
+
+	Rules {
+		pinLed(18).
+	}
+	
+	/* First plan */
+   	Plan main normal
+ 		println( "Ready to start!") ;
+		switchToPlan connectToMqtt ;
+		switchToPlan waiting
+	
+	/* Connects to MQTT server */
+	Plan connectToMqtt resumeLastPlan  
+ 		println( "Connecting to MQTT server..." ) ;
+		actorOp connectToMqttServer( "mqtt_robot_system", "tcp://m2m.eclipse.org:1883", "photo" ) ;
+		[ ?? tout(X,Y) ] switchToPlan toutExpired
+		
+	/* Waiting state of the robot */
+	Plan waiting
+		println( "Waiting for a command..." ) ;
+		sense time(30000) usercmd -> continue ;  /* Blocks the execution of the robot until the required event occurs or timeout happens */
+		[ !? tout(30000,Y) ] switchToPlan toutExpired ;
+  		printCurrentEvent ;
+		onEvent usercmd : usercmd(robotgui(w(S))) -> switchToPlan moveForward ;  /* START/FORWARD command */
+		onEvent usercmd : usercmd(robotgui(h(S))) -> switchToPlan stop ;  /* STOP command */
+		repeatPlan
+
+	/* (Req. 1.a.i) Moves forward the robot and handles the event that the robot can perceive while moving */
+ 	Plan moveForward
+		println( "Moving forward..." ) ;
+		robotForward speed(40) time(20000) react event usercmd   -> checkUserCommand    /* A command from console arrives */
+											  or event alarm     -> stop                /* The consoles has played an alarm */
+											  or event obstacle  -> stop   		        /* There is an obstacle */
+											  or event sonarArea -> handlePhotoShoot ;  /* The robot has reached the area of a sonar */
+		repeatPlan
+
+	/* Checks the command received by the robot while it was moving */
+	Plan checkUserCommand
+		println( "Checking user command..." ) ;
+		onEvent usercmd : usercmd(robotgui(h(S))) -> switchToPlan stop  /* STOP command */
+	
+	/* (Req. 1.a.iii) Stops the robot movements (usercmd or alarm or obstacle) */
+	Plan stop
+		robotStop speed(0) time(0) ;
+		println( "Robot stopped!" ) ;
+		switchToPlan waiting
+	
+	/* Handles the photo shoot routine */
+	Plan handlePhotoShoot
+		robotStop speed(0) time(0) ;  /* Stop the robot */
+		println( "The robot is going to take a photo..." ) ;
+		robotLeft speed(70) time(2000) ;  /* Rotate to the left */
+		[ !? pinLed( PIN ) ] actorOp startLedBlink ;  /* (Req. 1.c) Starts led blinking */
+		switchToPlan sendPhoto ;
+		robotRight speed(70) time(2000) ;  /* Turn back on its original position */
+		actorOp stopLedBlink ;  /* Stop led blinking */
+		println( "Led stopped blinking" ) ;
+		switchToPlan checkReachedArea ;
+		switchToPlan moveForward
+
+	/* (Req. 1.d) Takes a photo and sends it to the console */
+	Plan sendPhoto resumeLastPlan
+		[ !? msg( reachedSonarArea, 'event', controller, none, sonarArea(K), N) ] actorOp sendPhotoToConsole(K) ;  /* Uso la guardia solo per sapere in quale area ho scattato la foto */
+		println( "Photo shooted and sent to the user!" )
+	
+	/* Checks which area the robot has reached */
+	Plan checkReachedArea resumeLastPlan
+		[ ?? msg( reachedSonarArea, 'event', console, none, sonarArea(0), N) ] switchToPlan moveTowardsAreaB
+	
+	/* The robot is going to reach the area B */
+	Plan moveTowardsAreaB
+		robotForward speed(40) time(3000) react event usercmd  -> checkUserCommand  /* A command from console arrives */
+											  or event obstacle -> stop ;  		     /* There is an obstacle */
+		robotStop speed(10) time(0) ;
+		println( "The robot has reached the area B!" ) ;
+		switchToPlan waiting
+		
+	/* Alerts that a timeout expired */
+	Plan toutExpired
+		println( tout(X,Y) )
+}

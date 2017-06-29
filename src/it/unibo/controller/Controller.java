@@ -19,8 +19,10 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import it.unibo.is.interfaces.IOutputEnvView;
 import it.unibo.mqtt.utils.MqttUtils;
+import it.unibo.mqtt.utils.NewMqttUtils;
 import it.unibo.qactors.QActorContext;
 import it.unibo.qactors.QActorMessage;
+import it.unibo.qactors.akka.QActor;
 
 
 public class Controller extends AbstractController { 
@@ -29,15 +31,18 @@ public class Controller extends AbstractController {
 	private int num_of_sonar=3;
 	private int firstSensorNotReached=1;
 	private boolean robotStopped = false;
-	private MqttUtils util;
+	//private MqttUtils util;
 	private MqttMessage mess;
-	//private NewMqttUtils util;
+	private NewMqttUtils util;
 	public Controller(String actorId, QActorContext myCtx, IOutputEnvView outEnvView )  throws Exception{
 		super(actorId, myCtx, outEnvView);
+		util = new NewMqttUtils();
 	}
+	
 	public void connect(String clientid, String brokerAddr, String topic){
 		try {
 			util.connect(this,clientid,brokerAddr, topic);
+			util.setActor(this);
 		} catch (MqttException e) {
 			e.printStackTrace();
 		}

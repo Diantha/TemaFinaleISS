@@ -24,7 +24,7 @@ private it.unibo.qactor.robot.RobotActor robot;
  
 	public static void main(String[] args) throws Exception{
 			IOutputEnvView outEnvView = SituatedSysKb.standardOutEnvView;
-			it.unibo.qactors.QActorUtils.setRobotBase("robot0" );  
+			it.unibo.qactors.QActorUtils.setRobotBase("mocksimple" );  
 		    String webDir = null;
 			QActorContext.initQActorSystem(
 				"ctxconsole", "./srcMore/it/unibo/ctxConsole/robot.pl", 

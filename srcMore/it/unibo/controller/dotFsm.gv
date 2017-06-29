@@ -13,11 +13,10 @@ digraph finite_state_machine {
   	node [shape = point]; iniziale;
   	node [shape = doublecircle]; 
   	node [shape = circle];
-  	iniziale -> main [label = ""];
+  	iniziale -> init [label = ""];
   	
   	
-  	main -> init [ label = ""];
-  	main -> work [ label = ""];
+  	init -> work [ label = ""];
   	
   	work -> work [ label = ""];
   	work -> checkUserCommand [ label = "usercmd(CMD)/"];

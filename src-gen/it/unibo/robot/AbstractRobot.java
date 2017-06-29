@@ -456,6 +456,7 @@ protected IActorAction  action;
     //COMPONENTS
      RobotComponent motorleft 
      RobotComponent motorright 
+    sensor distanceMock simulated debug=0   
     Composed component motors
     */
     protected void addSensorObservers(){

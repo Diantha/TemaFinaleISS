@@ -44,7 +44,7 @@ public abstract class AbstractController extends QActor implements IActivity{
 		public AbstractController(String actorId, QActorContext myCtx, IOutputEnvView outEnvView )  throws Exception{
 			super(actorId, myCtx,  
 			"./srcMore/it/unibo/controller/WorldTheory.pl",
-			setTheEnv( outEnvView )  , "main");		
+			setTheEnv( outEnvView )  , "init");		
 			addInputPanel(80);
 			addCmdPanels();	
 			this.planFilePath = "./srcMore/it/unibo/controller/plans.txt";
@@ -64,7 +64,7 @@ public abstract class AbstractController extends QActor implements IActivity{
 			String name  = getName().replace("_ctrl", "");
 			mysupport = (IMsgQueue) QActorUtils.getQActor( name ); 
 	 		initSensorSystem();
-			boolean res = main();
+			boolean res = init();
 			//println(getName() + " doJob " + res );
 			QActorContext.terminateQActorSystem(this);
 		} 
@@ -73,27 +73,6 @@ public abstract class AbstractController extends QActor implements IActivity{
 		* PLANS
 		* ------------------------------------------------------------
 		*/
-	    public boolean main() throws Exception{	//public to allow reflection
-	    try{
-	    	int nPlanIter = 0;
-	    	//curPlanInExec =  "main";
-	    	boolean returnValue = suspendWork;		//MARCHH2017
-	    while(true){
-	    	curPlanInExec =  "main";	//within while since it can be lost by switchlan
-	    	nPlanIter++;
-	    		temporaryStr = "\"Start controller\"";
-	    		println( temporaryStr );  
-	    		if( ! planUtils.switchToPlan("init").getGoon() ) break;
-	    		if( ! planUtils.switchToPlan("work").getGoon() ) break;
-	    break;
-	    }//while
-	    return returnValue;
-	    }catch(Exception e){
-	       //println( getName() + " plan=main WARNING:" + e.getMessage() );
-	       QActorContext.terminateQActorSystem(this); 
-	       return false;  
-	    }
-	    }
 	    public boolean init() throws Exception{	//public to allow reflection
 	    try{
 	    	int nPlanIter = 0;
@@ -102,6 +81,8 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    while(true){
 	    	curPlanInExec =  "init";	//within while since it can be lost by switchlan
 	    	nPlanIter++;
+	    		temporaryStr = "\"Start controller\"";
+	    		println( temporaryStr );  
 	    		parg = "actorOp(initialization)";
 	    		aar = solveGoalReactive(parg,3600000,"","");
 	    		//println(getName() + " plan " + curPlanInExec  +  " interrupted=" + aar.getInterrupted() + " action goon="+aar.getGoon());
@@ -129,7 +110,7 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    			if( ! aar.getGoon() ) break;
 	    		} 			
 	    		//QActorUtils.solveGoal(parg,pengine );
-	    		returnValue = continueWork;  
+	    		if( ! planUtils.switchToPlan("work").getGoon() ) break;
 	    break;
 	    }//while
 	    return returnValue;
@@ -149,13 +130,12 @@ public abstract class AbstractController extends QActor implements IActivity{
 	    	nPlanIter++;
 	    		temporaryStr = "\"Waiting for a command...\"";
 	    		println( temporaryStr );  
-	    		//senseEvent
-	    		aar = planUtils.senseEvents( 30000000,"sonarData,usercmd","continue,continue",
-	    		"" , "",ActionExecMode.synch );
-	    		if( ! aar.getGoon() || aar.getTimeRemained() <= 0 ){
-	    			//println("			WARNING: sense timeout");
-	    			addRule("tout(senseevent,"+getName()+")");
-	    		}
+	    		//ReceiveMsg
+	    		 		aar = planUtils.receiveAMsg(mysupport,30000000, "usercmd" , "checkUserCommand" ); 	//could block
+	    			    if( ! aar.getGoon() || aar.getTimeRemained() <= 0 ){
+	    			    	//println("	WARNING: receivemsg timeout " + aar.getTimeRemained());
+	    			    	addRule("tout(receivemsg,"+getName()+")");
+	    			    }
 	    		//onEvent
 	    		if( currentEvent.getEventId().equals("sonarData") ){
 	    		 		String parg = "";
